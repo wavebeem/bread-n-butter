@@ -1,0 +1,26 @@
+{
+  "name": "breadnbutter",
+  "version": "0.0.1",
+  "description": "Parser combinators for TypeScript and JavaScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "jest --watch"
+  },
+  "keywords": [
+    "parser",
+    "parsers",
+    "parse",
+    "parsing",
+    "parser combinators",
+    "typescript"
+  ],
+  "author": "Brian Mock <brian@mockbrian.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^26.0.3",
+    "jest": "^26.1.0",
+    "ts-jest": "^26.1.1",
+    "typescript": "^3.9.5"
+  }
+}

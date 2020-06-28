@@ -1,0 +1,100 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`andThen failure 1 1`] = `
+Object {
+  "context": Object {
+    "index": 1,
+    "input": "x",
+    "type": "bnb.ParserContext",
+  },
+  "message": "y",
+  "type": "bnb.Fail",
+}
+`;
+
+exports[`andThen failure 2 1`] = `
+Object {
+  "context": Object {
+    "index": 0,
+    "input": "y",
+    "type": "bnb.ParserContext",
+  },
+  "message": "x",
+  "type": "bnb.Fail",
+}
+`;
+
+exports[`andThen failure 3 1`] = `
+Object {
+  "context": Object {
+    "index": 0,
+    "input": "yx",
+    "type": "bnb.ParserContext",
+  },
+  "message": "x",
+  "type": "bnb.Fail",
+}
+`;
+
+exports[`andThen failure 4 1`] = `
+Object {
+  "context": Object {
+    "index": 0,
+    "input": "",
+    "type": "bnb.ParserContext",
+  },
+  "message": "x",
+  "type": "bnb.Fail",
+}
+`;
+
+exports[`andThen success 1`] = `
+Object {
+  "context": Object {
+    "index": 2,
+    "input": "xy",
+    "type": "bnb.ParserContext",
+  },
+  "type": "bnb.OK",
+  "value": Array [
+    "x",
+    "y",
+  ],
+}
+`;
+
+exports[`matchEOF failure 1`] = `
+Object {
+  "context": Object {
+    "index": 0,
+    "input": "x",
+    "type": "bnb.ParserContext",
+  },
+  "message": "end of file",
+  "type": "bnb.Fail",
+}
+`;
+
+exports[`matchEOF success 1`] = `
+Object {
+  "context": Object {
+    "index": 0,
+    "input": "",
+    "type": "bnb.ParserContext",
+  },
+  "type": "bnb.OK",
+  "value": "end of file",
+}
+`;
+
+exports[`test a test 1`] = `
+Object {
+  "context": Object {
+    "index": 1,
+    "input": "x",
+    "type": "bnb.ParserContext",
+  },
+  "type": "bnb.OK",
+  "value": "x",
+}
+`;
