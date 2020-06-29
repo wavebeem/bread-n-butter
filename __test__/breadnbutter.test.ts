@@ -1,4 +1,4 @@
-import * as bnb from "../src/breadnbutter";
+import * as bnb from "../src/bread-n-butter";
 
 test("test a test", () => {
   const isX = bnb.matchString("x");
