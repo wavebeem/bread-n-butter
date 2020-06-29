@@ -5,14 +5,14 @@ test("test a test", () => {
   expect(isX.parse("x")).toMatchSnapshot();
 });
 
-test("andThen success", () => {
+test("andThen", () => {
   const isX = bnb.matchString("x");
   const isY = bnb.matchString("y");
   const isXY = isX.andThen(isY);
   expect(isXY.parse("xy")).toMatchSnapshot();
 });
 
-test("andThen success triple", () => {
+test("andThen triple", () => {
   const isX = bnb.matchString("x");
   const isY = bnb.matchString("y");
   const isZ = bnb.matchString("z");
@@ -32,35 +32,41 @@ test("andThen success triple 2", () => {
   expect(isXYZ.parse("xyz")).toMatchSnapshot();
 });
 
-test("andThen failure 1", () => {
+test("andThen failure", () => {
   const isX = bnb.matchString("x");
   const isY = bnb.matchString("y");
   const isXY = isX.andThen(isY);
   expect(isXY.parse("x")).toMatchSnapshot();
-});
-
-test("andThen failure 2", () => {
-  const isX = bnb.matchString("x");
-  const isY = bnb.matchString("y");
-  const isXY = isX.andThen(isY);
   expect(isXY.parse("y")).toMatchSnapshot();
-});
-
-test("andThen failure 3", () => {
-  const isX = bnb.matchString("x");
-  const isY = bnb.matchString("y");
-  const isXY = isX.andThen(isY);
   expect(isXY.parse("yx")).toMatchSnapshot();
-});
-
-test("andThen failure 4", () => {
-  const isX = bnb.matchString("x");
-  const isY = bnb.matchString("y");
-  const isXY = isX.andThen(isY);
   expect(isXY.parse("")).toMatchSnapshot();
 });
 
-test("repeat0 success", () => {
+test("separatedBy0", () => {
+  const isA = bnb.matchString("a");
+  const isSep = bnb.matchString(",");
+  const isAList = isA.seperatedBy0(isSep);
+  expect(isAList.parse("")).toMatchSnapshot();
+  expect(isAList.parse("a")).toMatchSnapshot();
+  expect(isAList.parse("a,a")).toMatchSnapshot();
+  expect(isAList.parse("a,a,a")).toMatchSnapshot();
+  expect(isAList.parse("a,a,b")).toMatchSnapshot();
+  expect(isAList.parse("b")).toMatchSnapshot();
+});
+
+test("separatedBy1", () => {
+  const isA = bnb.matchString("a");
+  const isSep = bnb.matchString(",");
+  const isAList = isA.seperatedBy1(isSep);
+  expect(isAList.parse("")).toMatchSnapshot();
+  expect(isAList.parse("a")).toMatchSnapshot();
+  expect(isAList.parse("a,a")).toMatchSnapshot();
+  expect(isAList.parse("a,a,a")).toMatchSnapshot();
+  expect(isAList.parse("a,a,b")).toMatchSnapshot();
+  expect(isAList.parse("b")).toMatchSnapshot();
+});
+
+test("repeat0", () => {
   const isA = bnb.matchString("a");
   const isAAA = isA.repeat0();
   expect(isAAA.parse("")).toMatchSnapshot();
@@ -68,46 +74,45 @@ test("repeat0 success", () => {
   expect(isAAA.parse("aa")).toMatchSnapshot();
   expect(isAAA.parse("aaa")).toMatchSnapshot();
   expect(isAAA.parse("aaaa")).toMatchSnapshot();
-});
-
-test("repeat0 failure", () => {
-  const isA = bnb.matchString("a");
-  const isAAA = isA.repeat0();
   expect(isAAA.parse("b")).toMatchSnapshot();
 });
 
-test("repeat1 success", () => {
+test("repeat1", () => {
   const isA = bnb.matchString("a");
   const isAAA = isA.repeat1();
+
   expect(isAAA.parse("a")).toMatchSnapshot();
   expect(isAAA.parse("aa")).toMatchSnapshot();
   expect(isAAA.parse("aaa")).toMatchSnapshot();
   expect(isAAA.parse("aaaa")).toMatchSnapshot();
-});
 
-test("repeat1 failure", () => {
-  const isA = bnb.matchString("a");
-  const isAAA = isA.repeat1();
   expect(isAAA.parse("")).toMatchSnapshot();
   expect(isAAA.parse("b")).toMatchSnapshot();
 });
 
-test("matchEOF success", () => {
+test("or", () => {
+  const isA = bnb.matchString("a");
+  const isB = bnb.matchString("b");
+  const isAorB = isA.or(isB);
+  expect(isAorB.parse("a")).toMatchSnapshot();
+  expect(isAorB.parse("b")).toMatchSnapshot();
+  expect(isAorB.parse("c")).toMatchSnapshot();
+  expect(isAorB.parse("ab")).toMatchSnapshot();
+  expect(isAorB.parse("")).toMatchSnapshot();
+});
+
+test("matchEOF", () => {
   const matchEOF = bnb.matchEOF;
+
   expect(matchEOF.parse("")).toMatchSnapshot();
-});
 
-test("matchEOF failure", () => {
-  const matchEOF = bnb.matchEOF;
   expect(matchEOF.parse("x")).toMatchSnapshot();
 });
 
-test("matchRegExp success", () => {
+test("matchRegExp", () => {
   const matchNumber = bnb.matchRegExp(/\d+/);
-  expect(matchNumber.parse("12")).toMatchSnapshot();
-});
 
-test("matchRegExp failure", () => {
-  const matchNumber = bnb.matchRegExp(/\d+/);
+  expect(matchNumber.parse("12")).toMatchSnapshot();
+
   expect(matchNumber.parse("abc")).toMatchSnapshot();
 });

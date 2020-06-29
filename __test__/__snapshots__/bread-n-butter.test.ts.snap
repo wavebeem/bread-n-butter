@@ -1,5 +1,30 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`andThen 1`] = `
+OK {
+  "context": Context {
+    "index": 2,
+    "input": "xy",
+  },
+  "value": Array [
+    "x",
+    "y",
+  ],
+}
+`;
+
+exports[`andThen failure 1`] = `
+Fail {
+  "context": Context {
+    "index": 1,
+    "input": "x",
+  },
+  "messages": Array [
+    "y",
+  ],
+}
+`;
+
 exports[`andThen failure 1 1`] = `
 Fail {
   "context": Context {
@@ -8,6 +33,18 @@ Fail {
   },
   "messages": Array [
     "y",
+  ],
+}
+`;
+
+exports[`andThen failure 2`] = `
+Fail {
+  "context": Context {
+    "index": 0,
+    "input": "y",
+  },
+  "messages": Array [
+    "x",
   ],
 }
 `;
@@ -24,11 +61,35 @@ Fail {
 }
 `;
 
+exports[`andThen failure 3`] = `
+Fail {
+  "context": Context {
+    "index": 0,
+    "input": "yx",
+  },
+  "messages": Array [
+    "x",
+  ],
+}
+`;
+
 exports[`andThen failure 3 1`] = `
 Fail {
   "context": Context {
     "index": 0,
     "input": "yx",
+  },
+  "messages": Array [
+    "x",
+  ],
+}
+`;
+
+exports[`andThen failure 4`] = `
+Fail {
+  "context": Context {
+    "index": 0,
+    "input": "",
   },
   "messages": Array [
     "x",
@@ -91,6 +152,44 @@ OK {
 }
 `;
 
+exports[`andThen triple 1`] = `
+OK {
+  "context": Context {
+    "index": 3,
+    "input": "xyz",
+  },
+  "value": Array [
+    Array [
+      "x",
+      "y",
+    ],
+    "z",
+  ],
+}
+`;
+
+exports[`matchEOF 1`] = `
+OK {
+  "context": Context {
+    "index": 0,
+    "input": "",
+  },
+  "value": "end of file",
+}
+`;
+
+exports[`matchEOF 2`] = `
+Fail {
+  "context": Context {
+    "index": 0,
+    "input": "x",
+  },
+  "messages": Array [
+    "end of file",
+  ],
+}
+`;
+
 exports[`matchEOF failure 1`] = `
 Fail {
   "context": Context {
@@ -113,6 +212,28 @@ OK {
 }
 `;
 
+exports[`matchRegExp 1`] = `
+OK {
+  "context": Context {
+    "index": 2,
+    "input": "12",
+  },
+  "value": "12",
+}
+`;
+
+exports[`matchRegExp 2`] = `
+Fail {
+  "context": Context {
+    "index": 0,
+    "input": "abc",
+  },
+  "messages": Array [
+    "/\\\\d+/",
+  ],
+}
+`;
+
 exports[`matchRegExp failure 1`] = `
 Fail {
   "context": Context {
@@ -132,6 +253,138 @@ OK {
     "input": "12",
   },
   "value": "12",
+}
+`;
+
+exports[`or 1`] = `
+OK {
+  "context": Context {
+    "index": 1,
+    "input": "a",
+  },
+  "value": "a",
+}
+`;
+
+exports[`or 2`] = `
+OK {
+  "context": Context {
+    "index": 1,
+    "input": "b",
+  },
+  "value": "b",
+}
+`;
+
+exports[`or 3`] = `
+Fail {
+  "context": Context {
+    "index": 0,
+    "input": "c",
+  },
+  "messages": Array [
+    "b",
+  ],
+}
+`;
+
+exports[`or 4`] = `
+Fail {
+  "context": Context {
+    "index": 1,
+    "input": "ab",
+  },
+  "messages": Array [
+    "end of file",
+  ],
+}
+`;
+
+exports[`or 5`] = `
+Fail {
+  "context": Context {
+    "index": 0,
+    "input": "",
+  },
+  "messages": Array [
+    "b",
+  ],
+}
+`;
+
+exports[`repeat0 1`] = `
+OK {
+  "context": Context {
+    "index": 0,
+    "input": "",
+  },
+  "value": Array [],
+}
+`;
+
+exports[`repeat0 2`] = `
+OK {
+  "context": Context {
+    "index": 1,
+    "input": "a",
+  },
+  "value": Array [
+    "a",
+  ],
+}
+`;
+
+exports[`repeat0 3`] = `
+OK {
+  "context": Context {
+    "index": 2,
+    "input": "aa",
+  },
+  "value": Array [
+    "a",
+    "a",
+  ],
+}
+`;
+
+exports[`repeat0 4`] = `
+OK {
+  "context": Context {
+    "index": 3,
+    "input": "aaa",
+  },
+  "value": Array [
+    "a",
+    "a",
+    "a",
+  ],
+}
+`;
+
+exports[`repeat0 5`] = `
+OK {
+  "context": Context {
+    "index": 4,
+    "input": "aaaa",
+  },
+  "value": Array [
+    "a",
+    "a",
+    "a",
+    "a",
+  ],
+}
+`;
+
+exports[`repeat0 6`] = `
+Fail {
+  "context": Context {
+    "index": 0,
+    "input": "b",
+  },
+  "messages": Array [
+    "end of file",
+  ],
 }
 `;
 
@@ -211,6 +464,84 @@ OK {
 }
 `;
 
+exports[`repeat1 1`] = `
+OK {
+  "context": Context {
+    "index": 1,
+    "input": "a",
+  },
+  "value": Array [
+    "a",
+  ],
+}
+`;
+
+exports[`repeat1 2`] = `
+OK {
+  "context": Context {
+    "index": 2,
+    "input": "aa",
+  },
+  "value": Array [
+    "a",
+    "a",
+  ],
+}
+`;
+
+exports[`repeat1 3`] = `
+OK {
+  "context": Context {
+    "index": 3,
+    "input": "aaa",
+  },
+  "value": Array [
+    "a",
+    "a",
+    "a",
+  ],
+}
+`;
+
+exports[`repeat1 4`] = `
+OK {
+  "context": Context {
+    "index": 4,
+    "input": "aaaa",
+  },
+  "value": Array [
+    "a",
+    "a",
+    "a",
+    "a",
+  ],
+}
+`;
+
+exports[`repeat1 5`] = `
+Fail {
+  "context": Context {
+    "index": 0,
+    "input": "",
+  },
+  "messages": Array [
+    "a",
+  ],
+}
+`;
+
+exports[`repeat1 6`] = `
+Fail {
+  "context": Context {
+    "index": 0,
+    "input": "b",
+  },
+  "messages": Array [
+    "a",
+  ],
+}
+`;
+
 exports[`repeat1 failure 1`] = `
 Fail {
   "context": Context {
@@ -284,6 +615,148 @@ OK {
     "a",
     "a",
     "a",
+    "a",
+  ],
+}
+`;
+
+exports[`separatedBy0 1`] = `
+OK {
+  "context": Context {
+    "index": 0,
+    "input": "",
+  },
+  "value": Array [],
+}
+`;
+
+exports[`separatedBy0 2`] = `
+OK {
+  "context": Context {
+    "index": 1,
+    "input": "a",
+  },
+  "value": Array [
+    "a",
+  ],
+}
+`;
+
+exports[`separatedBy0 3`] = `
+Fail {
+  "context": Context {
+    "index": 1,
+    "input": "a,a",
+  },
+  "messages": Array [
+    "end of file",
+  ],
+}
+`;
+
+exports[`separatedBy0 4`] = `
+Fail {
+  "context": Context {
+    "index": 1,
+    "input": "a,a,a",
+  },
+  "messages": Array [
+    "end of file",
+  ],
+}
+`;
+
+exports[`separatedBy0 5`] = `
+Fail {
+  "context": Context {
+    "index": 1,
+    "input": "a,a,b",
+  },
+  "messages": Array [
+    "end of file",
+  ],
+}
+`;
+
+exports[`separatedBy0 6`] = `
+Fail {
+  "context": Context {
+    "index": 0,
+    "input": "b",
+  },
+  "messages": Array [
+    "end of file",
+  ],
+}
+`;
+
+exports[`separatedBy1 1`] = `
+Fail {
+  "context": Context {
+    "index": 0,
+    "input": "",
+  },
+  "messages": Array [
+    "a",
+  ],
+}
+`;
+
+exports[`separatedBy1 2`] = `
+OK {
+  "context": Context {
+    "index": 1,
+    "input": "a",
+  },
+  "value": Array [
+    "a",
+  ],
+}
+`;
+
+exports[`separatedBy1 3`] = `
+Fail {
+  "context": Context {
+    "index": 1,
+    "input": "a,a",
+  },
+  "messages": Array [
+    "end of file",
+  ],
+}
+`;
+
+exports[`separatedBy1 4`] = `
+Fail {
+  "context": Context {
+    "index": 1,
+    "input": "a,a,a",
+  },
+  "messages": Array [
+    "end of file",
+  ],
+}
+`;
+
+exports[`separatedBy1 5`] = `
+Fail {
+  "context": Context {
+    "index": 1,
+    "input": "a,a,b",
+  },
+  "messages": Array [
+    "end of file",
+  ],
+}
+`;
+
+exports[`separatedBy1 6`] = `
+Fail {
+  "context": Context {
+    "index": 0,
+    "input": "b",
+  },
+  "messages": Array [
     "a",
   ],
 }

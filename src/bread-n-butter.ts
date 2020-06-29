@@ -42,10 +42,15 @@ class Parser<Value> {
     });
   }
 
-  // TODO:
-  // or<NewValue>(newParser: Parser<NewValue>): Parser<Value | NewValue> {
-  //   return x;
-  // }
+  // TODO: Error messages are being discarded...
+  or<NewValue>(newParser: Parser<NewValue>): Parser<Value | NewValue> {
+    return custom((context) => {
+      return this.action(context).unwrap<Result<Value | NewValue>>({
+        OK: (value, context) => ok(value, context),
+        Fail: (_messages, context) => newParser.action(context),
+      });
+    });
+  }
 
   repeat0(): Parser<readonly Value[]> {
     return custom((context) => {
@@ -75,11 +80,24 @@ class Parser<Value> {
     });
   }
 
-  // TODO:
-  // seperatedBy0() {}
+  seperatedBy0<OtherValue>(
+    separator: Parser<OtherValue>
+  ): Parser<readonly Value[]> {
+    return this.seperatedBy1(separator).or(of([]));
+  }
 
-  // TODO:
-  // seperatedBy1() {}
+  seperatedBy1<OtherValue>(
+    separator: Parser<OtherValue>
+  ): Parser<readonly Value[]> {
+    const items = this.andThen(separator)
+      .map(([value]) => value)
+      .repeat0();
+    return this.flatMap((first) => {
+      return items.map((rest) => {
+        return [first, ...rest];
+      });
+    });
+  }
 
   // TODO:
   // error reporting or something?
@@ -104,7 +122,6 @@ class Context {
 
 interface Result<Value> {
   readonly context: Context;
-  readonly isOK: boolean;
   map<NewValue>(
     fn: (value: Value, context: Context) => NewValue
   ): Result<NewValue>;
@@ -124,10 +141,6 @@ class OK<Value> implements Result<Value> {
   constructor(options: { value: Value; context: Context }) {
     this.value = options.value;
     this.context = options.context;
-  }
-
-  get isOK() {
-    return true;
   }
 
   map<NewValue>(
@@ -160,10 +173,6 @@ class Fail<Value> implements Result<Value> {
   constructor(options: { messages: readonly string[]; context: Context }) {
     this.messages = [...options.messages];
     this.context = options.context;
-  }
-
-  get isOK() {
-    return false;
   }
 
   map<NewValue>(
