@@ -61,6 +61,36 @@ OK {
 }
 `;
 
+exports[`andThen success triple 1`] = `
+OK {
+  "context": Context {
+    "index": 3,
+    "input": "xyz",
+  },
+  "value": Array [
+    Array [
+      "x",
+      "y",
+    ],
+    "z",
+  ],
+}
+`;
+
+exports[`andThen success triple 2 1`] = `
+OK {
+  "context": Context {
+    "index": 3,
+    "input": "xyz",
+  },
+  "value": Array [
+    "x",
+    "y",
+    "z",
+  ],
+}
+`;
+
 exports[`matchEOF failure 1`] = `
 Fail {
   "context": Context {
@@ -102,6 +132,160 @@ OK {
     "input": "12",
   },
   "value": "12",
+}
+`;
+
+exports[`repeat0 failure 1`] = `
+Fail {
+  "context": Context {
+    "index": 0,
+    "input": "b",
+  },
+  "messages": Array [
+    "end of file",
+  ],
+}
+`;
+
+exports[`repeat0 success 1`] = `
+OK {
+  "context": Context {
+    "index": 0,
+    "input": "",
+  },
+  "value": Array [],
+}
+`;
+
+exports[`repeat0 success 2`] = `
+OK {
+  "context": Context {
+    "index": 1,
+    "input": "a",
+  },
+  "value": Array [
+    "a",
+  ],
+}
+`;
+
+exports[`repeat0 success 3`] = `
+OK {
+  "context": Context {
+    "index": 2,
+    "input": "aa",
+  },
+  "value": Array [
+    "a",
+    "a",
+  ],
+}
+`;
+
+exports[`repeat0 success 4`] = `
+OK {
+  "context": Context {
+    "index": 3,
+    "input": "aaa",
+  },
+  "value": Array [
+    "a",
+    "a",
+    "a",
+  ],
+}
+`;
+
+exports[`repeat0 success 5`] = `
+OK {
+  "context": Context {
+    "index": 4,
+    "input": "aaaa",
+  },
+  "value": Array [
+    "a",
+    "a",
+    "a",
+    "a",
+  ],
+}
+`;
+
+exports[`repeat1 failure 1`] = `
+Fail {
+  "context": Context {
+    "index": 0,
+    "input": "",
+  },
+  "messages": Array [
+    "a",
+  ],
+}
+`;
+
+exports[`repeat1 failure 2`] = `
+Fail {
+  "context": Context {
+    "index": 0,
+    "input": "b",
+  },
+  "messages": Array [
+    "a",
+  ],
+}
+`;
+
+exports[`repeat1 success 1`] = `
+OK {
+  "context": Context {
+    "index": 1,
+    "input": "a",
+  },
+  "value": Array [
+    "a",
+  ],
+}
+`;
+
+exports[`repeat1 success 2`] = `
+OK {
+  "context": Context {
+    "index": 2,
+    "input": "aa",
+  },
+  "value": Array [
+    "a",
+    "a",
+  ],
+}
+`;
+
+exports[`repeat1 success 3`] = `
+OK {
+  "context": Context {
+    "index": 3,
+    "input": "aaa",
+  },
+  "value": Array [
+    "a",
+    "a",
+    "a",
+  ],
+}
+`;
+
+exports[`repeat1 success 4`] = `
+OK {
+  "context": Context {
+    "index": 4,
+    "input": "aaaa",
+  },
+  "value": Array [
+    "a",
+    "a",
+    "a",
+    "a",
+  ],
 }
 `;
 

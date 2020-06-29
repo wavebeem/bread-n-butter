@@ -12,6 +12,24 @@ class Parser<Value> {
       .map((values) => values[0]);
   }
 
+  map<NewValue>(
+    fn: (value: Value, context: Context) => NewValue
+  ): Parser<NewValue> {
+    return custom((context) => {
+      return this.action(context).map(fn);
+    });
+  }
+
+  flatMap<NewValue>(
+    fn: (value: Value, context: Context) => Parser<NewValue>
+  ): Parser<NewValue> {
+    return custom((context) => {
+      return this.action(context).flatMap((value, context) => {
+        return fn(value, context).action(context);
+      });
+    });
+  }
+
   andThen<NewValue>(
     newParser: Parser<NewValue>
   ): Parser<readonly [Value, NewValue]> {
@@ -23,6 +41,48 @@ class Parser<Value> {
       });
     });
   }
+
+  // TODO:
+  // or<NewValue>(newParser: Parser<NewValue>): Parser<Value | NewValue> {
+  //   return x;
+  // }
+
+  repeat0(): Parser<readonly Value[]> {
+    return custom((context) => {
+      const values: Value[] = [];
+      let done = false;
+      while (!done) {
+        this.action(context).unwrap({
+          OK: (value, nextContext) => {
+            context = nextContext;
+            values.push(value);
+          },
+          Fail: (_messages, nextContext) => {
+            context = nextContext;
+            done = true;
+          },
+        });
+      }
+      return ok(values, context);
+    });
+  }
+
+  repeat1(): Parser<readonly Value[]> {
+    return this.flatMap((value) => {
+      return this.repeat0().map((values) => {
+        return [value, ...values];
+      });
+    });
+  }
+
+  // TODO:
+  // seperatedBy0() {}
+
+  // TODO:
+  // seperatedBy1() {}
+
+  // TODO:
+  // error reporting or something?
 }
 
 class Context {
@@ -44,21 +104,30 @@ class Context {
 
 interface Result<Value> {
   readonly context: Context;
+  readonly isOK: boolean;
   map<NewValue>(
     fn: (value: Value, context: Context) => NewValue
   ): Result<NewValue>;
   flatMap<NewValue>(
     fn: (value: Value, context: Context) => Result<NewValue>
   ): Result<NewValue>;
+  unwrap<NewValue>(options: {
+    OK: (value: Value, context: Context) => NewValue;
+    Fail: (messages: readonly string[], context: Context) => NewValue;
+  }): NewValue;
 }
 
-class OK<Value> {
+class OK<Value> implements Result<Value> {
   readonly value: Value;
   readonly context: Context;
 
   constructor(options: { value: Value; context: Context }) {
     this.value = options.value;
     this.context = options.context;
+  }
+
+  get isOK() {
+    return true;
   }
 
   map<NewValue>(
@@ -75,6 +144,13 @@ class OK<Value> {
   ): Result<NewValue> {
     return fn(this.value, this.context);
   }
+
+  unwrap<NewValue>(options: {
+    OK: (value: Value, context: Context) => NewValue;
+    Fail: (messages: readonly string[], context: Context) => NewValue;
+  }): NewValue {
+    return options.OK(this.value, this.context);
+  }
 }
 
 class Fail<Value> implements Result<Value> {
@@ -84,6 +160,10 @@ class Fail<Value> implements Result<Value> {
   constructor(options: { messages: readonly string[]; context: Context }) {
     this.messages = [...options.messages];
     this.context = options.context;
+  }
+
+  get isOK() {
+    return false;
   }
 
   map<NewValue>(
@@ -96,6 +176,13 @@ class Fail<Value> implements Result<Value> {
     _fn: (value: Value, context: Context) => Result<NewValue>
   ): Result<NewValue> {
     return new Fail({ messages: this.messages, context: this.context });
+  }
+
+  unwrap<NewValue>(options: {
+    OK: (value: Value, context: Context) => NewValue;
+    Fail: (messages: readonly string[], context: Context) => NewValue;
+  }): NewValue {
+    return options.Fail(this.messages, this.context);
   }
 }
 
@@ -117,7 +204,9 @@ export function of<Value>(value: Value): Parser<Value> {
   return custom((context) => ok(value, context));
 }
 
-export function matchString(string: string): Parser<string> {
+export function matchString<ThatString extends string>(
+  string: ThatString
+): Parser<ThatString> {
   return custom((context) => {
     const chunk = context.input.slice(
       context.index,
