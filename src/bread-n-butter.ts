@@ -7,12 +7,9 @@ class Parser<Value> {
 
   parse(input: string): Result<Value> {
     const context = new Context({ input, index: 0 });
-    const result = andThen(this, matchEOF).action(context);
-    if (result.type === "bnb.OK") {
-      const [value] = result.value;
-      return ok(value, result.context);
-    }
-    return result;
+    return andThen(this, matchEOF)
+      .action(context)
+      .map((values) => values[0]);
   }
 }
 
@@ -33,19 +30,62 @@ class Context {
   }
 }
 
-interface OK<Value> {
-  type: "bnb.OK";
-  value: Value;
-  context: Context;
+interface Result<Value> {
+  readonly context: Context;
+  map<NewValue>(
+    fn: (value: Value, context: Context) => NewValue
+  ): Result<NewValue>;
+  flatMap<NewValue>(
+    fn: (value: Value, context: Context) => Result<NewValue>
+  ): Result<NewValue>;
 }
 
-interface Fail {
-  type: "bnb.Fail";
-  message: string;
-  context: Context;
+class OK<Value> {
+  readonly value: Value;
+  readonly context: Context;
+
+  constructor(options: { value: Value; context: Context }) {
+    this.value = options.value;
+    this.context = options.context;
+  }
+
+  map<NewValue>(
+    fn: (value: Value, context: Context) => NewValue
+  ): Result<NewValue> {
+    return new OK({
+      value: fn(this.value, this.context),
+      context: this.context,
+    });
+  }
+
+  flatMap<NewValue>(
+    fn: (value: Value, context: Context) => Result<NewValue>
+  ): Result<NewValue> {
+    return fn(this.value, this.context);
+  }
 }
 
-type Result<Value> = OK<Value> | Fail;
+class Fail<Value> implements Result<Value> {
+  readonly messages: readonly string[];
+  readonly context: Context;
+
+  constructor(options: { messages: readonly string[]; context: Context }) {
+    this.messages = [...options.messages];
+    this.context = options.context;
+  }
+
+  map<NewValue>(
+    _fn: (value: Value, context: Context) => NewValue
+  ): Result<NewValue> {
+    return new Fail({ messages: this.messages, context: this.context });
+  }
+
+  flatMap<NewValue>(
+    _fn: (value: Value, context: Context) => Result<NewValue>
+  ): Result<NewValue> {
+    return new Fail({ messages: this.messages, context: this.context });
+  }
+}
 
 export function custom<Value>(
   action: (context: Context) => Result<Value>
@@ -53,20 +93,12 @@ export function custom<Value>(
   return new Parser(action);
 }
 
-export function ok<Value>(value: Value, context: Context): OK<Value> {
-  return {
-    type: "bnb.OK",
-    value,
-    context,
-  };
+export function ok<Value>(value: Value, context: Context): Result<Value> {
+  return new OK({ value, context });
 }
 
-export function fail(message: string, context: Context): Fail {
-  return {
-    type: "bnb.Fail",
-    message,
-    context,
-  };
+export function fail<Value>(message: string, context: Context): Result<Value> {
+  return new Fail({ messages: [message], context });
 }
 
 export function of<Value>(value: Value): Parser<Value> {
@@ -78,16 +110,11 @@ export function andThen<Value1, Value2>(
   parser2: Parser<Value2>
 ): Parser<readonly [Value1, Value2]> {
   return custom((context) => {
-    const result1 = parser1.action(context);
-    if (result1.type === "bnb.Fail") {
-      return result1;
-    }
-    const result2 = parser2.action(result1.context);
-    if (result2.type === "bnb.Fail") {
-      return result2;
-    }
-    const value = [result1.value, result2.value] as const;
-    return ok(value, result2.context);
+    return parser1.action(context).flatMap((value1, context) => {
+      return parser2.action(context).map((value2, _context) => {
+        return [value1, value2] as const;
+      });
+    });
   });
 }
 

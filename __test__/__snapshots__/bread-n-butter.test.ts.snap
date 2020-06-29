@@ -1,56 +1,59 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`andThen failure 1 1`] = `
-Object {
+Fail {
   "context": Context {
     "index": 1,
     "input": "x",
   },
-  "message": "y",
-  "type": "bnb.Fail",
+  "messages": Array [
+    "y",
+  ],
 }
 `;
 
 exports[`andThen failure 2 1`] = `
-Object {
+Fail {
   "context": Context {
     "index": 0,
     "input": "y",
   },
-  "message": "x",
-  "type": "bnb.Fail",
+  "messages": Array [
+    "x",
+  ],
 }
 `;
 
 exports[`andThen failure 3 1`] = `
-Object {
+Fail {
   "context": Context {
     "index": 0,
     "input": "yx",
   },
-  "message": "x",
-  "type": "bnb.Fail",
+  "messages": Array [
+    "x",
+  ],
 }
 `;
 
 exports[`andThen failure 4 1`] = `
-Object {
+Fail {
   "context": Context {
     "index": 0,
     "input": "",
   },
-  "message": "x",
-  "type": "bnb.Fail",
+  "messages": Array [
+    "x",
+  ],
 }
 `;
 
 exports[`andThen success 1`] = `
-Object {
+OK {
   "context": Context {
     "index": 2,
     "input": "xy",
   },
-  "type": "bnb.OK",
   "value": Array [
     "x",
     "y",
@@ -59,56 +62,55 @@ Object {
 `;
 
 exports[`matchEOF failure 1`] = `
-Object {
+Fail {
   "context": Context {
     "index": 0,
     "input": "x",
   },
-  "message": "end of file",
-  "type": "bnb.Fail",
+  "messages": Array [
+    "end of file",
+  ],
 }
 `;
 
 exports[`matchEOF success 1`] = `
-Object {
+OK {
   "context": Context {
     "index": 0,
     "input": "",
   },
-  "type": "bnb.OK",
   "value": "end of file",
 }
 `;
 
 exports[`matchRegExp failure 1`] = `
-Object {
+Fail {
   "context": Context {
     "index": 0,
     "input": "abc",
   },
-  "message": "/\\\\d+/",
-  "type": "bnb.Fail",
+  "messages": Array [
+    "/\\\\d+/",
+  ],
 }
 `;
 
 exports[`matchRegExp success 1`] = `
-Object {
+OK {
   "context": Context {
     "index": 2,
     "input": "12",
   },
-  "type": "bnb.OK",
   "value": "12",
 }
 `;
 
 exports[`test a test 1`] = `
-Object {
+OK {
   "context": Context {
     "index": 1,
     "input": "x",
   },
-  "type": "bnb.OK",
   "value": "x",
 }
 `;
