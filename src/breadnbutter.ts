@@ -105,7 +105,7 @@ export function matchString(string: string): Parser<string> {
 }
 
 export const matchEOF = custom((context) => {
-  if (context.index === context.input.length) {
+  if (context.index >= context.input.length) {
     return ok("end of file", context);
   }
   return fail("end of file", context);
