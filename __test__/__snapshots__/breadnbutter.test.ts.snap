@@ -87,6 +87,30 @@ Object {
 }
 `;
 
+exports[`matchRegExp failure 1`] = `
+Object {
+  "context": Object {
+    "index": 0,
+    "input": "abc",
+    "type": "bnb.ParserContext",
+  },
+  "message": "/\\\\d+/",
+  "type": "bnb.Fail",
+}
+`;
+
+exports[`matchRegExp success 1`] = `
+Object {
+  "context": Object {
+    "index": 2,
+    "input": "12",
+    "type": "bnb.ParserContext",
+  },
+  "type": "bnb.OK",
+  "value": "12",
+}
+`;
+
 exports[`test a test 1`] = `
 Object {
   "context": Object {

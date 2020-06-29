@@ -53,7 +53,16 @@ export function parse<Value>(
     input,
     index: 0,
   };
-  return parser(context);
+  const result = andThen(parser, matchEOF)(context);
+  if (result.type === "bnb.OK") {
+    const [value] = result.value;
+    return ok(value, result.context);
+  }
+  return result;
+}
+
+export function of<Value>(value: Value): Parser<Value> {
+  return custom((context) => ok(value, context));
 }
 
 export function andThen<Value1, Value2>(
@@ -96,3 +105,19 @@ export const matchEOF = custom((context) => {
   }
   return fail("end of file", context);
 });
+
+export function matchRegExp(regexp: RegExp): Parser<string> {
+  return custom((context) => {
+    const stickyRegexp = new RegExp(regexp, "y");
+    stickyRegexp.lastIndex = context.index;
+    const match = context.input.match(stickyRegexp);
+    console.log("MATCH", match);
+    if (!match) {
+      return fail(regexp.toString(), context);
+    }
+    return ok(match[0], {
+      ...context,
+      index: context.index + match[0].length,
+    });
+  });
+}

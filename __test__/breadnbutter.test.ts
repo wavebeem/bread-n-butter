@@ -49,3 +49,13 @@ test("matchEOF failure", () => {
   const matchEOF = bnb.matchEOF;
   expect(bnb.parse(matchEOF, "x")).toMatchSnapshot();
 });
+
+test("matchRegExp success", () => {
+  const matchNumber = bnb.matchRegExp(/\d+/);
+  expect(bnb.parse(matchNumber, "12")).toMatchSnapshot();
+});
+
+test("matchRegExp failure", () => {
+  const matchNumber = bnb.matchRegExp(/\d+/);
+  expect(bnb.parse(matchNumber, "abc")).toMatchSnapshot();
+});
