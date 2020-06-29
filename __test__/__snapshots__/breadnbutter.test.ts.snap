@@ -2,10 +2,9 @@
 
 exports[`andThen failure 1 1`] = `
 Object {
-  "context": Object {
+  "context": Context {
     "index": 1,
     "input": "x",
-    "type": "bnb.ParserContext",
   },
   "message": "y",
   "type": "bnb.Fail",
@@ -14,10 +13,9 @@ Object {
 
 exports[`andThen failure 2 1`] = `
 Object {
-  "context": Object {
+  "context": Context {
     "index": 0,
     "input": "y",
-    "type": "bnb.ParserContext",
   },
   "message": "x",
   "type": "bnb.Fail",
@@ -26,10 +24,9 @@ Object {
 
 exports[`andThen failure 3 1`] = `
 Object {
-  "context": Object {
+  "context": Context {
     "index": 0,
     "input": "yx",
-    "type": "bnb.ParserContext",
   },
   "message": "x",
   "type": "bnb.Fail",
@@ -38,10 +35,9 @@ Object {
 
 exports[`andThen failure 4 1`] = `
 Object {
-  "context": Object {
+  "context": Context {
     "index": 0,
     "input": "",
-    "type": "bnb.ParserContext",
   },
   "message": "x",
   "type": "bnb.Fail",
@@ -50,10 +46,9 @@ Object {
 
 exports[`andThen success 1`] = `
 Object {
-  "context": Object {
+  "context": Context {
     "index": 2,
     "input": "xy",
-    "type": "bnb.ParserContext",
   },
   "type": "bnb.OK",
   "value": Array [
@@ -65,10 +60,9 @@ Object {
 
 exports[`matchEOF failure 1`] = `
 Object {
-  "context": Object {
+  "context": Context {
     "index": 0,
     "input": "x",
-    "type": "bnb.ParserContext",
   },
   "message": "end of file",
   "type": "bnb.Fail",
@@ -77,10 +71,9 @@ Object {
 
 exports[`matchEOF success 1`] = `
 Object {
-  "context": Object {
+  "context": Context {
     "index": 0,
     "input": "",
-    "type": "bnb.ParserContext",
   },
   "type": "bnb.OK",
   "value": "end of file",
@@ -89,10 +82,9 @@ Object {
 
 exports[`matchRegExp failure 1`] = `
 Object {
-  "context": Object {
+  "context": Context {
     "index": 0,
     "input": "abc",
-    "type": "bnb.ParserContext",
   },
   "message": "/\\\\d+/",
   "type": "bnb.Fail",
@@ -101,10 +93,9 @@ Object {
 
 exports[`matchRegExp success 1`] = `
 Object {
-  "context": Object {
+  "context": Context {
     "index": 2,
     "input": "12",
-    "type": "bnb.ParserContext",
   },
   "type": "bnb.OK",
   "value": "12",
@@ -113,10 +104,9 @@ Object {
 
 exports[`test a test 1`] = `
 Object {
-  "context": Object {
+  "context": Context {
     "index": 1,
     "input": "x",
-    "type": "bnb.ParserContext",
   },
   "type": "bnb.OK",
   "value": "x",

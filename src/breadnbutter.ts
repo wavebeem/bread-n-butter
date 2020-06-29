@@ -1,34 +1,59 @@
-interface Parser<Value> {
-  (context: ParserContext): Result<Value>;
+class Parser<Value> {
+  readonly action: (context: Context) => Result<Value>;
+
+  constructor(action: (context: Context) => Result<Value>) {
+    this.action = action;
+  }
+
+  parse(input: string): Result<Value> {
+    const context = new Context({ input, index: 0 });
+    const result = andThen(this, matchEOF).action(context);
+    if (result.type === "bnb.OK") {
+      const [value] = result.value;
+      return ok(value, result.context);
+    }
+    return result;
+  }
 }
 
-interface ParserContext {
-  type: "bnb.ParserContext";
-  input: string;
-  index: number;
+class Context {
+  readonly input: string;
+  readonly index: number;
+
+  constructor(options: { input: string; index: number }) {
+    this.input = options.input;
+    this.index = options.index;
+  }
+
+  consume(amount: number): Context {
+    return new Context({
+      input: this.input,
+      index: this.index + amount,
+    });
+  }
 }
 
 interface OK<Value> {
   type: "bnb.OK";
   value: Value;
-  context: ParserContext;
+  context: Context;
 }
 
 interface Fail {
   type: "bnb.Fail";
   message: string;
-  context: ParserContext;
+  context: Context;
 }
 
 type Result<Value> = OK<Value> | Fail;
 
 export function custom<Value>(
-  handler: (context: ParserContext) => Result<Value>
+  action: (context: Context) => Result<Value>
 ): Parser<Value> {
-  return handler;
+  return new Parser(action);
 }
 
-export function ok<Value>(value: Value, context: ParserContext): OK<Value> {
+export function ok<Value>(value: Value, context: Context): OK<Value> {
   return {
     type: "bnb.OK",
     value,
@@ -36,29 +61,12 @@ export function ok<Value>(value: Value, context: ParserContext): OK<Value> {
   };
 }
 
-export function fail(message: string, context: ParserContext): Fail {
+export function fail(message: string, context: Context): Fail {
   return {
     type: "bnb.Fail",
     message,
     context,
   };
-}
-
-export function parse<Value>(
-  parser: Parser<Value>,
-  input: string
-): Result<Value> {
-  const context: ParserContext = {
-    type: "bnb.ParserContext",
-    input,
-    index: 0,
-  };
-  const result = andThen(parser, matchEOF)(context);
-  if (result.type === "bnb.OK") {
-    const [value] = result.value;
-    return ok(value, result.context);
-  }
-  return result;
 }
 
 export function of<Value>(value: Value): Parser<Value> {
@@ -70,11 +78,11 @@ export function andThen<Value1, Value2>(
   parser2: Parser<Value2>
 ): Parser<readonly [Value1, Value2]> {
   return custom((context) => {
-    const result1 = parser1(context);
+    const result1 = parser1.action(context);
     if (result1.type === "bnb.Fail") {
       return result1;
     }
-    const result2 = parser2(result1.context);
+    const result2 = parser2.action(result1.context);
     if (result2.type === "bnb.Fail") {
       return result2;
     }
@@ -90,10 +98,7 @@ export function matchString(string: string): Parser<string> {
       context.index + string.length
     );
     if (chunk === string) {
-      return ok(string, {
-        ...context,
-        index: context.index + 1,
-      });
+      return ok(string, context.consume(1));
     }
     return fail(string, context);
   });
@@ -111,13 +116,9 @@ export function matchRegExp(regexp: RegExp): Parser<string> {
     const stickyRegexp = new RegExp(regexp, "y");
     stickyRegexp.lastIndex = context.index;
     const match = context.input.match(stickyRegexp);
-    console.log("MATCH", match);
     if (!match) {
       return fail(regexp.toString(), context);
     }
-    return ok(match[0], {
-      ...context,
-      index: context.index + match[0].length,
-    });
+    return ok(match[0], context.consume(match[0].length));
   });
 }
