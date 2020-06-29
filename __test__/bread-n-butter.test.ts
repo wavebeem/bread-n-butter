@@ -8,35 +8,35 @@ test("test a test", () => {
 test("andThen success", () => {
   const isX = bnb.matchString("x");
   const isY = bnb.matchString("y");
-  const isXY = bnb.andThen(isX, isY);
+  const isXY = isX.andThen(isY);
   expect(isXY.parse("xy")).toMatchSnapshot();
 });
 
 test("andThen failure 1", () => {
   const isX = bnb.matchString("x");
   const isY = bnb.matchString("y");
-  const isXY = bnb.andThen(isX, isY);
+  const isXY = isX.andThen(isY);
   expect(isXY.parse("x")).toMatchSnapshot();
 });
 
 test("andThen failure 2", () => {
   const isX = bnb.matchString("x");
   const isY = bnb.matchString("y");
-  const isXY = bnb.andThen(isX, isY);
+  const isXY = isX.andThen(isY);
   expect(isXY.parse("y")).toMatchSnapshot();
 });
 
 test("andThen failure 3", () => {
   const isX = bnb.matchString("x");
   const isY = bnb.matchString("y");
-  const isXY = bnb.andThen(isX, isY);
+  const isXY = isX.andThen(isY);
   expect(isXY.parse("yx")).toMatchSnapshot();
 });
 
 test("andThen failure 4", () => {
   const isX = bnb.matchString("x");
   const isY = bnb.matchString("y");
-  const isXY = bnb.andThen(isX, isY);
+  const isXY = isX.andThen(isY);
   expect(isXY.parse("")).toMatchSnapshot();
 });
 

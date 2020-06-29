@@ -7,9 +7,21 @@ class Parser<Value> {
 
   parse(input: string): Result<Value> {
     const context = new Context({ input, index: 0 });
-    return andThen(this, matchEOF)
+    return this.andThen(matchEOF)
       .action(context)
       .map((values) => values[0]);
+  }
+
+  andThen<NewValue>(
+    newParser: Parser<NewValue>
+  ): Parser<readonly [Value, NewValue]> {
+    return custom((context) => {
+      return this.action(context).flatMap((value, context) => {
+        return newParser.action(context).map((newValue, _context) => {
+          return [value, newValue] as const;
+        });
+      });
+    });
   }
 }
 
@@ -103,19 +115,6 @@ export function fail<Value>(message: string, context: Context): Result<Value> {
 
 export function of<Value>(value: Value): Parser<Value> {
   return custom((context) => ok(value, context));
-}
-
-export function andThen<Value1, Value2>(
-  parser1: Parser<Value1>,
-  parser2: Parser<Value2>
-): Parser<readonly [Value1, Value2]> {
-  return custom((context) => {
-    return parser1.action(context).flatMap((value1, context) => {
-      return parser2.action(context).map((value2, _context) => {
-        return [value1, value2] as const;
-      });
-    });
-  });
 }
 
 export function matchString(string: string): Parser<string> {
