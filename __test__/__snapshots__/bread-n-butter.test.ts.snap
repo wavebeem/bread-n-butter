@@ -25,31 +25,7 @@ Fail {
 }
 `;
 
-exports[`andThen failure 1 1`] = `
-Fail {
-  "context": Context {
-    "index": 1,
-    "input": "x",
-  },
-  "messages": Array [
-    "y",
-  ],
-}
-`;
-
 exports[`andThen failure 2`] = `
-Fail {
-  "context": Context {
-    "index": 0,
-    "input": "y",
-  },
-  "messages": Array [
-    "x",
-  ],
-}
-`;
-
-exports[`andThen failure 2 1`] = `
 Fail {
   "context": Context {
     "index": 0,
@@ -73,18 +49,6 @@ Fail {
 }
 `;
 
-exports[`andThen failure 3 1`] = `
-Fail {
-  "context": Context {
-    "index": 0,
-    "input": "yx",
-  },
-  "messages": Array [
-    "x",
-  ],
-}
-`;
-
 exports[`andThen failure 4`] = `
 Fail {
   "context": Context {
@@ -93,47 +57,6 @@ Fail {
   },
   "messages": Array [
     "x",
-  ],
-}
-`;
-
-exports[`andThen failure 4 1`] = `
-Fail {
-  "context": Context {
-    "index": 0,
-    "input": "",
-  },
-  "messages": Array [
-    "x",
-  ],
-}
-`;
-
-exports[`andThen success 1`] = `
-OK {
-  "context": Context {
-    "index": 2,
-    "input": "xy",
-  },
-  "value": Array [
-    "x",
-    "y",
-  ],
-}
-`;
-
-exports[`andThen success triple 1`] = `
-OK {
-  "context": Context {
-    "index": 3,
-    "input": "xyz",
-  },
-  "value": Array [
-    Array [
-      "x",
-      "y",
-    ],
-    "z",
   ],
 }
 `;
@@ -168,6 +91,18 @@ OK {
 }
 `;
 
+exports[`lisp lists 1`] = `
+OK {
+  "context": Context {
+    "index": 3,
+    "input": "(a)",
+  },
+  "value": Array [
+    "a",
+  ],
+}
+`;
+
 exports[`matchEOF 1`] = `
 OK {
   "context": Context {
@@ -190,28 +125,6 @@ Fail {
 }
 `;
 
-exports[`matchEOF failure 1`] = `
-Fail {
-  "context": Context {
-    "index": 0,
-    "input": "x",
-  },
-  "messages": Array [
-    "end of file",
-  ],
-}
-`;
-
-exports[`matchEOF success 1`] = `
-OK {
-  "context": Context {
-    "index": 0,
-    "input": "",
-  },
-  "value": "end of file",
-}
-`;
-
 exports[`matchRegExp 1`] = `
 OK {
   "context": Context {
@@ -231,28 +144,6 @@ Fail {
   "messages": Array [
     "/\\\\d+/",
   ],
-}
-`;
-
-exports[`matchRegExp failure 1`] = `
-Fail {
-  "context": Context {
-    "index": 0,
-    "input": "abc",
-  },
-  "messages": Array [
-    "/\\\\d+/",
-  ],
-}
-`;
-
-exports[`matchRegExp success 1`] = `
-OK {
-  "context": Context {
-    "index": 2,
-    "input": "12",
-  },
-  "value": "12",
 }
 `;
 
@@ -388,82 +279,6 @@ Fail {
 }
 `;
 
-exports[`repeat0 failure 1`] = `
-Fail {
-  "context": Context {
-    "index": 0,
-    "input": "b",
-  },
-  "messages": Array [
-    "end of file",
-  ],
-}
-`;
-
-exports[`repeat0 success 1`] = `
-OK {
-  "context": Context {
-    "index": 0,
-    "input": "",
-  },
-  "value": Array [],
-}
-`;
-
-exports[`repeat0 success 2`] = `
-OK {
-  "context": Context {
-    "index": 1,
-    "input": "a",
-  },
-  "value": Array [
-    "a",
-  ],
-}
-`;
-
-exports[`repeat0 success 3`] = `
-OK {
-  "context": Context {
-    "index": 2,
-    "input": "aa",
-  },
-  "value": Array [
-    "a",
-    "a",
-  ],
-}
-`;
-
-exports[`repeat0 success 4`] = `
-OK {
-  "context": Context {
-    "index": 3,
-    "input": "aaa",
-  },
-  "value": Array [
-    "a",
-    "a",
-    "a",
-  ],
-}
-`;
-
-exports[`repeat0 success 5`] = `
-OK {
-  "context": Context {
-    "index": 4,
-    "input": "aaaa",
-  },
-  "value": Array [
-    "a",
-    "a",
-    "a",
-    "a",
-  ],
-}
-`;
-
 exports[`repeat1 1`] = `
 OK {
   "context": Context {
@@ -537,84 +352,6 @@ Fail {
     "input": "b",
   },
   "messages": Array [
-    "a",
-  ],
-}
-`;
-
-exports[`repeat1 failure 1`] = `
-Fail {
-  "context": Context {
-    "index": 0,
-    "input": "",
-  },
-  "messages": Array [
-    "a",
-  ],
-}
-`;
-
-exports[`repeat1 failure 2`] = `
-Fail {
-  "context": Context {
-    "index": 0,
-    "input": "b",
-  },
-  "messages": Array [
-    "a",
-  ],
-}
-`;
-
-exports[`repeat1 success 1`] = `
-OK {
-  "context": Context {
-    "index": 1,
-    "input": "a",
-  },
-  "value": Array [
-    "a",
-  ],
-}
-`;
-
-exports[`repeat1 success 2`] = `
-OK {
-  "context": Context {
-    "index": 2,
-    "input": "aa",
-  },
-  "value": Array [
-    "a",
-    "a",
-  ],
-}
-`;
-
-exports[`repeat1 success 3`] = `
-OK {
-  "context": Context {
-    "index": 3,
-    "input": "aaa",
-  },
-  "value": Array [
-    "a",
-    "a",
-    "a",
-  ],
-}
-`;
-
-exports[`repeat1 success 4`] = `
-OK {
-  "context": Context {
-    "index": 4,
-    "input": "aaaa",
-  },
-  "value": Array [
-    "a",
-    "a",
-    "a",
     "a",
   ],
 }

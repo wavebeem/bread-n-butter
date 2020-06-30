@@ -80,13 +80,13 @@ class Parser<Value> {
     });
   }
 
-  seperatedBy0<OtherValue>(
+  separatedBy0<OtherValue>(
     separator: Parser<OtherValue>
   ): Parser<readonly Value[]> {
-    return this.seperatedBy1(separator).or(of([]));
+    return this.separatedBy1(separator).or(of([]));
   }
 
-  seperatedBy1<OtherValue>(
+  separatedBy1<OtherValue>(
     separator: Parser<OtherValue>
   ): Parser<readonly Value[]> {
     const items = this.andThen(separator)
