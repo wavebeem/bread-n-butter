@@ -3,19 +3,19 @@ import * as bnb from "../src/bread-n-butter";
 
 ///////////////////////////////////////////////////////////////////////
 
-type PyXBlock = { type: "Block"; statements: readonly PyXStatement[] };
-type PyXIdent = { type: "Ident"; value: string };
-type PyXStatement = PyXBlock | PyXIdent;
-type PyXLanguage = {
-  Block: PyXBlock;
-  Statement: PyXStatement;
-  RestStatement: PyXStatement;
-  Ident: PyXIdent;
-  CountSpaces: number;
-  IndentSame: number;
-  IndentMore: number;
-  NL: "\r\n" | "\n";
-  End: "\r\n" | "\n" | "<EOF>";
+type PyBlock = { type: "Block"; statements: readonly PyStatement[] };
+type PyIdent = { type: "Ident"; value: string };
+type PyStatement = PyBlock | PyIdent;
+type PyLanguage = {
+  block: PyBlock;
+  statement: PyStatement;
+  restStatement: PyStatement;
+  ident: PyIdent;
+  countSpaces: number;
+  indentSame: number;
+  indentMore: number;
+  nl: "\r\n" | "\n";
+  end: "\r\n" | "\n" | "<EOF>";
 };
 
 // Because parsing indentation-sensitive languages such as Python requires
@@ -28,23 +28,23 @@ type PyXLanguage = {
 // Implementing all of Python's various whitespace requirements, including
 // comments and line continuations (backslash at the end of the line) is left as
 // an exercise for the reader. I've tried and frankly it's pretty tricky.
-function PyX(indent: number): bnb.Language<PyXLanguage> {
-  return bnb.language<PyXLanguage>({
+function py(indent: number): bnb.Language<PyLanguage> {
+  return bnb.language<PyLanguage>({
     // This is where the magic happens. Basically we need to parse a deeper
     // indentation level on the first statement of the block and keep track of
     // new indentation level. Then we make a whole new set of parsers that use
     // that new indentation level for all their parsing. Each line past the
     // first is required to be indented to the same level as that new deeper
     // indentation level.
-    Block(lang) {
+    block(lang) {
       return bnb
         .str("block:")
-        .and(lang.NL)
+        .and(lang.nl)
         .chain(() => {
-          return lang.IndentMore.chain((n) => {
-            return lang.Statement.chain((first) => {
-              return PyX(n)
-                .RestStatement.many0()
+          return lang.indentMore.chain((n) => {
+            return lang.statement.chain((first) => {
+              return py(n)
+                .restStatement.many0()
                 .map((rest) => {
                   return {
                     type: "Block",
@@ -58,23 +58,23 @@ function PyX(indent: number): bnb.Language<PyXLanguage> {
 
     // This is just a statement in our language. To simplify, this is either a
     // block of code or just an identifier
-    Statement(lang) {
-      return lang.Block.or(lang.Ident);
+    statement(lang) {
+      return lang.block.or(lang.ident);
     },
 
     // This is a statement which is indented to the level of the current parse
     // state. It's called RestStatement because the first statement in a block
     // is indented more than the previous state, but the *rest* of the
     // statements match up with the new state.
-    RestStatement(lang) {
-      return lang.IndentSame.and(lang.Statement).map((pair) => pair[1]);
+    restStatement(lang) {
+      return lang.indentSame.and(lang.statement).map((pair) => pair[1]);
     },
 
     // Just a variable and then the end of the line.
-    Ident(lang) {
+    ident(lang) {
       return bnb
         .match(/[a-z]+/i)
-        .and(lang.End)
+        .and(lang.end)
         .map((pair) => {
           return {
             type: "Ident",
@@ -88,14 +88,14 @@ function PyX(indent: number): bnb.Language<PyXLanguage> {
     // expand them to the correct number of spaces
     //
     // https://docs.python.org/3/reference/lexical_analysis.html#indentation
-    CountSpaces() {
+    countSpaces() {
       return bnb.match(/[ ]*/).map((s) => s.length);
     },
 
     // Count the current indentation level and assert it's more than the current
     // parse state's desired indentation
-    IndentSame(lang) {
-      return lang.CountSpaces.chain((n) => {
+    indentSame(lang) {
+      return lang.countSpaces.chain((n) => {
         if (n === indent) {
           return bnb.of(n);
         }
@@ -105,8 +105,8 @@ function PyX(indent: number): bnb.Language<PyXLanguage> {
 
     // Count the current indentation level and assert it's equal to the current
     // parse state's desired indentation
-    IndentMore(lang) {
-      return lang.CountSpaces.chain((n) => {
+    indentMore(lang) {
+      return lang.countSpaces.chain((n) => {
         if (n > indent) {
           return bnb.of(n);
         }
@@ -115,20 +115,20 @@ function PyX(indent: number): bnb.Language<PyXLanguage> {
     },
 
     // Support UNIX and Windows line endings
-    NL() {
+    nl() {
       return bnb.str("\r\n").or(bnb.str("\n"));
     },
 
     // Lines should always end in a newline sequence, but many files are missing
     // the final newline
-    End(lang) {
-      return lang.NL.or(bnb.eof);
+    end(lang) {
+      return lang.nl.or(bnb.eof);
     },
   });
 }
 
 // Start parsing at zero indentation
-const Pythonish = PyX(0);
+const pythonish = py(0);
 
 ///////////////////////////////////////////////////////////////////////
 
@@ -149,5 +149,5 @@ function prettyPrint(x: any): void {
   console.log(util.inspect(x, { depth: null, colors: true }));
 }
 
-const ast = Pythonish.Statement.parse(text);
+const ast = pythonish.statement.parse(text);
 prettyPrint(ast);
