@@ -22,17 +22,12 @@ class Parser<A> {
       if (!a.isOK()) {
         return a;
       }
-      const b = parserB.action(context.withLocation(a.location));
-      const b2 = merge<B, A>(b, a);
-      if (b2.isOK()) {
-        return new ActionOK(
-          b2.location,
-          [a.value, b2.value] as const,
-          b2.furthest,
-          b2.expected
-        );
+      const b = merge(parserB.action(context.withLocation(a.location)), a);
+      if (b.isOK()) {
+        const value = [a.value, b.value] as const;
+        return new ActionOK(b.location, value, b.furthest, b.expected);
       }
-      return b2;
+      return b;
     });
   }
 
@@ -42,9 +37,7 @@ class Parser<A> {
       if (a.isOK()) {
         return a;
       }
-      const b = parserB.action(context);
-      const b2 = merge<B, A>(b, a);
-      return b2;
+      return merge(parserB.action(context), a);
     });
   }
 }
@@ -170,10 +163,6 @@ function merge<A, B>(a: ActionResult<A>, b: ActionResult<B>): ActionResult<A> {
   if (a.furthest.index > b.furthest.index) {
     return a;
   }
-  if (a.furthest.index === b.furthest.index) {
-  } else {
-  }
-  // const expected = union(a.expected, b.expected);
   const expected =
     a.furthest.index === b.furthest.index
       ? union(a.expected, b.expected)
@@ -183,26 +172,6 @@ function merge<A, B>(a: ActionResult<A>, b: ActionResult<B>): ActionResult<A> {
   }
   return new ActionFail(b.furthest, expected);
 }
-
-// function mergeReplies(a, b) {
-//   if (!b) {
-//     return a;
-//   }
-//   if (a.furthest > b.furthest) {
-//     return a;
-//   }
-//   var expected =
-//     a.furthest === b.furthest
-//       ? union(a.expected, b.expected)
-//       : b.expected;
-//   return {
-//     status: a.status,
-//     index: a.index,
-//     value: a.value,
-//     furthest: b.furthest,
-//     expected: expected
-//   };
-// }
 
 class ActionFail {
   readonly furthest: SourceLocation;
