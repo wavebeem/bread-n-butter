@@ -1,248 +1,194 @@
-class Parser<Value> {
-  readonly action: (context: Context) => Result<Value>;
+class Parser<A> {
+  readonly action: (context: Context) => ActionResult<A>;
 
-  constructor(action: (context: Context) => Result<Value>) {
+  constructor(action: (context: Context) => ActionResult<A>) {
     this.action = action;
   }
 
-  parse(input: string): Result<Value> {
-    const context = new Context({ input, index: 0 });
-    return this.andThen(matchEOF)
-      .action(context)
-      .map((values) => values[0]);
+  parse(input: string): A {
+    const location = new SourceLocation(0, 1, 1);
+    const context = new Context(input, location);
+    const result = this.andThen(eof).action(context);
+    if (result.isOK()) {
+      return result.value[0];
+    }
+    console.log(result);
+    throw new Error("TODO: Error");
   }
 
-  map<NewValue>(
-    fn: (value: Value, context: Context) => NewValue
-  ): Parser<NewValue> {
-    return custom((context) => {
-      return this.action(context).map(fn);
-    });
-  }
-
-  flatMap<NewValue>(
-    fn: (value: Value, context: Context) => Parser<NewValue>
-  ): Parser<NewValue> {
-    return custom((context) => {
-      return this.action(context).flatMap((value, context) => {
-        return fn(value, context).action(context);
-      });
-    });
-  }
-
-  andThen<NewValue>(
-    newParser: Parser<NewValue>
-  ): Parser<readonly [Value, NewValue]> {
-    return custom((context) => {
-      return this.action(context).flatMap((value, context) => {
-        return newParser.action(context).map((newValue, _context) => {
-          return [value, newValue] as const;
-        });
-      });
-    });
-  }
-
-  // TODO: Error messages are being discarded...
-  or<NewValue>(newParser: Parser<NewValue>): Parser<Value | NewValue> {
-    return custom((context) => {
-      return this.action(context).unwrap<Result<Value | NewValue>>({
-        OK: (value, context) => ok(value, context),
-        Fail: (_messages, context) => newParser.action(context),
-      });
-    });
-  }
-
-  repeat0(): Parser<readonly Value[]> {
-    return custom((context) => {
-      const values: Value[] = [];
-      let done = false;
-      while (!done) {
-        this.action(context).unwrap({
-          OK: (value, nextContext) => {
-            context = nextContext;
-            values.push(value);
-          },
-          Fail: (_messages, nextContext) => {
-            context = nextContext;
-            done = true;
-          },
-        });
+  andThen<B>(parserB: Parser<B>): Parser<readonly [A, B]> {
+    return new Parser((context) => {
+      const a = this.action(context);
+      if (!a.isOK()) {
+        return a;
       }
-      return ok(values, context);
+      const b = parserB.action(context.withLocation(a.location));
+      if (b.isOK()) {
+        const value = [a.value, b.value] as const;
+        return new ActionOK(b.location, value, b.furthest, b.expected);
+      }
+      return b;
     });
   }
 
-  repeat1(): Parser<readonly Value[]> {
-    return this.flatMap((value) => {
-      return this.repeat0().map((values) => {
-        return [value, ...values];
-      });
+  or<B>(parserB: Parser<B>): Parser<A | B> {
+    return new Parser<A | B>((context) => {
+      const a = this.action(context);
+      if (a.isOK()) {
+        return a;
+      }
+      return a.merge(parserB.action(context));
     });
   }
-
-  separatedBy0<OtherValue>(
-    separator: Parser<OtherValue>
-  ): Parser<readonly Value[]> {
-    return this.separatedBy1(separator).or(of([]));
-  }
-
-  separatedBy1<OtherValue>(
-    separator: Parser<OtherValue>
-  ): Parser<readonly Value[]> {
-    const items = this.andThen(separator)
-      .map(([value]) => value)
-      .repeat0();
-    return this.flatMap((first) => {
-      return items.map((rest) => {
-        return [first, ...rest];
-      });
-    });
-  }
-
-  // TODO:
-  // error reporting or something?
 }
 
 class Context {
   readonly input: string;
-  readonly index: number;
+  readonly location: SourceLocation;
 
-  constructor(options: { input: string; index: number }) {
-    this.input = options.input;
-    this.index = options.index;
+  constructor(input: string, location: SourceLocation) {
+    this.input = input;
+    this.location = location;
   }
 
-  consume(amount: number): Context {
-    return new Context({
-      input: this.input,
-      index: this.index + amount,
-    });
-  }
-}
-
-interface Result<Value> {
-  readonly context: Context;
-  map<NewValue>(
-    fn: (value: Value, context: Context) => NewValue
-  ): Result<NewValue>;
-  flatMap<NewValue>(
-    fn: (value: Value, context: Context) => Result<NewValue>
-  ): Result<NewValue>;
-  unwrap<NewValue>(options: {
-    OK: (value: Value, context: Context) => NewValue;
-    Fail: (messages: readonly string[], context: Context) => NewValue;
-  }): NewValue;
-}
-
-class OK<Value> implements Result<Value> {
-  readonly value: Value;
-  readonly context: Context;
-
-  constructor(options: { value: Value; context: Context }) {
-    this.value = options.value;
-    this.context = options.context;
+  withLocation(location: SourceLocation): Context {
+    return new Context(this.input, location);
   }
 
-  map<NewValue>(
-    fn: (value: Value, context: Context) => NewValue
-  ): Result<NewValue> {
-    return new OK({
-      value: fn(this.value, this.context),
-      context: this.context,
-    });
+  move(index: number): SourceLocation {
+    const start = this.location.index;
+    const end = index;
+    const chunk = this.input.slice(start, end);
+    return this.location.add(chunk);
   }
 
-  flatMap<NewValue>(
-    fn: (value: Value, context: Context) => Result<NewValue>
-  ): Result<NewValue> {
-    return fn(this.value, this.context);
-  }
-
-  unwrap<NewValue>(options: {
-    OK: (value: Value, context: Context) => NewValue;
-    Fail: (messages: readonly string[], context: Context) => NewValue;
-  }): NewValue {
-    return options.OK(this.value, this.context);
-  }
-}
-
-class Fail<Value> implements Result<Value> {
-  readonly messages: readonly string[];
-  readonly context: Context;
-
-  constructor(options: { messages: readonly string[]; context: Context }) {
-    this.messages = [...options.messages];
-    this.context = options.context;
-  }
-
-  map<NewValue>(
-    _fn: (value: Value, context: Context) => NewValue
-  ): Result<NewValue> {
-    return new Fail({ messages: this.messages, context: this.context });
-  }
-
-  flatMap<NewValue>(
-    _fn: (value: Value, context: Context) => Result<NewValue>
-  ): Result<NewValue> {
-    return new Fail({ messages: this.messages, context: this.context });
-  }
-
-  unwrap<NewValue>(options: {
-    OK: (value: Value, context: Context) => NewValue;
-    Fail: (messages: readonly string[], context: Context) => NewValue;
-  }): NewValue {
-    return options.Fail(this.messages, this.context);
-  }
-}
-
-export function custom<Value>(
-  action: (context: Context) => Result<Value>
-): Parser<Value> {
-  return new Parser(action);
-}
-
-export function ok<Value>(value: Value, context: Context): Result<Value> {
-  return new OK({ value, context });
-}
-
-export function fail<Value>(message: string, context: Context): Result<Value> {
-  return new Fail({ messages: [message], context });
-}
-
-export function of<Value>(value: Value): Parser<Value> {
-  return custom((context) => ok(value, context));
-}
-
-export function matchString<ThatString extends string>(
-  string: ThatString
-): Parser<ThatString> {
-  return custom((context) => {
-    const chunk = context.input.slice(
-      context.index,
-      context.index + string.length
+  ok<A>(index: number, value: A): ActionResult<A> {
+    return new ActionOK(
+      this.move(index),
+      value,
+      new SourceLocation(-1, -1, -1),
+      []
     );
-    if (chunk === string) {
-      return ok(string, context.consume(1));
-    }
-    return fail(string, context);
-  });
+  }
+
+  fail<A>(index: number, expected: readonly string[]): ActionResult<A> {
+    return new ActionFail(this.move(index), expected);
+  }
 }
 
-export const matchEOF = custom((context) => {
-  if (context.index >= context.input.length) {
-    return ok("end of file", context);
+class SourceLocation {
+  readonly index: number;
+  readonly line: number;
+  readonly column: number;
+
+  constructor(index: number, line: number, column: number) {
+    this.index = index;
+    this.line = line;
+    this.column = column;
   }
-  return fail("end of file", context);
+
+  add(chunk: string): SourceLocation {
+    let { index, line, column } = this;
+    for (const ch of chunk) {
+      index++;
+      if (ch === "\n") {
+        line++;
+        column = 1;
+      } else {
+        column++;
+      }
+    }
+    return new SourceLocation(index, line, column);
+  }
+}
+
+function union(a: readonly string[], b: readonly string[]): readonly string[] {
+  return [...new Set([...a, ...b])].sort();
+}
+
+type ActionResult<A> = ActionOK<A> | ActionFail;
+
+class ActionOK<A> {
+  readonly location: SourceLocation;
+  readonly value: A;
+  readonly furthest: SourceLocation;
+  readonly expected: readonly string[];
+
+  constructor(
+    location: SourceLocation,
+    value: A,
+    furthest: SourceLocation,
+    expected: readonly string[]
+  ) {
+    this.location = location;
+    this.value = value;
+    this.furthest = furthest;
+    this.expected = expected;
+  }
+
+  isOK(): this is ActionOK<A> {
+    return true;
+  }
+
+  merge<B>(result: ActionResult<B>): ActionResult<A | B> {
+    if (result.isOK()) {
+      return result;
+    }
+    if (this.furthest.index > result.furthest.index) {
+      return this;
+    }
+    const expected = union(this.expected, result.expected);
+    return new ActionOK(this.location, this.value, result.furthest, expected);
+  }
+}
+
+class ActionFail {
+  readonly furthest: SourceLocation;
+  readonly expected: readonly string[];
+
+  constructor(furthest: SourceLocation, expected: readonly string[]) {
+    this.furthest = furthest;
+    this.expected = expected;
+  }
+
+  isOK<A>(): this is ActionOK<A> {
+    return false;
+  }
+
+  merge<A>(result: ActionResult<A>): ActionResult<A> {
+    if (result.isOK()) {
+      return result;
+    }
+    if (this.furthest.index > result.furthest.index) {
+      return this;
+    }
+    const expected = union(this.expected, result.expected);
+    return new ActionFail(this.furthest, expected);
+  }
+}
+
+const eof = new Parser<"<EOF>">((context) => {
+  if (context.location.index < context.input.length) {
+    return context.fail(context.location.index, ["<EOF>"]);
+  }
+  return context.ok(context.location.index, "<EOF>");
 });
 
-export function matchRegExp(regexp: RegExp): Parser<string> {
-  return custom((context) => {
-    const stickyRegexp = new RegExp(regexp, "y");
-    stickyRegexp.lastIndex = context.index;
-    const match = context.input.match(stickyRegexp);
-    if (!match) {
-      return fail(regexp.toString(), context);
+function str<A extends string>(string: A): Parser<A> {
+  return new Parser<A>((context) => {
+    const start = context.location.index;
+    const end = start + string.length;
+    if (context.input.slice(start, end) === string) {
+      return context.ok(end, string);
     }
-    return ok(match[0], context.consume(match[0].length));
+    return context.fail(start, [string]);
   });
 }
+
+const a = str("a");
+const b = str("b");
+const ab = a.andThen(b);
+const abOrA = ab.or(a);
+console.log(abOrA.parse("a"));
+console.log(abOrA.parse("ab"));
+console.log(abOrA.parse("aa"));
