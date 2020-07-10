@@ -15,17 +15,16 @@ class Parser<A> {
     return new ParseFail(result.furthest, result.expected);
   }
 
-  // TODO: This looks really messy, but I think it works?
   and<B>(parserB: Parser<B>): Parser<readonly [A, B]> {
     return new Parser((context) => {
       const a = this.action(context);
       if (!a.isOK()) {
         return a;
       }
-      const b = merge(parserB.action(context.withLocation(a.location)), a);
+      const b = a.merge(parserB.action(context.withLocation(a.location)));
       if (b.isOK()) {
         const value = [a.value, b.value] as const;
-        return new ActionOK(b.location, value, b.furthest, b.expected);
+        return b.merge(context.ok(b.location.index, value));
       }
       return b;
     });
@@ -37,7 +36,7 @@ class Parser<A> {
       if (a.isOK()) {
         return a;
       }
-      return merge(parserB.action(context), a);
+      return a.merge(parserB.action(context));
     });
   }
 }
@@ -159,20 +158,10 @@ class ActionOK<A> {
   isOK(): this is ActionOK<A> {
     return true;
   }
-}
 
-function merge<A, B>(a: ActionResult<A>, b: ActionResult<B>): ActionResult<A> {
-  if (a.furthest.index > b.furthest.index) {
-    return a;
+  merge<B>(b: ActionResult<B>): ActionResult<B> {
+    return merge(b, this);
   }
-  const expected =
-    a.furthest.index === b.furthest.index
-      ? union(a.expected, b.expected)
-      : b.expected;
-  if (a.isOK()) {
-    return new ActionOK(a.location, a.value, b.furthest, expected);
-  }
-  return new ActionFail(b.furthest, expected);
 }
 
 class ActionFail {
@@ -187,6 +176,24 @@ class ActionFail {
   isOK<A>(): this is ActionOK<A> {
     return false;
   }
+
+  merge<B>(b: ActionResult<B>): ActionResult<B> {
+    return merge(b, this);
+  }
+}
+
+function merge<A, B>(a: ActionResult<A>, b: ActionResult<B>): ActionResult<A> {
+  if (a.furthest.index > b.furthest.index) {
+    return a;
+  }
+  const expected =
+    a.furthest.index === b.furthest.index
+      ? union(a.expected, b.expected)
+      : b.expected;
+  if (a.isOK()) {
+    return new ActionOK(a.location, a.value, b.furthest, expected);
+  }
+  return new ActionFail(b.furthest, expected);
 }
 
 export const eof = new Parser<"<EOF>">((context) => {
