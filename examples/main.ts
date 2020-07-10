@@ -1,4 +1,4 @@
-import * as bnb from "./bread-n-butter";
+import * as bnb from "../src/bread-n-butter";
 
 const a = bnb.str("a");
 const b = bnb.str("b");
@@ -15,9 +15,12 @@ const balance = bnb
       return bnb.str("]");
     }
   });
+const alpha = bnb.match(/[a-z]+/i);
 const justX = bnb.of("X");
 // TODO: Test parser.thru(fn)
 // TODO: Test bnb.location
+console.log(alpha.parse("abcABCxyz"));
+console.log(alpha.parse("a1"));
 console.log(aOrB.parse("a"));
 console.log(aOrB.parse("b"));
 console.log(aOrB.parse("ab"));

@@ -1,4 +1,4 @@
-import { ActionResult } from "./action-result";
+import { ActionResult, ActionFail } from "./action-result";
 import { Context } from "./context";
 import { ParseFail, ParseOK, ParseResult } from "./parse-result";
 import { SourceLocation } from "./source-location";
@@ -65,6 +65,60 @@ export class Parser<A> {
   thru<B>(fn: (parser: this) => B): B {
     return fn(this);
   }
+
+  desc(name: string): Parser<A> {
+    return new Parser((context) => {
+      const result = this.action(context);
+      if (result.isOK()) {
+        return result;
+      }
+      return new ActionFail(result.furthest, [name]);
+    });
+  }
+
+  wrap<B, C>(before: Parser<B>, after: Parser<C>): Parser<A> {
+    return before.and(this).chain(([, value]) => {
+      return after.map(() => value);
+    });
+  }
+
+  trim<B>(beforeAndAfter: Parser<B>): Parser<A> {
+    return this.wrap(beforeAndAfter, beforeAndAfter);
+  }
+
+  many0(): Parser<readonly A[]> {
+    return this.many1().or(of([]));
+  }
+
+  many1(): Parser<readonly A[]> {
+    return new Parser((context) => {
+      const items: A[] = [];
+      let result = this.action(context);
+      while (result.isOK()) {
+        items.push(result.value);
+        context = context.withLocation(result.location);
+        result = result.merge(this.action(context));
+      }
+      return result.merge(context.ok(context.location.index, items));
+    });
+  }
+
+  node<S extends string>(name: S): Parser<ParseNode<S, A>> {
+    return location.and(this).chain(([start, value]) => {
+      return location.map((end) => {
+        const type = "ParseNode";
+        return { type, name, value, start, end } as const;
+      });
+    });
+  }
+}
+
+export interface ParseNode<S extends string, A> {
+  type: "ParseNode";
+  name: S;
+  value: A;
+  start: SourceLocation;
+  end: SourceLocation;
 }
 
 export const location = new Parser<SourceLocation>((context) => {
@@ -92,5 +146,31 @@ export function str<A extends string>(string: A): Parser<A> {
       return context.ok(end, string);
     }
     return context.fail(start, [string]);
+  });
+}
+
+export function match(regexp: RegExp): Parser<string> {
+  return new Parser((context) => {
+    const flags = regexp.ignoreCase ? "iy" : "y";
+    const sticky = new RegExp(regexp.source, flags);
+    const start = context.location.index;
+    sticky.lastIndex = start;
+    const match = context.input.match(sticky);
+    if (match) {
+      const end = start + match[0].length;
+      const string = context.input.slice(start, end);
+      return context.ok(end, string);
+    }
+    return context.fail(start, [String(regexp)]);
+  });
+}
+
+export function lazy<A>(fn: () => Parser<A>): Parser<A> {
+  let action: ((context: Context) => ActionResult<A>) | undefined;
+  return new Parser(function (context) {
+    if (!action) {
+      action = fn().action;
+    }
+    return action(context);
   });
 }
