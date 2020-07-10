@@ -5,29 +5,34 @@ class Parser<A> {
     this.action = action;
   }
 
-  parse(input: string): A {
+  parse(input: string): ParseResult<A> {
     const location = new SourceLocation(0, 1, 1);
     const context = new Context(input, location);
-    const result = this.andThen(eof).action(context);
+    const result = this.and(eof).action(context);
     if (result.isOK()) {
-      return result.value[0];
+      return new ParseOK(result.value[0]);
     }
-    console.log(result);
-    throw new Error("TODO: Error");
+    return new ParseFail(result.furthest, result.expected);
   }
 
-  andThen<B>(parserB: Parser<B>): Parser<readonly [A, B]> {
+  // TODO: This looks really messy, but I think it works?
+  and<B>(parserB: Parser<B>): Parser<readonly [A, B]> {
     return new Parser((context) => {
       const a = this.action(context);
       if (!a.isOK()) {
         return a;
       }
       const b = parserB.action(context.withLocation(a.location));
-      if (b.isOK()) {
-        const value = [a.value, b.value] as const;
-        return new ActionOK(b.location, value, b.furthest, b.expected);
+      const b2 = merge<B, A>(b, a);
+      if (b2.isOK()) {
+        return new ActionOK(
+          b2.location,
+          [a.value, b2.value] as const,
+          b2.furthest,
+          b2.expected
+        );
       }
-      return b;
+      return b2;
     });
   }
 
@@ -37,8 +42,38 @@ class Parser<A> {
       if (a.isOK()) {
         return a;
       }
-      return a.merge(parserB.action(context));
+      const b = parserB.action(context);
+      const b2 = merge<B, A>(b, a);
+      return b2;
     });
+  }
+}
+
+type ParseResult<A> = ParseOK<A> | ParseFail;
+
+class ParseOK<A> {
+  readonly value: A;
+
+  constructor(value: A) {
+    this.value = value;
+  }
+
+  isOK(): this is ParseOK<A> {
+    return true;
+  }
+}
+
+class ParseFail {
+  readonly location: SourceLocation;
+  readonly expected: readonly string[];
+
+  constructor(location: SourceLocation, expected: readonly string[]) {
+    this.location = location;
+    this.expected = expected;
+  }
+
+  isOK<A>(): this is ParseOK<A> {
+    return false;
   }
 }
 
@@ -129,18 +164,45 @@ class ActionOK<A> {
   isOK(): this is ActionOK<A> {
     return true;
   }
-
-  merge<B>(result: ActionResult<B>): ActionResult<A | B> {
-    if (result.isOK()) {
-      return result;
-    }
-    if (this.furthest.index > result.furthest.index) {
-      return this;
-    }
-    const expected = union(this.expected, result.expected);
-    return new ActionOK(this.location, this.value, result.furthest, expected);
-  }
 }
+
+function merge<A, B>(a: ActionResult<A>, b: ActionResult<B>): ActionResult<A> {
+  if (a.furthest.index > b.furthest.index) {
+    return a;
+  }
+  if (a.furthest.index === b.furthest.index) {
+  } else {
+  }
+  // const expected = union(a.expected, b.expected);
+  const expected =
+    a.furthest.index === b.furthest.index
+      ? union(a.expected, b.expected)
+      : b.expected;
+  if (a.isOK()) {
+    return new ActionOK(a.location, a.value, b.furthest, expected);
+  }
+  return new ActionFail(b.furthest, expected);
+}
+
+// function mergeReplies(a, b) {
+//   if (!b) {
+//     return a;
+//   }
+//   if (a.furthest > b.furthest) {
+//     return a;
+//   }
+//   var expected =
+//     a.furthest === b.furthest
+//       ? union(a.expected, b.expected)
+//       : b.expected;
+//   return {
+//     status: a.status,
+//     index: a.index,
+//     value: a.value,
+//     furthest: b.furthest,
+//     expected: expected
+//   };
+// }
 
 class ActionFail {
   readonly furthest: SourceLocation;
@@ -154,27 +216,16 @@ class ActionFail {
   isOK<A>(): this is ActionOK<A> {
     return false;
   }
-
-  merge<A>(result: ActionResult<A>): ActionResult<A> {
-    if (result.isOK()) {
-      return result;
-    }
-    if (this.furthest.index > result.furthest.index) {
-      return this;
-    }
-    const expected = union(this.expected, result.expected);
-    return new ActionFail(this.furthest, expected);
-  }
 }
 
-const eof = new Parser<"<EOF>">((context) => {
+export const eof = new Parser<"<EOF>">((context) => {
   if (context.location.index < context.input.length) {
     return context.fail(context.location.index, ["<EOF>"]);
   }
   return context.ok(context.location.index, "<EOF>");
 });
 
-function str<A extends string>(string: A): Parser<A> {
+export function str<A extends string>(string: A): Parser<A> {
   return new Parser<A>((context) => {
     const start = context.location.index;
     const end = start + string.length;
@@ -184,11 +235,3 @@ function str<A extends string>(string: A): Parser<A> {
     return context.fail(start, [string]);
   });
 }
-
-const a = str("a");
-const b = str("b");
-const ab = a.andThen(b);
-const abOrA = ab.or(a);
-console.log(abOrA.parse("a"));
-console.log(abOrA.parse("ab"));
-console.log(abOrA.parse("aa"));
