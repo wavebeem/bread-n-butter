@@ -1,4 +1,9 @@
-class Parser<A> {
+import { ActionResult } from "./action-result";
+import { Context } from "./context";
+import { ParseFail, ParseOK, ParseResult } from "./parse-result";
+import { SourceLocation } from "./source-location";
+
+export class Parser<A> {
   readonly action: (context: Context) => ActionResult<A>;
 
   constructor(action: (context: Context) => ActionResult<A>) {
@@ -39,161 +44,29 @@ class Parser<A> {
       return a.merge(parserB.action(context));
     });
   }
-}
 
-type ParseResult<A> = ParseOK<A> | ParseFail;
-
-class ParseOK<A> {
-  readonly value: A;
-
-  constructor(value: A) {
-    this.value = value;
-  }
-
-  isOK(): this is ParseOK<A> {
-    return true;
-  }
-}
-
-class ParseFail {
-  // TODO: Possibly yoink the properties off location and put them straight on
-  // this class so it's easier to look at the object?
-  readonly location: SourceLocation;
-  readonly expected: readonly string[];
-
-  constructor(location: SourceLocation, expected: readonly string[]) {
-    this.location = location;
-    this.expected = expected;
-  }
-
-  isOK<A>(): this is ParseOK<A> {
-    return false;
-  }
-}
-
-class Context {
-  readonly input: string;
-  readonly location: SourceLocation;
-
-  constructor(input: string, location: SourceLocation) {
-    this.input = input;
-    this.location = location;
-  }
-
-  withLocation(location: SourceLocation): Context {
-    return new Context(this.input, location);
-  }
-
-  move(index: number): SourceLocation {
-    const start = this.location.index;
-    const end = index;
-    const chunk = this.input.slice(start, end);
-    return this.location.add(chunk);
-  }
-
-  ok<A>(index: number, value: A): ActionResult<A> {
-    return new ActionOK(
-      this.move(index),
-      value,
-      new SourceLocation(-1, -1, -1),
-      []
-    );
-  }
-
-  fail<A>(index: number, expected: readonly string[]): ActionResult<A> {
-    return new ActionFail(this.move(index), expected);
-  }
-}
-
-class SourceLocation {
-  readonly index: number;
-  readonly line: number;
-  readonly column: number;
-
-  constructor(index: number, line: number, column: number) {
-    this.index = index;
-    this.line = line;
-    this.column = column;
-  }
-
-  add(chunk: string): SourceLocation {
-    let { index, line, column } = this;
-    for (const ch of chunk) {
-      index++;
-      if (ch === "\n") {
-        line++;
-        column = 1;
-      } else {
-        column++;
+  chain<B>(fn: (value: A) => Parser<B>): Parser<B> {
+    return new Parser((context) => {
+      const a = this.action(context);
+      if (!a.isOK()) {
+        return a;
       }
-    }
-    return new SourceLocation(index, line, column);
+      const parserB = fn(a.value);
+      return a.merge(parserB.action(context.withLocation(a.location)));
+    });
+  }
+
+  map<B>(fn: (value: A) => B): Parser<B> {
+    return this.chain((a) => {
+      return of(fn(a));
+    });
   }
 }
 
-function union(a: readonly string[], b: readonly string[]): readonly string[] {
-  return [...new Set([...a, ...b])].sort();
-}
-
-type ActionResult<A> = ActionOK<A> | ActionFail;
-
-class ActionOK<A> {
-  readonly location: SourceLocation;
-  readonly value: A;
-  readonly furthest: SourceLocation;
-  readonly expected: readonly string[];
-
-  constructor(
-    location: SourceLocation,
-    value: A,
-    furthest: SourceLocation,
-    expected: readonly string[]
-  ) {
-    this.location = location;
-    this.value = value;
-    this.furthest = furthest;
-    this.expected = expected;
-  }
-
-  isOK(): this is ActionOK<A> {
-    return true;
-  }
-
-  merge<B>(b: ActionResult<B>): ActionResult<B> {
-    return merge(b, this);
-  }
-}
-
-class ActionFail {
-  readonly furthest: SourceLocation;
-  readonly expected: readonly string[];
-
-  constructor(furthest: SourceLocation, expected: readonly string[]) {
-    this.furthest = furthest;
-    this.expected = expected;
-  }
-
-  isOK<A>(): this is ActionOK<A> {
-    return false;
-  }
-
-  merge<B>(b: ActionResult<B>): ActionResult<B> {
-    return merge(b, this);
-  }
-}
-
-function merge<A, B>(a: ActionResult<A>, b: ActionResult<B>): ActionResult<A> {
-  if (a.furthest.index > b.furthest.index) {
-    return a;
-  }
-  const expected =
-    a.furthest.index === b.furthest.index
-      ? union(a.expected, b.expected)
-      : b.expected;
-  if (a.isOK()) {
-    return new ActionOK(a.location, a.value, b.furthest, expected);
-  }
-  return new ActionFail(b.furthest, expected);
+export function of<A>(value: A): Parser<A> {
+  return new Parser((context) => {
+    return context.ok(context.location.index, value);
+  });
 }
 
 export const eof = new Parser<"<EOF>">((context) => {
