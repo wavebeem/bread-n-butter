@@ -61,7 +61,15 @@ export class Parser<A> {
       return of(fn(a));
     });
   }
+
+  thru<B>(fn: (parser: this) => B): B {
+    return fn(this);
+  }
 }
+
+export const location = new Parser<SourceLocation>((context) => {
+  return context.ok(context.location.index, context.location);
+});
 
 export function of<A>(value: A): Parser<A> {
   return new Parser((context) => {

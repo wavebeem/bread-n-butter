@@ -16,7 +16,8 @@ const balance = bnb
     }
   });
 const justX = bnb.of("X");
-// TODO: Are these answers correct?
+// TODO: Test parser.thru(fn)
+// TODO: Test bnb.location
 console.log(aOrB.parse("a"));
 console.log(aOrB.parse("b"));
 console.log(aOrB.parse("ab"));
