@@ -57,6 +57,8 @@ class ParseOK<A> {
 }
 
 class ParseFail {
+  // TODO: Possibly yoink the properties off location and put them straight on
+  // this class so it's easier to look at the object?
   readonly location: SourceLocation;
   readonly expected: readonly string[];
 
