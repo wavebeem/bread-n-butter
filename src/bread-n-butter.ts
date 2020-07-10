@@ -123,11 +123,11 @@ export interface ParseNode<S extends string, A> {
 
 // https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/parsimmon/index.d.ts#L308
 // Thanks to the DefinitelyTyped folks for this type magic here
-type Rules<Spec> = {
+export type Rules<Spec> = {
   [P in keyof Spec]: (lang: Language<Spec>) => Parser<Spec[P]>;
 };
 
-type Language<Spec> = {
+export type Language<Spec> = {
   [P in keyof Spec]: Parser<Spec[P]>;
 };
 
@@ -148,6 +148,12 @@ export const location = new Parser<SourceLocation>((context) => {
 export function of<A>(value: A): Parser<A> {
   return new Parser((context) => {
     return context.ok(context.location.index, value);
+  });
+}
+
+export function fail<A>(expected: readonly string[]): Parser<A> {
+  return new Parser((context) => {
+    return context.fail(context.location.index, expected);
   });
 }
 
