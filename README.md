@@ -4,4 +4,4 @@
 
 bread-n-butter (bnb) is a parser combinator library for TypeScript and JavaScript.
 
-**TODO: Link to the docs**
+Read [the documentation](https://wavebeem-bread-n-butter.netlify.app/).
