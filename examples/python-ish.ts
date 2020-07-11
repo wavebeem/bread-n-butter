@@ -97,7 +97,7 @@ function py(indent: number): bnb.Language<PyLanguage> {
     indentSame(lang) {
       return lang.countSpaces.chain((n) => {
         if (n === indent) {
-          return bnb.of(n);
+          return bnb.ok(n);
         }
         return bnb.fail([`${n} spaces`]);
       });
@@ -108,7 +108,7 @@ function py(indent: number): bnb.Language<PyLanguage> {
     indentMore(lang) {
       return lang.countSpaces.chain((n) => {
         if (n > indent) {
-          return bnb.of(n);
+          return bnb.ok(n);
         }
         return bnb.fail([`more than ${n} spaces`]);
       });

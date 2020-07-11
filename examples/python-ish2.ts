@@ -7,8 +7,8 @@ type PyBlock = { type: "Block"; statements: readonly PyStatement[] };
 type PyIdent = { type: "Ident"; value: string };
 type PyStatement = PyBlock | PyIdent;
 type Py = {
-  readonly pyStatement: bnb.Parser<PyStatement>;
-  readonly pyRestStatement: bnb.Parser<PyStatement>;
+  pyStatement: bnb.Parser<PyStatement>;
+  pyRestStatement: bnb.Parser<PyStatement>;
 };
 
 // Because parsing indentation-sensitive languages such as Python requires
@@ -33,7 +33,7 @@ function py(indent: number): Py {
   // parse state's desired indentation
   const pyIndentSame = pyCountSpaces.chain((n) => {
     if (n === indent) {
-      return bnb.of(n);
+      return bnb.ok(n);
     }
     return bnb.fail<number>([`${n} spaces`]);
   });
@@ -42,7 +42,7 @@ function py(indent: number): Py {
   // parse state's desired indentation
   const pyIndentMore = pyCountSpaces.chain((n) => {
     if (n > indent) {
-      return bnb.of(n);
+      return bnb.ok(n);
     }
     return bnb.fail<number>([`more than ${n} spaces`]);
   });

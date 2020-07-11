@@ -58,7 +58,7 @@ export class Parser<A> {
 
   map<B>(fn: (value: A) => B): Parser<B> {
     return this.chain((a) => {
-      return of(fn(a));
+      return ok(fn(a));
     });
   }
 
@@ -87,7 +87,7 @@ export class Parser<A> {
   }
 
   many0(): Parser<readonly A[]> {
-    return this.many1().or(of([]));
+    return this.many1().or(ok([]));
   }
 
   many1(): Parser<readonly A[]> {
@@ -104,7 +104,7 @@ export class Parser<A> {
   }
 
   separatedBy0<B>(separator: Parser<B>): Parser<readonly A[]> {
-    return this.separatedBy1(separator).or(of([]));
+    return this.separatedBy1(separator).or(ok([]));
   }
 
   separatedBy1<B>(separator: Parser<B>): Parser<readonly A[]> {
@@ -161,7 +161,7 @@ export const location = new Parser<SourceLocation>((context) => {
   return context.ok(context.location.index, context.location);
 });
 
-export function of<A>(value: A): Parser<A> {
+export function ok<A>(value: A): Parser<A> {
   return new Parser((context) => {
     return context.ok(context.location.index, value);
   });

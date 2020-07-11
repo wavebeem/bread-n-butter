@@ -16,7 +16,7 @@ const balance = bnb
     }
   });
 const alpha = bnb.match(/[a-z]+/i);
-const justX = bnb.of("X");
+const justX = bnb.ok("X");
 // TODO: Test parser.thru(fn)
 // TODO: Test bnb.location
 console.log(alpha.parse("abcABCxyz"));
