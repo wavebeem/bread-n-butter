@@ -1,30 +1,30 @@
 import * as bnb from "../src/bread-n-butter";
 
 test("test a test", () => {
-  const isX = bnb.matchString("x");
+  const isX = bnb.str("x");
   expect(isX.parse("x")).toMatchSnapshot();
 });
 
-test("andThen", () => {
-  const isX = bnb.matchString("x");
-  const isY = bnb.matchString("y");
-  const isXY = isX.andThen(isY);
+test("and", () => {
+  const isX = bnb.str("x");
+  const isY = bnb.str("y");
+  const isXY = isX.and(isY);
   expect(isXY.parse("xy")).toMatchSnapshot();
 });
 
-test("andThen triple", () => {
-  const isX = bnb.matchString("x");
-  const isY = bnb.matchString("y");
-  const isZ = bnb.matchString("z");
-  const isXYZ = isX.andThen(isY).andThen(isZ);
+test("and triple", () => {
+  const isX = bnb.str("x");
+  const isY = bnb.str("y");
+  const isZ = bnb.str("z");
+  const isXYZ = isX.and(isY).and(isZ);
   expect(isXYZ.parse("xyz")).toMatchSnapshot();
 });
 
-test("andThen success triple 2", () => {
-  const isX = bnb.matchString("x");
-  const isY = bnb.matchString("y");
-  const isZ = bnb.matchString("z");
-  const isXYZ = isX.andThen(isY).flatMap(([x, y]) => {
+test("and success triple 2", () => {
+  const isX = bnb.str("x");
+  const isY = bnb.str("y");
+  const isZ = bnb.str("z");
+  const isXYZ = isX.and(isY).chain(([x, y]) => {
     return isZ.map((z) => {
       return [x, y, z] as const;
     });
@@ -32,10 +32,10 @@ test("andThen success triple 2", () => {
   expect(isXYZ.parse("xyz")).toMatchSnapshot();
 });
 
-test("andThen failure", () => {
-  const isX = bnb.matchString("x");
-  const isY = bnb.matchString("y");
-  const isXY = isX.andThen(isY);
+test("and failure", () => {
+  const isX = bnb.str("x");
+  const isY = bnb.str("y");
+  const isXY = isX.and(isY);
   expect(isXY.parse("x")).toMatchSnapshot();
   expect(isXY.parse("y")).toMatchSnapshot();
   expect(isXY.parse("yx")).toMatchSnapshot();
@@ -43,8 +43,8 @@ test("andThen failure", () => {
 });
 
 test("separatedBy0", () => {
-  const isA = bnb.matchString("a");
-  const isSep = bnb.matchString(",");
+  const isA = bnb.str("a");
+  const isSep = bnb.str(",");
   const isAList = isA.separatedBy0(isSep);
   expect(isAList.parse("")).toMatchSnapshot();
   expect(isAList.parse("a")).toMatchSnapshot();
@@ -55,8 +55,8 @@ test("separatedBy0", () => {
 });
 
 test("separatedBy1", () => {
-  const isA = bnb.matchString("a");
-  const isSep = bnb.matchString(",");
+  const isA = bnb.str("a");
+  const isSep = bnb.str(",");
   const isAList = isA.separatedBy1(isSep);
   expect(isAList.parse("")).toMatchSnapshot();
   expect(isAList.parse("a")).toMatchSnapshot();
@@ -66,9 +66,9 @@ test("separatedBy1", () => {
   expect(isAList.parse("b")).toMatchSnapshot();
 });
 
-test("repeat0", () => {
-  const isA = bnb.matchString("a");
-  const isAAA = isA.repeat0();
+test("many0", () => {
+  const isA = bnb.str("a");
+  const isAAA = isA.many0();
   expect(isAAA.parse("")).toMatchSnapshot();
   expect(isAAA.parse("a")).toMatchSnapshot();
   expect(isAAA.parse("aa")).toMatchSnapshot();
@@ -77,9 +77,9 @@ test("repeat0", () => {
   expect(isAAA.parse("b")).toMatchSnapshot();
 });
 
-test("repeat1", () => {
-  const isA = bnb.matchString("a");
-  const isAAA = isA.repeat1();
+test("many1", () => {
+  const isA = bnb.str("a");
+  const isAAA = isA.many1();
   expect(isAAA.parse("a")).toMatchSnapshot();
   expect(isAAA.parse("aa")).toMatchSnapshot();
   expect(isAAA.parse("aaa")).toMatchSnapshot();
@@ -89,8 +89,8 @@ test("repeat1", () => {
 });
 
 test("or", () => {
-  const isA = bnb.matchString("a");
-  const isB = bnb.matchString("b");
+  const isA = bnb.str("a");
+  const isB = bnb.str("b");
   const isAorB = isA.or(isB);
   expect(isAorB.parse("a")).toMatchSnapshot();
   expect(isAorB.parse("b")).toMatchSnapshot();
@@ -100,24 +100,24 @@ test("or", () => {
 });
 
 test("matchEOF", () => {
-  const isEOF = bnb.matchEOF;
+  const isEOF = bnb.eof;
   expect(isEOF.parse("")).toMatchSnapshot();
   expect(isEOF.parse("x")).toMatchSnapshot();
 });
 
-test("matchRegExp", () => {
-  const isNumber = bnb.matchRegExp(/\d+/);
+test("match", () => {
+  const isNumber = bnb.match(/\d+/);
   expect(isNumber.parse("12")).toMatchSnapshot();
   expect(isNumber.parse("abc")).toMatchSnapshot();
 });
 
 test("lisp lists", () => {
-  const isSymbol = bnb.matchRegExp(/[a-zA-Z_-]+/);
-  const isLP = bnb.matchString("(");
-  const isRP = bnb.matchString(")");
-  const isWS = bnb.matchRegExp(/\s+/);
-  const isList = isLP.flatMap(() => {
-    return isSymbol.separatedBy0(isWS).flatMap((values) => {
+  const isSymbol = bnb.match(/[a-zA-Z_-]+/);
+  const isLP = bnb.str("(");
+  const isRP = bnb.str(")");
+  const isWS = bnb.match(/\s+/);
+  const isList = isLP.chain(() => {
+    return isSymbol.separatedBy0(isWS).chain((values) => {
       return isRP.map(() => {
         return values;
       });
