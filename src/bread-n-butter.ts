@@ -103,6 +103,22 @@ export class Parser<A> {
     });
   }
 
+  separatedBy0<B>(separator: Parser<B>): Parser<readonly A[]> {
+    return this.separatedBy1(separator).or(of([]));
+  }
+
+  separatedBy1<B>(separator: Parser<B>): Parser<readonly A[]> {
+    return this.chain((first) => {
+      return separator
+        .and(this)
+        .map(([, value]) => value)
+        .many0()
+        .map((rest) => {
+          return [first, ...rest] as const;
+        });
+    });
+  }
+
   node<S extends string>(name: S): Parser<ParseNode<S, A>> {
     return location.and(this).chain(([start, value]) => {
       return location.map((end) => {

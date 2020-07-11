@@ -1,11 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`andThen 1`] = `
-OK {
-  "context": Context {
-    "index": 2,
-    "input": "xy",
-  },
+exports[`and 1`] = `
+ParseOK {
   "value": Array [
     "x",
     "y",
@@ -13,60 +9,60 @@ OK {
 }
 `;
 
-exports[`andThen failure 1`] = `
-Fail {
-  "context": Context {
-    "index": 1,
-    "input": "x",
-  },
-  "messages": Array [
+exports[`and failure 1`] = `
+ParseFail {
+  "expected": Array [
     "y",
   ],
+  "location": SourceLocation {
+    "column": 2,
+    "index": 1,
+    "line": 1,
+  },
 }
 `;
 
-exports[`andThen failure 2`] = `
-Fail {
-  "context": Context {
-    "index": 0,
-    "input": "y",
-  },
-  "messages": Array [
+exports[`and failure 2`] = `
+ParseFail {
+  "expected": Array [
     "x",
   ],
+  "location": SourceLocation {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
 }
 `;
 
-exports[`andThen failure 3`] = `
-Fail {
-  "context": Context {
-    "index": 0,
-    "input": "yx",
-  },
-  "messages": Array [
+exports[`and failure 3`] = `
+ParseFail {
+  "expected": Array [
     "x",
   ],
+  "location": SourceLocation {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
 }
 `;
 
-exports[`andThen failure 4`] = `
-Fail {
-  "context": Context {
-    "index": 0,
-    "input": "",
-  },
-  "messages": Array [
+exports[`and failure 4`] = `
+ParseFail {
+  "expected": Array [
     "x",
   ],
+  "location": SourceLocation {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
 }
 `;
 
-exports[`andThen success triple 2 1`] = `
-OK {
-  "context": Context {
-    "index": 3,
-    "input": "xyz",
-  },
+exports[`and success triple 2 1`] = `
+ParseOK {
   "value": Array [
     "x",
     "y",
@@ -75,12 +71,8 @@ OK {
 }
 `;
 
-exports[`andThen triple 1`] = `
-OK {
-  "context": Context {
-    "index": 3,
-    "input": "xyz",
-  },
+exports[`and triple 1`] = `
+ParseOK {
   "value": Array [
     Array [
       "x",
@@ -92,287 +84,230 @@ OK {
 `;
 
 exports[`lisp lists 1`] = `
-OK {
-  "context": Context {
-    "index": 3,
-    "input": "(a)",
-  },
+ParseOK {
+  "value": Array [
+    "a",
+    "b",
+    "c",
+  ],
+}
+`;
+
+exports[`many0 1`] = `
+ParseOK {
+  "value": Array [],
+}
+`;
+
+exports[`many0 2`] = `
+ParseOK {
   "value": Array [
     "a",
   ],
 }
 `;
 
-exports[`matchEOF 1`] = `
-OK {
-  "context": Context {
-    "index": 0,
-    "input": "",
-  },
-  "value": "end of file",
-}
-`;
-
-exports[`matchEOF 2`] = `
-Fail {
-  "context": Context {
-    "index": 0,
-    "input": "x",
-  },
-  "messages": Array [
-    "end of file",
+exports[`many0 3`] = `
+ParseOK {
+  "value": Array [
+    "a",
+    "a",
   ],
 }
 `;
 
-exports[`matchRegExp 1`] = `
-OK {
-  "context": Context {
-    "index": 2,
-    "input": "12",
+exports[`many0 4`] = `
+ParseOK {
+  "value": Array [
+    "a",
+    "a",
+    "a",
+  ],
+}
+`;
+
+exports[`many0 5`] = `
+ParseOK {
+  "value": Array [
+    "a",
+    "a",
+    "a",
+    "a",
+  ],
+}
+`;
+
+exports[`many0 6`] = `
+ParseFail {
+  "expected": Array [
+    "<EOF>",
+    "a",
+  ],
+  "location": SourceLocation {
+    "column": 1,
+    "index": 0,
+    "line": 1,
   },
+}
+`;
+
+exports[`many1 1`] = `
+ParseOK {
+  "value": Array [
+    "a",
+  ],
+}
+`;
+
+exports[`many1 2`] = `
+ParseOK {
+  "value": Array [
+    "a",
+    "a",
+  ],
+}
+`;
+
+exports[`many1 3`] = `
+ParseOK {
+  "value": Array [
+    "a",
+    "a",
+    "a",
+  ],
+}
+`;
+
+exports[`many1 4`] = `
+ParseOK {
+  "value": Array [
+    "a",
+    "a",
+    "a",
+    "a",
+  ],
+}
+`;
+
+exports[`many1 5`] = `
+ParseOK {
+  "value": Array [],
+}
+`;
+
+exports[`many1 6`] = `
+ParseFail {
+  "expected": Array [
+    "<EOF>",
+    "a",
+  ],
+  "location": SourceLocation {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+}
+`;
+
+exports[`match 1`] = `
+ParseOK {
   "value": "12",
 }
 `;
 
-exports[`matchRegExp 2`] = `
-Fail {
-  "context": Context {
-    "index": 0,
-    "input": "abc",
-  },
-  "messages": Array [
+exports[`match 2`] = `
+ParseFail {
+  "expected": Array [
     "/\\\\d+/",
   ],
+  "location": SourceLocation {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+}
+`;
+
+exports[`matchEOF 1`] = `
+ParseOK {
+  "value": "<EOF>",
+}
+`;
+
+exports[`matchEOF 2`] = `
+ParseFail {
+  "expected": Array [
+    "<EOF>",
+  ],
+  "location": SourceLocation {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
 }
 `;
 
 exports[`or 1`] = `
-OK {
-  "context": Context {
-    "index": 1,
-    "input": "a",
-  },
+ParseOK {
   "value": "a",
 }
 `;
 
 exports[`or 2`] = `
-OK {
-  "context": Context {
-    "index": 1,
-    "input": "b",
-  },
+ParseOK {
   "value": "b",
 }
 `;
 
 exports[`or 3`] = `
-Fail {
-  "context": Context {
-    "index": 0,
-    "input": "c",
-  },
-  "messages": Array [
+ParseFail {
+  "expected": Array [
+    "a",
     "b",
   ],
+  "location": SourceLocation {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
 }
 `;
 
 exports[`or 4`] = `
-Fail {
-  "context": Context {
-    "index": 1,
-    "input": "ab",
-  },
-  "messages": Array [
-    "end of file",
+ParseFail {
+  "expected": Array [
+    "<EOF>",
   ],
+  "location": SourceLocation {
+    "column": 2,
+    "index": 1,
+    "line": 1,
+  },
 }
 `;
 
 exports[`or 5`] = `
-Fail {
-  "context": Context {
-    "index": 0,
-    "input": "",
-  },
-  "messages": Array [
+ParseFail {
+  "expected": Array [
+    "a",
     "b",
   ],
-}
-`;
-
-exports[`repeat0 1`] = `
-OK {
-  "context": Context {
+  "location": SourceLocation {
+    "column": 1,
     "index": 0,
-    "input": "",
+    "line": 1,
   },
-  "value": Array [],
-}
-`;
-
-exports[`repeat0 2`] = `
-OK {
-  "context": Context {
-    "index": 1,
-    "input": "a",
-  },
-  "value": Array [
-    "a",
-  ],
-}
-`;
-
-exports[`repeat0 3`] = `
-OK {
-  "context": Context {
-    "index": 2,
-    "input": "aa",
-  },
-  "value": Array [
-    "a",
-    "a",
-  ],
-}
-`;
-
-exports[`repeat0 4`] = `
-OK {
-  "context": Context {
-    "index": 3,
-    "input": "aaa",
-  },
-  "value": Array [
-    "a",
-    "a",
-    "a",
-  ],
-}
-`;
-
-exports[`repeat0 5`] = `
-OK {
-  "context": Context {
-    "index": 4,
-    "input": "aaaa",
-  },
-  "value": Array [
-    "a",
-    "a",
-    "a",
-    "a",
-  ],
-}
-`;
-
-exports[`repeat0 6`] = `
-Fail {
-  "context": Context {
-    "index": 0,
-    "input": "b",
-  },
-  "messages": Array [
-    "end of file",
-  ],
-}
-`;
-
-exports[`repeat1 1`] = `
-OK {
-  "context": Context {
-    "index": 1,
-    "input": "a",
-  },
-  "value": Array [
-    "a",
-  ],
-}
-`;
-
-exports[`repeat1 2`] = `
-OK {
-  "context": Context {
-    "index": 2,
-    "input": "aa",
-  },
-  "value": Array [
-    "a",
-    "a",
-  ],
-}
-`;
-
-exports[`repeat1 3`] = `
-OK {
-  "context": Context {
-    "index": 3,
-    "input": "aaa",
-  },
-  "value": Array [
-    "a",
-    "a",
-    "a",
-  ],
-}
-`;
-
-exports[`repeat1 4`] = `
-OK {
-  "context": Context {
-    "index": 4,
-    "input": "aaaa",
-  },
-  "value": Array [
-    "a",
-    "a",
-    "a",
-    "a",
-  ],
-}
-`;
-
-exports[`repeat1 5`] = `
-Fail {
-  "context": Context {
-    "index": 0,
-    "input": "",
-  },
-  "messages": Array [
-    "a",
-  ],
-}
-`;
-
-exports[`repeat1 6`] = `
-Fail {
-  "context": Context {
-    "index": 0,
-    "input": "b",
-  },
-  "messages": Array [
-    "a",
-  ],
 }
 `;
 
 exports[`separatedBy0 1`] = `
-OK {
-  "context": Context {
-    "index": 0,
-    "input": "",
-  },
+ParseOK {
   "value": Array [],
 }
 `;
 
 exports[`separatedBy0 2`] = `
-OK {
-  "context": Context {
-    "index": 1,
-    "input": "a",
-  },
+ParseOK {
   "value": Array [
     "a",
   ],
@@ -380,71 +315,66 @@ OK {
 `;
 
 exports[`separatedBy0 3`] = `
-Fail {
-  "context": Context {
-    "index": 1,
-    "input": "a,a",
-  },
-  "messages": Array [
-    "end of file",
-  ],
-}
-`;
-
-exports[`separatedBy0 4`] = `
-Fail {
-  "context": Context {
-    "index": 1,
-    "input": "a,a,a",
-  },
-  "messages": Array [
-    "end of file",
-  ],
-}
-`;
-
-exports[`separatedBy0 5`] = `
-Fail {
-  "context": Context {
-    "index": 1,
-    "input": "a,a,b",
-  },
-  "messages": Array [
-    "end of file",
-  ],
-}
-`;
-
-exports[`separatedBy0 6`] = `
-Fail {
-  "context": Context {
-    "index": 0,
-    "input": "b",
-  },
-  "messages": Array [
-    "end of file",
-  ],
-}
-`;
-
-exports[`separatedBy1 1`] = `
-Fail {
-  "context": Context {
-    "index": 0,
-    "input": "",
-  },
-  "messages": Array [
+ParseOK {
+  "value": Array [
+    "a",
     "a",
   ],
 }
 `;
 
-exports[`separatedBy1 2`] = `
-OK {
-  "context": Context {
-    "index": 1,
-    "input": "a",
+exports[`separatedBy0 4`] = `
+ParseOK {
+  "value": Array [
+    "a",
+    "a",
+    "a",
+  ],
+}
+`;
+
+exports[`separatedBy0 5`] = `
+ParseFail {
+  "expected": Array [
+    "a",
+  ],
+  "location": SourceLocation {
+    "column": 5,
+    "index": 4,
+    "line": 1,
   },
+}
+`;
+
+exports[`separatedBy0 6`] = `
+ParseFail {
+  "expected": Array [
+    "<EOF>",
+    "a",
+  ],
+  "location": SourceLocation {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+}
+`;
+
+exports[`separatedBy1 1`] = `
+ParseFail {
+  "expected": Array [
+    "a",
+  ],
+  "location": SourceLocation {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+}
+`;
+
+exports[`separatedBy1 2`] = `
+ParseOK {
   "value": Array [
     "a",
   ],
@@ -452,59 +382,52 @@ OK {
 `;
 
 exports[`separatedBy1 3`] = `
-Fail {
-  "context": Context {
-    "index": 1,
-    "input": "a,a",
-  },
-  "messages": Array [
-    "end of file",
-  ],
-}
-`;
-
-exports[`separatedBy1 4`] = `
-Fail {
-  "context": Context {
-    "index": 1,
-    "input": "a,a,a",
-  },
-  "messages": Array [
-    "end of file",
-  ],
-}
-`;
-
-exports[`separatedBy1 5`] = `
-Fail {
-  "context": Context {
-    "index": 1,
-    "input": "a,a,b",
-  },
-  "messages": Array [
-    "end of file",
-  ],
-}
-`;
-
-exports[`separatedBy1 6`] = `
-Fail {
-  "context": Context {
-    "index": 0,
-    "input": "b",
-  },
-  "messages": Array [
+ParseOK {
+  "value": Array [
+    "a",
     "a",
   ],
 }
 `;
 
-exports[`test a test 1`] = `
-OK {
-  "context": Context {
-    "index": 1,
-    "input": "x",
+exports[`separatedBy1 4`] = `
+ParseOK {
+  "value": Array [
+    "a",
+    "a",
+    "a",
+  ],
+}
+`;
+
+exports[`separatedBy1 5`] = `
+ParseFail {
+  "expected": Array [
+    "a",
+  ],
+  "location": SourceLocation {
+    "column": 5,
+    "index": 4,
+    "line": 1,
   },
+}
+`;
+
+exports[`separatedBy1 6`] = `
+ParseFail {
+  "expected": Array [
+    "a",
+  ],
+  "location": SourceLocation {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+}
+`;
+
+exports[`test a test 1`] = `
+ParseOK {
   "value": "x",
 }
 `;
