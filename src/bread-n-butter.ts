@@ -6,10 +6,51 @@ import { SourceLocation } from "./source-location";
 export class Parser<A> {
   readonly action: (context: Context) => ActionResult<A>;
 
+  /**
+   * Creates a new custom parser that performs the given parsing action.
+   * **Note:** That use of this constructor is an advanced feature and not
+   * needed for most parsers.
+   *
+   * ```ts
+   * import * as bnb from "bread-n-butter";
+   *
+   * const number = new bnb.Parser((context) => {
+   *   const start = context.location.index;
+   *   const end = context.location.index + 2;
+   *   if (context.input.slice(start, end) === "AA") {
+   *     // Return how far we got, and what value we found
+   *     return context.ok(end, "AA");
+   *   }
+   *   // Return how far we got, and what value we were looking for
+   *   return context.fail(start, "AA");
+   * });
+   * ```
+   */
   constructor(action: (context: Context) => ActionResult<A>) {
     this.action = action;
   }
 
+  /**
+   * Returns a [[ParseResult]] with the parse value if successful, otherwise a
+   * failure value indicating where the error is and what values we were looking
+   * for at the time of failure. Use [[isOK]] to check if the parse succeeded or
+   * not.
+   *
+   * ```ts
+   * import * as bnb from "bread-n-butter";
+   *
+   * const a = bnb.str("a");
+   * const result1 = a.parse("a");
+   * if (result.isOK()) {
+   *   console.log(result.value);
+   *   // => "a"
+   * } else {
+   *   const { location, expected } = result;
+   *   console.error("error at line", location.line, "column", location.column);
+   *   console.error("expected one of", expected.join(", "));
+   * }
+   * ```
+   */
   parse(input: string): ParseResult<A> {
     const location = new SourceLocation(0, 1, 1);
     const context = new Context(input, location);
@@ -20,6 +61,20 @@ export class Parser<A> {
     return new ParseFail(result.furthest, result.expected);
   }
 
+  /**
+   * Combines two parsers one after the other, yielding the results of both in
+   * an array.
+   *
+   * ```ts
+   * import * as bnb from "bread-n-butter";
+   *
+   * const a = bnb.str("a");
+   * const b = bnb.str("b");
+   * const result = a.and(b).parse("ab");
+   * console.log(result.value);
+   * // => ["a", "b"]
+   * ```
+   */
   and<B>(parserB: Parser<B>): Parser<readonly [A, B]> {
     return new Parser((context) => {
       const a = this.action(context);
