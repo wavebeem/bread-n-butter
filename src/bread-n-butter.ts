@@ -23,7 +23,8 @@ export class Parser<A> {
    * **Note:** That use of this constructor is an advanced feature and not
    * needed for most parsers.
    *
-   * @param action the parsing action, which returns an ActionResult given the * current parsing Context
+   * @param action the parsing action, which should return either [[context.ok]]
+   * or [[context.fail]]
    *
    * ```ts
    * import * as bnb from "bread-n-butter";
@@ -36,7 +37,7 @@ export class Parser<A> {
    *     return context.ok(end, "AA");
    *   }
    *   // Return how far we got, and what value we were looking for
-   *   return context.fail(start, "AA");
+   *   return context.fail(start, ["AA"]);
    * });
    * ```
    */
