@@ -70,7 +70,8 @@ export class Parser<A> {
    *
    * const a = bnb.str("a");
    * const b = bnb.str("b");
-   * const result = a.and(b).parse("ab");
+   * const ab = a.and(b);
+   * const result = ab.parse("ab");
    * console.log(result.value);
    * // => ["a", "b"]
    * ```
@@ -90,6 +91,42 @@ export class Parser<A> {
     });
   }
 
+  /**
+   * Try to parse using the current parser. If that fails, parse using the
+   * second parser.
+   *
+   * This is good for parsing things like _expressions_ or
+   * _statements_ in programming languages, where many different types of things
+   * are applicable.
+   *
+   * ```ts
+   * import * as bnb from "bread-n-butter";
+   *
+   * const a = bnb.str("a");
+   * const b = bnb.str("b");
+   * const ab = a.or(b);
+   *
+   * console.log(ab.parse("a").value);
+   * // => "a"
+   *
+   * console.log(ab.parse("b").value);
+   * // => "b"
+   * ```
+   *
+   * **Tip:** You can also use this to implement optional parsers:
+   *
+   * ```ts
+   * import * as bnb from "bread-n-butter";
+   *
+   * const aMaybe = bnb.str("a").or(bnb.ok(null));
+   *
+   * console.log(aMaybe.parse("a").value);
+   * // => "a"
+   *
+   * console.log(aMaybe.parse("").value);
+   * // => null
+   * ```
+   */
   or<B>(parserB: Parser<B>): Parser<A | B> {
     return new Parser<A | B>((context) => {
       const a = this.action(context);
