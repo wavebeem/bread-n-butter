@@ -289,6 +289,24 @@ export class Parser<A> {
     });
   }
 
+  /**
+   * Ignores content before and after the current parser, based on the supplied
+   * parser. Generally used with a parser that parses optional whitespace.
+   *
+   * ```ts
+   * import * as bnb from "bread-n-butter";
+   *
+   * const whitespace = bnb.match(/\s+/);
+   * const optWhitespace = whitespace.or(bnb.ok(""));
+   * const item = bnb.str("a").trim(optWhitespace);
+   *
+   * item.parse("     a ").value;
+   * // => "a"
+   * ```
+   *
+   * **Note:** Whitespace parsers typically also parse code comments, since
+   * those are generally ignored when parsing, just like whitespace.
+   */
   trim<B>(beforeAndAfter: Parser<B>): Parser<A> {
     return this.wrap(beforeAndAfter, beforeAndAfter);
   }
