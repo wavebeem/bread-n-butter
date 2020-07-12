@@ -214,22 +214,47 @@ export class Parser<A> {
    *   return parser.wrap(bnb.str("("), bnb.str(")"));
    * }
    *
-   * const parenA = bnb.str("a").thru(paren).desc("(a)");
+   * const paren1 = bnb.str("a").thru(paren).desc("(a)");
+   * // --- vs ---
+   * const paren2 = paren(bnb.str("a")).desc("(a)");
    *
-   * console.log(parenA.parse("(a)").value);
+   * console.log(paren1.parse("(a)").value);
    * // => "a"
-   * ```
    *
-   * Compare without `.thru`:
-   *
-   * ```ts
-   * const parenA = paren(bnb.str("a")).desc("(a)");
+   * console.log(paren2.parse("(a)").value);
+   * // => "a"
    * ```
    */
   thru<B>(fn: (parser: this) => B): B {
     return fn(this);
   }
 
+  /**
+   * Returns a parser which parses the same value, but discards other error
+   * messages, using the one supplied instead.
+   *
+   * This function should only be used on tokens within your grammar. That means
+   * things like strings or numbers usually. You do not want to use it large
+   * things like class definitions. You should generally use this after any
+   * parser that uses a regular expression, otherwise your parse failure message
+   * will just be the regular expression source code.
+   *
+   * ```ts
+   * import * as bnb from "bread-n-butter";
+   *
+   * const jsonNumber1 = bnb
+   *   .match(/-?(0|[1-9][0-9]*)([.][0-9]+)?([eE][+-]?[0-9]+)?/)
+   *   .map(Number)
+   *
+   * console.log(jsonNumber1.parse("x"));
+   * // => ["/-?(0|[1-9][0-9]*)([.][0-9]+)?([eE][+-]?[0-9]+)?/"]
+   *
+   * const jsonNumber2 = jsonNumber1.desc("number");
+   *
+   * console.log(jsonNumber2.parse("x"));
+   * // => ["number"]
+   * ```
+   */
   desc(name: string): Parser<A> {
     return new Parser((context) => {
       const result = this.action(context);
