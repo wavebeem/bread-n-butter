@@ -23,6 +23,8 @@ export class Parser<A> {
    * **Note:** That use of this constructor is an advanced feature and not
    * needed for most parsers.
    *
+   * @param action the parsing action, which returns an ActionResult given the * current parsing Context
+   *
    * ```ts
    * import * as bnb from "bread-n-butter";
    *
@@ -46,7 +48,10 @@ export class Parser<A> {
    * Returns a [[ParseResult]] with the parse value if successful, otherwise a
    * failure value indicating where the error is and what values we were looking
    * for at the time of failure. Use [[isOK]] to check if the parse succeeded or
-   * not.
+   * not. Note that [[parse]] assumes you are parsing the entire input and will
+   * fail unless you do so.
+   *
+   * @param input the string to parse
    *
    * ```ts
    * import * as bnb from "bread-n-butter";
@@ -76,6 +81,8 @@ export class Parser<A> {
   /**
    * Combines two parsers one after the other, yielding the results of both in
    * an array.
+   *
+   * @param parserB the next parser
    *
    * ```ts
    * import * as bnb from "bread-n-butter";
@@ -111,6 +118,8 @@ export class Parser<A> {
    * This is good for parsing things like _expressions_ or
    * _statements_ in programming languages, where many different types of things
    * are applicable.
+   *
+   * @param parserB the parser to try next if this one fails
    *
    * ```ts
    * import * as bnb from "bread-n-butter";
@@ -491,7 +500,7 @@ export interface ParseNode<S extends string, A> {
 
 /**
  * **This feature is experimental and may be removed.**
- * @deprecated
+ * @ignore
  */
 export type Rules<Spec> = {
   [P in keyof Spec]: (lang: Language<Spec>) => Parser<Spec[P]>;
@@ -499,7 +508,7 @@ export type Rules<Spec> = {
 
 /**
  * **This feature is experimental and may be removed.**
- * @deprecated
+ * @ignore
  */
 export type Language<Spec> = {
   [P in keyof Spec]: Parser<Spec[P]>;
@@ -507,7 +516,7 @@ export type Language<Spec> = {
 
 /**
  * **This feature is experimental and may be removed.**
- * @deprecated
+ * @ignore
  */
 export function language<Spec>(rules: Rules<Spec>): Language<Spec> {
   const lang = {} as Language<Spec>;
