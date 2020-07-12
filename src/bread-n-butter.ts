@@ -137,6 +137,36 @@ export class Parser<A> {
     });
   }
 
+  /**
+   * Parse using the current parser. If it succeeds, pass the value to the
+   * callback function, which returns the next parser to use. Similar to
+   * [[and]], but you get to choose which parser comes next based on the value
+   * of the first one.
+   *
+   * This is good for parsing things like _expressions_ or _statements_ in
+   * programming languages, where many different types of things are applicable.
+   *
+   * ```ts
+   * import * as bnb from "bread-n-butter";
+   *
+   * const balance = bnb
+   *   .str("(")
+   *   .or(bnb.str("["))
+   *   .chain((first) => {
+   *     if (first === "(") {
+   *       return bnb.str(")").map((last) => [first, last]);
+   *     } else {
+   *       return bnb.str("]").map((last) => [first, last]);
+   *     }
+   *   });
+   *
+   * console.log(balance.parse("()").value);
+   * // => ["(", ")"]
+   *
+   * console.log(balance.parse("[]").value);
+   * // => ["[", "]"]
+   * ```
+   */
   chain<B>(fn: (value: A) => Parser<B>): Parser<B> {
     return new Parser((context) => {
       const a = this.action(context);
