@@ -519,6 +519,16 @@ export function language<Spec>(rules: Rules<Spec>): Language<Spec> {
   return lang;
 }
 
+/**
+ * Parser that yields the current [[SourceLocation]], containing properties
+ * `index`, `line` and `column`. Useful when used before and after a given
+ * parser, so you can know the source range for highlighting errors. Used
+ * internally by [[node]].
+ *
+ * ```ts
+ * // TODO
+ * ```
+ */
 export const location = new Parser<SourceLocation>((context) => {
   return context.ok(context.location.index, context.location);
 });
