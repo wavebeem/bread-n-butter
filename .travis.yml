@@ -1,0 +1,11 @@
+sudo: false
+cache: npm
+language: node_js
+node_js:
+  - "lts/*"
+install:
+  - npm ci
+script:
+  - npm test
+  - npm run check
+  - npm run build

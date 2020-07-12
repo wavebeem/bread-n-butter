@@ -1,8 +1,8 @@
-node_modules
-
+.vscode
 .DS_Store
 *.bak
 *~
-.vscode
 
+node_modules
 docs
+dist
