@@ -311,10 +311,30 @@ export class Parser<A> {
     return this.wrap(beforeAndAfter, beforeAndAfter);
   }
 
+  /**
+   * Repeats the current parser zero or more times, yielding the results in an
+   * array. Given that this can match **zero** times, take care not to parse
+   * this accidentally. Usually this parser should come up in the context of
+   * some other characters that must be present, such as `{}` to indicate a code
+   * block, with zero or more statements inside.
+   *
+   * ```ts
+   * const identifier = bnb.match(/[a-z]+/i);
+   * const expression = identifier.and(bnb.str("()")).map(([first]) => first);
+   * const statement = expression.and(bnb.str(";")).map(([first]) => first);
+   * const block = statement.many0().wrap(bnb.str("{"), bnb.str("}"));
+   *
+   * block.parse("{apple();banana();coconut();}").value
+   * // => ["apple", "banana", "coconut"];
+   * ```
+   */
   many0(): Parser<readonly A[]> {
     return this.many1().or(ok([]));
   }
 
+  /**
+   * Parsers the current parser **one** or more times. Similar to [[many0]].
+   */
   many1(): Parser<readonly A[]> {
     return new Parser((context) => {
       const items: A[] = [];
@@ -348,6 +368,33 @@ export class Parser<A> {
     return this.sepBy1(separator).or(ok([]));
   }
 
+  /**
+   * Returns a parser that parses one or more times, separated by the separator
+   * parser supplied. Useful for things parsing nonempty lists, such as a list
+   * of interfaces implemented by a class.
+   *
+   * ```ts
+   * const identifier = bnb.match(/[a-z]+/i);
+   * const classDecl = bnb
+   *   .str("class ")
+   *   .and(identifier)
+   *   .chain(([, name]) => {
+   *     return bnb
+   *       .str(" implements ")
+   *       .and(identifier.sepBy1(bnb.str(", ")))
+   *       .map(([, interfaces]) => {
+   *         return {
+   *           type: "Class",
+   *           name: name,
+   *           interfaces: interfaces,
+   *         };
+   *       });
+   *   });
+   *
+   * classDecl.parse("class A implements I, J, K").value;
+   * // => { type: "Class", name: "A", interfaces: ["I", "J", "K"] }
+   * ```
+   */
   sepBy1<B>(separator: Parser<B>): Parser<readonly A[]> {
     return this.chain((first) => {
       return separator
