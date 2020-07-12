@@ -3,7 +3,19 @@ import { Context } from "./context";
 import { ParseFail, ParseOK, ParseResult } from "./parse-result";
 import { SourceLocation } from "./source-location";
 
+/**
+ * Represents a parsing action. Avoid using `new Parser(action)` unless you
+ * absolutely have to. Most parsing can be done using the exported basic parsers
+ * or parser constructors (e.g. [[location]] or [[str]] or [[match]]) and the
+ * Parser methods such as [[chain]] and [[map]] and [[or]] and [[and]].
+ *
+ * @typeParam A the type of value yielded by this parser if it succeeds
+ */
 export class Parser<A> {
+  /**
+   * The parsing action. Takes a parsing Context and returns an ActionResult
+   * representing success or failure.
+   */
   readonly action: (context: Context) => ActionResult<A>;
 
   /**
@@ -374,6 +386,8 @@ export class Parser<A> {
    * of interfaces implemented by a class.
    *
    * ```ts
+   * import * as bnb from "bread-n-butter";
+   *
    * const identifier = bnb.match(/[a-z]+/i);
    * const classDecl = bnb
    *   .str("class ")
@@ -407,6 +421,37 @@ export class Parser<A> {
     });
   }
 
+  /**
+   * Returns a parser that parses the same content, but has a `type` field set
+   * to "ParseNode", `name` field set to the `name` argument passed in, and
+   * `start` and `end` fields containing [[SourceLocation]] objects describing
+   * the `index,` `line`, and `column` where the content started and ended.
+   *
+   * This should be used heavily within your parser so that you can do proper
+   * error reporting. You may also wish to keep this information available in
+   * the runtime of your language for things like stack traces.
+   *
+   * This is just a convenience method built around [[location]]. Don't hesitate
+   * to avoid this function and instead use [[thru]] call your own custom node
+   * creation function that fits your domain better.
+   *
+   * @typeParam S the name of this node (e.g. Identifier or String or Number)
+   *
+   * ```ts
+   * import * as bnb from "bread-n-butter";
+   *
+   * const identifier = bnb.match(/[a-z]+/i).node("Identifier");
+   *
+   * identifier.parse("hello").value;
+   * // => {
+   * //   type: "ParseNode",
+   * //   name: "Identifier",
+   * //   value: "hello",
+   * //   start: SourceLocation { index: 0, line: 1, column: 1 },
+   * //   end: SourceLocation { index: 5, line: 1, column: 6 } }
+   * // }
+   * ```
+   */
   node<S extends string>(name: S): Parser<ParseNode<S, A>> {
     return location.and(this).chain(([start, value]) => {
       return location.map((end) => {
@@ -417,6 +462,22 @@ export class Parser<A> {
   }
 }
 
+/**
+ * Result type from [[node]]. See [[node]] for more details.
+ *
+ * @typeParam S the node name (e.g. String or Number or Identifier)
+ * @typeParam A the value of this node
+ *
+ * You should set up type aliases using this type to make your code more
+ * readable:
+ *
+ * ```ts
+ * type LispSymbol = bnb.ParseNode<"LispSymbol", string>;
+ * type LispNumber = bnb.ParseNode<"LispNumber", number>;
+ * type LispList = bnb.ParseNode<"LispList", readonly LispExpr[]>;
+ * type LispExpr = LispSymbol | LispNumber | LispList;
+ * ```
+ */
 export interface ParseNode<S extends string, A> {
   type: "ParseNode";
   name: S;
@@ -427,14 +488,27 @@ export interface ParseNode<S extends string, A> {
 
 // https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/parsimmon/index.d.ts#L308
 // Thanks to the DefinitelyTyped folks for this type magic here
+
+/**
+ * **This feature is experimental and may be removed.**
+ * @deprecated
+ */
 export type Rules<Spec> = {
   [P in keyof Spec]: (lang: Language<Spec>) => Parser<Spec[P]>;
 };
 
+/**
+ * **This feature is experimental and may be removed.**
+ * @deprecated
+ */
 export type Language<Spec> = {
   [P in keyof Spec]: Parser<Spec[P]>;
 };
 
+/**
+ * **This feature is experimental and may be removed.**
+ * @deprecated
+ */
 export function language<Spec>(rules: Rules<Spec>): Language<Spec> {
   const lang = {} as Language<Spec>;
   for (const key of Object.keys(rules)) {
