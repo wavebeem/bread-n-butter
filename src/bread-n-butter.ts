@@ -266,6 +266,23 @@ export class Parser<A> {
     });
   }
 
+  /**
+   * Wraps the current parser with before & after parsers. Useful for adding the
+   * brackets onto an array parser, object parser, or argument list parser.
+   *
+   * ```ts
+   * import * as bnb from "bread-n-butter";
+   *
+   * const item = bnb.str("a");
+   * const comma = bnb.str(",")
+   * const lbrack = bnb.str("[");
+   * const rbrack = bnb.str("]");
+   * const list = item.sepBy0(comma).wrap(lbrack, rbrack);
+   *
+   * list.parse("[a,a,a]").value;
+   * // => ["a", "a", "a"]
+   * ```
+   */
   wrap<B, C>(before: Parser<B>, after: Parser<C>): Parser<A> {
     return before.and(this).chain(([, value]) => {
       return after.map(() => value);
