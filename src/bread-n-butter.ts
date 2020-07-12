@@ -203,6 +203,29 @@ export class Parser<A> {
     });
   }
 
+  /**
+   * Returns the callback called with the parser. Equivalent to `fn(this)`, but
+   * useful so you can put functions in the middle of a method chain.
+   *
+   * ```ts
+   * import * as bnb from "bread-n-butter";
+   *
+   * function paren(parser) {
+   *   return parser.wrap(bnb.str("("), bnb.str(")"));
+   * }
+   *
+   * const parenA = bnb.str("a").thru(paren).desc("(a)");
+   *
+   * console.log(parenA.parse("(a)").value);
+   * // => "a"
+   * ```
+   *
+   * Compare without `.thru`:
+   *
+   * ```ts
+   * const parenA = paren(bnb.str("a")).desc("(a)");
+   * ```
+   */
   thru<B>(fn: (parser: this) => B): B {
     return fn(this);
   }
