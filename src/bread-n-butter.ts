@@ -315,6 +315,8 @@ export class Parser<A> {
     return this.many1().or(ok([]));
   }
 
+  // TODO: Example like `class A implements I, J` (a list that has to have at
+  // least 1 item) in it.
   many1(): Parser<readonly A[]> {
     return new Parser((context) => {
       const items: A[] = [];
