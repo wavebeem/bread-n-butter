@@ -9,7 +9,7 @@
   "scripts": {
     "build": "tsc",
     "docs": "typedoc",
-    "check": "prettier --check \"{src,examples}/**/*.{ts,js}\"",
+    "check": "prettier --check \"{src,examples,__test__}/**/*.{ts,js}\"",
     "test": "jest",
     "start": "jest --watch"
   },

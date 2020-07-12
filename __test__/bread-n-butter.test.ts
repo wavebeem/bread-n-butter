@@ -42,10 +42,10 @@ test("and failure", () => {
   expect(isXY.parse("")).toMatchSnapshot();
 });
 
-test("separatedBy0", () => {
+test("sepBy0", () => {
   const isA = bnb.str("a");
   const isSep = bnb.str(",");
-  const isAList = isA.separatedBy0(isSep);
+  const isAList = isA.sepBy0(isSep);
   expect(isAList.parse("")).toMatchSnapshot();
   expect(isAList.parse("a")).toMatchSnapshot();
   expect(isAList.parse("a,a")).toMatchSnapshot();
@@ -54,10 +54,10 @@ test("separatedBy0", () => {
   expect(isAList.parse("b")).toMatchSnapshot();
 });
 
-test("separatedBy1", () => {
+test("sepBy1", () => {
   const isA = bnb.str("a");
   const isSep = bnb.str(",");
-  const isAList = isA.separatedBy1(isSep);
+  const isAList = isA.sepBy1(isSep);
   expect(isAList.parse("")).toMatchSnapshot();
   expect(isAList.parse("a")).toMatchSnapshot();
   expect(isAList.parse("a,a")).toMatchSnapshot();
@@ -117,7 +117,7 @@ test("lisp lists", () => {
   const isRP = bnb.str(")");
   const isWS = bnb.match(/\s+/);
   const isList = isLP.chain(() => {
-    return isSymbol.separatedBy0(isWS).chain((values) => {
+    return isSymbol.sepBy0(isWS).chain((values) => {
       return isRP.map(() => {
         return values;
       });

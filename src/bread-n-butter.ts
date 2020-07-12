@@ -481,6 +481,8 @@ export class Parser<A> {
  * readable:
  *
  * ```ts
+ * import * as bnb from "bread-n-butter";
+ *
  * type LispSymbol = bnb.ParseNode<"LispSymbol", string>;
  * type LispNumber = bnb.ParseNode<"LispNumber", number>;
  * type LispList = bnb.ParseNode<"LispList", readonly LispExpr[]>;
@@ -535,7 +537,23 @@ export function language<Spec>(rules: Rules<Spec>): Language<Spec> {
  * internally by [[node]].
  *
  * ```ts
- * // TODO
+ * import * as bnb from "bread-n-butter";
+ *
+ * const identifier = location.chain((start) => {
+ *   return bnb.match(/[a-z]+/i).chain((name) => {
+ *     return location.map((end) => {
+ *       return { type: "Identifier", name, start, end };
+ *     });
+ *   });
+ * });
+ *
+ * identifier.parse("abc").value;
+ * // => {
+ * //   type: "Identifier",
+ * //   name: "abc",
+ * //   start: SourceLocation { index: 0, line: 1, column: 1 },
+ * //   end: SourceLocation { index: 2, line: 1, column: 3 }
+ * // }
  * ```
  */
 export const location = new Parser<SourceLocation>((context) => {
