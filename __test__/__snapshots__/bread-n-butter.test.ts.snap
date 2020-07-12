@@ -300,13 +300,13 @@ ParseFail {
 }
 `;
 
-exports[`separatedBy0 1`] = `
+exports[`sepBy0 1`] = `
 ParseOK {
   "value": Array [],
 }
 `;
 
-exports[`separatedBy0 2`] = `
+exports[`sepBy0 2`] = `
 ParseOK {
   "value": Array [
     "a",
@@ -314,7 +314,7 @@ ParseOK {
 }
 `;
 
-exports[`separatedBy0 3`] = `
+exports[`sepBy0 3`] = `
 ParseOK {
   "value": Array [
     "a",
@@ -323,7 +323,7 @@ ParseOK {
 }
 `;
 
-exports[`separatedBy0 4`] = `
+exports[`sepBy0 4`] = `
 ParseOK {
   "value": Array [
     "a",
@@ -333,7 +333,7 @@ ParseOK {
 }
 `;
 
-exports[`separatedBy0 5`] = `
+exports[`sepBy0 5`] = `
 ParseFail {
   "expected": Array [
     "a",
@@ -346,7 +346,7 @@ ParseFail {
 }
 `;
 
-exports[`separatedBy0 6`] = `
+exports[`sepBy0 6`] = `
 ParseFail {
   "expected": Array [
     "<EOF>",
@@ -360,7 +360,7 @@ ParseFail {
 }
 `;
 
-exports[`separatedBy1 1`] = `
+exports[`sepBy1 1`] = `
 ParseFail {
   "expected": Array [
     "a",
@@ -373,7 +373,7 @@ ParseFail {
 }
 `;
 
-exports[`separatedBy1 2`] = `
+exports[`sepBy1 2`] = `
 ParseOK {
   "value": Array [
     "a",
@@ -381,7 +381,7 @@ ParseOK {
 }
 `;
 
-exports[`separatedBy1 3`] = `
+exports[`sepBy1 3`] = `
 ParseOK {
   "value": Array [
     "a",
@@ -390,7 +390,7 @@ ParseOK {
 }
 `;
 
-exports[`separatedBy1 4`] = `
+exports[`sepBy1 4`] = `
 ParseOK {
   "value": Array [
     "a",
@@ -400,7 +400,7 @@ ParseOK {
 }
 `;
 
-exports[`separatedBy1 5`] = `
+exports[`sepBy1 5`] = `
 ParseFail {
   "expected": Array [
     "a",
@@ -413,7 +413,7 @@ ParseFail {
 }
 `;
 
-exports[`separatedBy1 6`] = `
+exports[`sepBy1 6`] = `
 ParseFail {
   "expected": Array [
     "a",
