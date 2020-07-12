@@ -72,7 +72,8 @@ export class Parser<A> {
    * const b = bnb.str("b");
    * const ab = a.and(b);
    * const result = ab.parse("ab");
-   * console.log(result.value);
+   *
+   * result.value;
    * // => ["a", "b"]
    * ```
    */
@@ -106,10 +107,10 @@ export class Parser<A> {
    * const b = bnb.str("b");
    * const ab = a.or(b);
    *
-   * console.log(ab.parse("a").value);
+   * ab.parse("a").value;
    * // => "a"
    *
-   * console.log(ab.parse("b").value);
+   * ab.parse("b").value;
    * // => "b"
    * ```
    *
@@ -120,10 +121,10 @@ export class Parser<A> {
    *
    * const aMaybe = bnb.str("a").or(bnb.ok(null));
    *
-   * console.log(aMaybe.parse("a").value);
+   * aMaybe.parse("a").value;
    * // => "a"
    *
-   * console.log(aMaybe.parse("").value);
+   * aMaybe.parse("").value;
    * // => null
    * ```
    */
@@ -160,10 +161,10 @@ export class Parser<A> {
    *     }
    *   });
    *
-   * console.log(balance.parse("()").value);
+   * balance.parse("()").value;
    * // => ["(", ")"]
    *
-   * console.log(balance.parse("[]").value);
+   * balance.parse("[]").value;
    * // => ["[", "]"]
    * ```
    */
@@ -186,14 +187,14 @@ export class Parser<A> {
    *
    * const num = bnb.match(/[0-9]+/).map(str => Number(str));
    *
-   * console.log(num.parse("1312").value);
+   * num.parse("1312").value;
    * // => 1312
    *
    * const yes = bnb.str("yes").map(() => true);
    * const no = bnb.str("no").map(() => false);
    * const bool = yes.or(no);
    *
-   * console.log(bool.parse("no").value);
+   * bool.parse("no").value;
    * // => false
    * ```
    */
@@ -218,10 +219,10 @@ export class Parser<A> {
    * // --- vs ---
    * const paren2 = paren(bnb.str("a")).desc("(a)");
    *
-   * console.log(paren1.parse("(a)").value);
+   * paren1.parse("(a)").value;
    * // => "a"
    *
-   * console.log(paren2.parse("(a)").value);
+   * paren2.parse("(a)").value;
    * // => "a"
    * ```
    */
@@ -246,12 +247,12 @@ export class Parser<A> {
    *   .match(/-?(0|[1-9][0-9]*)([.][0-9]+)?([eE][+-]?[0-9]+)?/)
    *   .map(Number)
    *
-   * console.log(jsonNumber1.parse("x"));
+   * jsonNumber1.parse("x").expected;
    * // => ["/-?(0|[1-9][0-9]*)([.][0-9]+)?([eE][+-]?[0-9]+)?/"]
    *
    * const jsonNumber2 = jsonNumber1.desc("number");
    *
-   * console.log(jsonNumber2.parse("x"));
+   * jsonNumber2.parse("x").expected;
    * // => ["number"]
    * ```
    */
@@ -292,11 +293,27 @@ export class Parser<A> {
     });
   }
 
-  separatedBy0<B>(separator: Parser<B>): Parser<readonly A[]> {
-    return this.separatedBy1(separator).or(ok([]));
+  /**
+   * Returns a parser that parses zero or more times, separated by the separator
+   * parser supplied. Useful for things like arrays, objects, argument lists,
+   * etc.
+   *
+   * ```ts
+   * import * as bnb from "bread-n-butter";
+   *
+   * const item = bnb.str("a");
+   * const comma = bnb.str(",")
+   * const list = item.sepBy0(comma);
+   *
+   * list.parse("a,a,a").value;
+   * // => ["a", "a", "a"]
+   * ```
+   */
+  sepBy0<B>(separator: Parser<B>): Parser<readonly A[]> {
+    return this.sepBy1(separator).or(ok([]));
   }
 
-  separatedBy1<B>(separator: Parser<B>): Parser<readonly A[]> {
+  sepBy1<B>(separator: Parser<B>): Parser<readonly A[]> {
     return this.chain((first) => {
       return separator
         .and(this)
