@@ -178,6 +178,25 @@ export class Parser<A> {
     });
   }
 
+  /**
+   * Yields the value from the parser after being called with the callback.
+   *
+   * ```ts
+   * import * as bnb from "bread-n-butter";
+   *
+   * const num = bnb.match(/[0-9]+/).map(str => Number(str));
+   *
+   * console.log(num.parse("1312").value);
+   * // => 1312
+   *
+   * const yes = bnb.str("yes").map(() => true);
+   * const no = bnb.str("no").map(() => false);
+   * const bool = yes.or(no);
+   *
+   * console.log(bool.parse("no").value);
+   * // => false
+   * ```
+   */
   map<B>(fn: (value: A) => B): Parser<B> {
     return this.chain((a) => {
       return ok(fn(a));
