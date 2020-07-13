@@ -3,3 +3,9 @@
 - `end` locations are one character too far when using `.node`
 
 - should I use `readonly` arrays in return values? It kinda "infects" your types and you have to keep track of that when you make your own custom stuff
+
+- Document other files
+
+- Better template for TypeDoc?
+
+- Better readme for TypeDoc?
