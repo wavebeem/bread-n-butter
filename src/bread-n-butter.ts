@@ -561,18 +561,77 @@ export const location = new Parser<SourceLocation>((context) => {
   return context.ok(context.location.index, context.location);
 });
 
+/**
+ * Returns a parser that yields the given value and consumes no input. Usually
+ * used as a fallback parser in case you want the option of parsing nothing at
+ * all.
+ *
+ * ```ts
+ * import * as bnb from "bread-n-butter";
+ *
+ * const sign = bnb.str("+").or(bnb.str("-")).or(bnb.of(""));
+ *
+ * sign.parse("+").value; // => "+"
+ * sign.parse("-").value; // => "-"
+ * sign.parse("").value; // => ""
+ * ```
+ */
 export function ok<A>(value: A): Parser<A> {
   return new Parser((context) => {
     return context.ok(context.location.index, value);
   });
 }
 
+/**
+ * Returns a parser that fails with the given messages and consumes no input.
+ * Usually used in the `else` branch of a [[chain]] callback function.
+ *
+ * **Note:** Messages are are typically displayed as part of a comma separated
+ * list of "expected" values, like "expected list, number, object", so it's best
+ * to keep your failure messages limited to nouns. If you used a message like
+ * "number too big" instead, then you might end up showing the user an error
+ * message like "expected number too big" which doesn't make any sense at all.
+ *
+ * ```ts
+ * import * as bnb from "bread-n-butter";
+ *
+ * const  = bnb.match(/[0-9]+/).chain(str => {
+ *   const num = Number(str);
+ *   if (Number.isFinite(num)) {
+ *     return bnb.ok(num);
+ *   } else {
+ *     return bnb.fail(["smaller number"]);
+ *   }
+ * });
+ * ```
+ */
 export function fail<A>(expected: readonly string[]): Parser<A> {
   return new Parser((context) => {
     return context.fail(context.location.index, expected);
   });
 }
 
+/**
+ * This parser succeeds if the input has already been fully parsed. Typically
+ * you won't need to use this since [[parse]] already checks this for you. But
+ * if your language uses newlines to terminate statements, you might want to
+ * check for newlines **or** eof in case the text file doesn't end with a
+ * trailing newline (many text editors omit this character).
+ *
+ * ```ts
+ * import * as bnb from "bread-n-butter";
+ *
+ * const endline = bnb.match(/\r?\n/).or(bnb.eof);
+ * const statement = bnb
+ *   .match(/[a-z]+/i)
+ *   .and(endline)
+ *   .map(([first]) => first);
+ * const file = statement.many0();
+ *
+ * file.parse("A\nB\nC").value;
+ * // => ["A", "B", "C"]
+ * ```
+ */
 export const eof = new Parser<"<EOF>">((context) => {
   if (context.location.index < context.input.length) {
     return context.fail(context.location.index, ["<EOF>"]);
@@ -580,6 +639,26 @@ export const eof = new Parser<"<EOF>">((context) => {
   return context.ok(context.location.index, "<EOF>");
 });
 
+/**
+ * Returns a parser that matches the exact text supplied. This is typically used
+ * for things like parsing keywords (for, while, if, else, let...), or parsing
+ * static characters such as `{`, `}`, `"`, `'`...
+ *
+ * @param string the string to match
+ *
+ * ```ts
+ * import * as bnb from "bread-n-butter";
+ *
+ * const keywordWhile = bnb.str("while");
+ * const paren = bnb.str("(").and(bnb.str(")"));
+ *
+ * keywordWhile.parse("while").value;
+ * // => "while"
+ *
+ * paren.parse("()").value;
+ * // => ["(", ")"]
+ * ```
+ */
 export function str<A extends string>(string: A): Parser<A> {
   return new Parser<A>((context) => {
     const start = context.location.index;
@@ -591,7 +670,39 @@ export function str<A extends string>(string: A): Parser<A> {
   });
 }
 
+/**
+ * Returns a parser that matches the entire regular expression at the current
+ * parser position. Currently only supports regular expressions with no flags or
+ * just the "i" flag.
+ *
+ * @param regexp the regular expression to match
+ *
+ * **Note:** Do not use the `^` anchor at the beginning of your regular
+ * expression. This internally uses sticky (/y) regular expressions with
+ * `lastIndex` set to the current parsing index.
+ *
+ * **Note:** Capture groups `()` are not significant to this parser. The entire
+ * match is returned regardless of any capture groups used.
+ *
+ * ```ts
+ * import * as bnb from "bread-n-butter";
+ *
+ * const identifier = bnb.match(/[a-z_]+/i);
+ * const number = bnb.match(/[0-9]+/);
+ *
+ * number.parse("404").value;
+ * // => 404
+ *
+ * identifier.parse("internal_toString").value;
+ * // => "internal_toString"
+ * ```
+ */
 export function match(regexp: RegExp): Parser<string> {
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp
+  // TODO: Support other regexp flags
+  if (regexp.flags !== "i" && regexp.flags !== "") {
+    throw new Error("only the 'i' regexp flag is supported");
+  }
   return new Parser((context) => {
     const flags = regexp.ignoreCase ? "iy" : "y";
     const sticky = new RegExp(regexp.source, flags);
@@ -607,9 +718,47 @@ export function match(regexp: RegExp): Parser<string> {
   });
 }
 
+/**
+ * Takes a callback that returns a parser. The callback is called at most once,
+ * and only right when the parse action needs to happen.
+ *
+ * **Note:** This function exists so you can reference parsers that have not yet
+ * been defined. Many grammars are recursive, but JavaScript variables are not,
+ * so this is a workaround. Typically you will want to use `lazy` on parsers
+ * that parse expressions or statements, with lots of [[or]] calls chained
+ * together.
+ *
+ * **Note:** Recursive references can confuse TypeScript. Whenever you use
+ * `lazy` you should manually supply the type parameter so that TypeScript
+ * doesn't assume it's `any`.
+ *
+ * ```ts
+ * import * as bnb from "../src/bread-n-butter";
+ *
+ * type XExpr = XItem | XList;
+ * type XItem = string;
+ * type XList = readonly XExpr[];
+ *
+ * const expr: bnb.Parser<XExpr> = bnb.lazy(() => {
+ *   return list.or(item);
+ * });
+ * const item: bnb.Parser<XItem> = bnb.match(/[a-z]+/i);
+ * const list: bnb.Parser<XList> = expr
+ *   .sepBy0(bnb.str(","))
+ *   .wrap(bnb.str("["), bnb.str("]"));
+ *
+ * expr.parse("[a,b,[c,d,[]],[[e]]]").value;
+ * // => ["a", "b", ["c", "d", []], [["e"]]]
+ * ```
+ *
+ * Must use `lazy` here in order to reference variables `item` and `list`
+ * before they are defined. You could try to put `expr` at the end of the file,
+ * but then `list` would reference `expr` before it's defined, so `list` would
+ * have to be wrapped in `lazy` instead.
+ */
 export function lazy<A>(fn: () => Parser<A>): Parser<A> {
   let action: ((context: Context) => ActionResult<A>) | undefined;
-  return new Parser(function (context) {
+  return new Parser((context) => {
     if (!action) {
       action = fn().action;
     }
