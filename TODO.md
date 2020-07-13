@@ -9,3 +9,9 @@
 - Better template for TypeDoc?
 
 - Better readme for TypeDoc?
+
+- Add `tryParse` and update docs to use it?
+
+- Show how to import bnb depending on environment (native ES Modules in the browser, module using Webpack, or plain old Node require)
+
+- Get this on npm
