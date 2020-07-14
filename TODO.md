@@ -8,4 +8,4 @@
 
 - Get this on npm
 
-- Infinite loop detection inside many0 (and many1?)
+- TEST THE Infinite loop detection inside many0 (and many1?)

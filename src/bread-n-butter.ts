@@ -347,6 +347,11 @@ export class Parser<A> {
       let result = this.action(context);
       while (result.isOK()) {
         items.push(result.value);
+        if (context.location.index === result.location.index) {
+          throw new Error(
+            "infinite loop detected; don't call many0 or many1 with parsers that can accept zero characters"
+          );
+        }
         context = context.withLocation(result.location);
         result = result.merge(this.action(context));
       }
