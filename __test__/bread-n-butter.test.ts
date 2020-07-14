@@ -125,3 +125,11 @@ test("lisp lists", () => {
   });
   expect(isList.parse("(a b c)")).toMatchSnapshot();
 });
+
+test("node", () => {
+  const identifier = bnb
+    .match(/[a-z]+/i)
+    .node("Identifier")
+    .desc("identifier");
+  expect(identifier.parse("abc")).toMatchSnapshot();
+});

@@ -3,7 +3,7 @@ import * as bnb from "../src/bread-n-butter";
 
 type LispSymbol = bnb.ParseNode<"LispSymbol", string>;
 type LispNumber = bnb.ParseNode<"LispNumber", number>;
-type LispList = bnb.ParseNode<"LispList", readonly LispExpr[]>;
+type LispList = bnb.ParseNode<"LispList", LispExpr[]>;
 type LispExpr = LispSymbol | LispNumber | LispList;
 
 const lispExpr: bnb.Parser<LispExpr> = bnb.lazy(() => {

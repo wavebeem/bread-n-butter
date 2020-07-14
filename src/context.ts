@@ -2,8 +2,8 @@ import { SourceLocation } from "./source-location";
 import { ActionResult, ActionOK, ActionFail } from "./action-result";
 
 export class Context {
-  readonly input: string;
-  readonly location: SourceLocation;
+  input: string;
+  location: SourceLocation;
 
   constructor(input: string, location: SourceLocation) {
     this.input = input;
@@ -30,7 +30,7 @@ export class Context {
     );
   }
 
-  fail<A>(index: number, expected: readonly string[]): ActionResult<A> {
+  fail<A>(index: number, expected: string[]): ActionResult<A> {
     return new ActionFail(this.move(index), expected);
   }
 }

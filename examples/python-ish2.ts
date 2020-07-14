@@ -3,7 +3,7 @@ import * as bnb from "../src/bread-n-butter";
 
 ///////////////////////////////////////////////////////////////////////
 
-type PyBlock = { type: "Block"; statements: readonly PyStatement[] };
+type PyBlock = { type: "Block"; statements: PyStatement[] };
 type PyIdent = { type: "Ident"; value: string };
 type PyStatement = PyBlock | PyIdent;
 type Py = {
@@ -82,9 +82,9 @@ function py(indent: number): Py {
             .pyRestStatement.many0()
             .map((rest) => {
               return {
-                type: "Block",
+                type: "Block" as const,
                 statements: [first, ...rest],
-              } as const;
+              };
             });
         });
       });
@@ -96,9 +96,9 @@ function py(indent: number): Py {
     .and(pyEnd)
     .map((pair) => {
       return {
-        type: "Ident",
+        type: "Ident" as const,
         value: pair[0],
-      } as const;
+      };
     });
 
   return { pyStatement, pyRestStatement };

@@ -16,7 +16,7 @@ export class Parser<A> {
    * The parsing action. Takes a parsing Context and returns an ActionResult
    * representing success or failure.
    */
-  readonly action: (context: Context) => ActionResult<A>;
+  action: (context: Context) => ActionResult<A>;
 
   /**
    * Creates a new custom parser that performs the given parsing action.
@@ -119,7 +119,7 @@ export class Parser<A> {
    * // => ["a", "b"]
    * ```
    */
-  and<B>(parserB: Parser<B>): Parser<readonly [A, B]> {
+  and<B>(parserB: Parser<B>): Parser<[A, B]> {
     return new Parser((context) => {
       const a = this.action(context);
       if (!a.isOK()) {
@@ -127,7 +127,7 @@ export class Parser<A> {
       }
       const b = a.merge(parserB.action(context.withLocation(a.location)));
       if (b.isOK()) {
-        const value = [a.value, b.value] as const;
+        const value: [A, B] = [a.value, b.value];
         return b.merge(context.ok(b.location.index, value));
       }
       return b;
@@ -333,7 +333,7 @@ export class Parser<A> {
    * // => ["apple", "banana", "coconut"];
    * ```
    */
-  many0(): Parser<readonly A[]> {
+  many0(): Parser<A[]> {
     return this.many1().or(ok([]));
   }
 
@@ -341,7 +341,7 @@ export class Parser<A> {
    * Parsers the current parser **one** or more times. See [[many0]] for more
    * details.
    */
-  many1(): Parser<readonly A[]> {
+  many1(): Parser<A[]> {
     return new Parser((context) => {
       const items: A[] = [];
       let result = this.action(context);
@@ -366,7 +366,7 @@ export class Parser<A> {
    * list.tryParse("a,a,a"); // => ["a", "a", "a"]
    * ```
    */
-  sepBy0<B>(separator: Parser<B>): Parser<readonly A[]> {
+  sepBy0<B>(separator: Parser<B>): Parser<A[]> {
     return this.sepBy1(separator).or(ok([]));
   }
 
@@ -396,14 +396,14 @@ export class Parser<A> {
    * // => { type: "Class", name: "A", interfaces: ["I", "J", "K"] }
    * ```
    */
-  sepBy1<B>(separator: Parser<B>): Parser<readonly A[]> {
+  sepBy1<B>(separator: Parser<B>): Parser<A[]> {
     return this.chain((first) => {
       return separator
         .and(this)
         .map(([, value]) => value)
         .many0()
         .map((rest) => {
-          return [first, ...rest] as const;
+          return [first, ...rest];
         });
     });
   }
@@ -421,6 +421,10 @@ export class Parser<A> {
    * This is just a convenience method built around [[location]]. Don't hesitate
    * to avoid this function and instead use [[thru]] call your own custom node
    * creation function that fits your domain better.
+   *
+   * Location `index` is 0-indexed and `line`/`column` information is 1-indexed.
+   *
+   * **Note:** The `end` location is _exclusive_ of the parse (one character further)
    *
    * @typeParam S the name of this node (e.g. Identifier or String or Number)
    *
@@ -458,7 +462,7 @@ export class Parser<A> {
  * ```ts
  * type LispSymbol = bnb.ParseNode<"LispSymbol", string>;
  * type LispNumber = bnb.ParseNode<"LispNumber", number>;
- * type LispList = bnb.ParseNode<"LispList", readonly LispExpr[]>;
+ * type LispList = bnb.ParseNode<"LispList", LispExpr[]>;
  * type LispExpr = LispSymbol | LispNumber | LispList;
  * ```
  */
@@ -575,7 +579,7 @@ export function ok<A>(value: A): Parser<A> {
  * // => error: expected smaller number
  * ```
  */
-export function fail<A>(expected: readonly string[]): Parser<A> {
+export function fail<A>(expected: string[]): Parser<A> {
   return new Parser((context) => {
     return context.fail(context.location.index, expected);
   });
@@ -692,7 +696,7 @@ export function match(regexp: RegExp): Parser<string> {
  * ```ts
  * type XExpr = XItem | XList;
  * type XItem = string;
- * type XList = readonly XExpr[];
+ * type XList = XExpr[];
  * const expr: bnb.Parser<XExpr> = bnb.lazy(() => {
  *   return list.or(item);
  * });
@@ -710,11 +714,9 @@ export function match(regexp: RegExp): Parser<string> {
  * have to be wrapped in `lazy` instead.
  */
 export function lazy<A>(fn: () => Parser<A>): Parser<A> {
-  let action: ((context: Context) => ActionResult<A>) | undefined;
-  return new Parser((context) => {
-    if (!action) {
-      action = fn().action;
-    }
-    return action(context);
+  const parser: Parser<A> = new Parser((context) => {
+    parser.action = fn().action;
+    return parser.action(context);
   });
+  return parser;
 }

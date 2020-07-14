@@ -247,6 +247,26 @@ ParseFail {
 }
 `;
 
+exports[`node 1`] = `
+ParseOK {
+  "value": Object {
+    "end": SourceLocation {
+      "column": 4,
+      "index": 3,
+      "line": 1,
+    },
+    "name": "Identifier",
+    "start": SourceLocation {
+      "column": 1,
+      "index": 0,
+      "line": 1,
+    },
+    "type": "ParseNode",
+    "value": "abc",
+  },
+}
+`;
+
 exports[`or 1`] = `
 ParseOK {
   "value": "a",

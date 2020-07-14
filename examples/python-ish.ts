@@ -3,7 +3,7 @@ import * as bnb from "../src/bread-n-butter";
 
 ///////////////////////////////////////////////////////////////////////
 
-type PyBlock = { type: "Block"; statements: readonly PyStatement[] };
+type PyBlock = { type: "Block"; statements: PyStatement[] };
 type PyIdent = { type: "Ident"; value: string };
 type PyStatement = PyBlock | PyIdent;
 type PyLanguage = {
@@ -49,7 +49,7 @@ function py(indent: number): bnb.Language<PyLanguage> {
                   return {
                     type: "Block",
                     statements: [first, ...rest],
-                  } as const;
+                  };
                 });
             });
           });

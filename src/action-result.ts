@@ -3,16 +3,16 @@ import { SourceLocation } from "./source-location";
 export type ActionResult<A> = ActionOK<A> | ActionFail;
 
 export class ActionOK<A> {
-  readonly location: SourceLocation;
-  readonly value: A;
-  readonly furthest: SourceLocation;
-  readonly expected: readonly string[];
+  location: SourceLocation;
+  value: A;
+  furthest: SourceLocation;
+  expected: string[];
 
   constructor(
     location: SourceLocation,
     value: A,
     furthest: SourceLocation,
-    expected: readonly string[]
+    expected: string[]
   ) {
     this.location = location;
     this.value = value;
@@ -30,10 +30,10 @@ export class ActionOK<A> {
 }
 
 export class ActionFail {
-  readonly furthest: SourceLocation;
-  readonly expected: readonly string[];
+  furthest: SourceLocation;
+  expected: string[];
 
-  constructor(furthest: SourceLocation, expected: readonly string[]) {
+  constructor(furthest: SourceLocation, expected: string[]) {
     this.furthest = furthest;
     this.expected = expected;
   }
@@ -61,6 +61,6 @@ function merge<A, B>(a: ActionResult<A>, b: ActionResult<B>): ActionResult<A> {
   return new ActionFail(b.furthest, expected);
 }
 
-function union(a: readonly string[], b: readonly string[]): readonly string[] {
+function union(a: string[], b: string[]): string[] {
   return [...new Set([...a, ...b])].sort();
 }

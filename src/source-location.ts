@@ -1,7 +1,7 @@
 export class SourceLocation {
-  readonly index: number;
-  readonly line: number;
-  readonly column: number;
+  index: number;
+  line: number;
+  column: number;
 
   constructor(index: number, line: number, column: number) {
     this.index = index;
