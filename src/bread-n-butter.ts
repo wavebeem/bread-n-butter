@@ -27,8 +27,6 @@ export class Parser<A> {
    * or [[context.fail]]
    *
    * ```ts
-   * import * as bnb from "bread-n-butter";
-   *
    * const number = new bnb.Parser((context) => {
    *   const start = context.location.index;
    *   const end = context.location.index + 2;
@@ -55,8 +53,6 @@ export class Parser<A> {
    * @param input the string to parse
    *
    * ```ts
-   * import * as bnb from "bread-n-butter";
-   *
    * const a = bnb.str("a");
    * const result1 = a.parse("a");
    * if (result.isOK()) {
@@ -80,19 +76,45 @@ export class Parser<A> {
   }
 
   /**
+   * Return the result from successfully parsing. If the parse fails, throws an
+   * error with a message describing the line/column and what values were
+   * expected. This method is provided for convenience in case you are not
+   * interested in handling the failure case. If you plan on handling failures,
+   * use [[parse]] directly to get full information about went wrong so you can
+   * present the error message better for our application.
+   *
+   * @param input the string to parse
+   *
+   * ```ts
+   * const a = bnb.str("a");
+   * const value = a.tryParse("a");
+   * value; // => "a"
+   * ```
+   */
+  tryParse(input: string): A {
+    const result = this.parse(input);
+    if (result.isOK()) {
+      return result.value;
+    }
+    const { expected, location } = result;
+    const { line, column } = location;
+    const message =
+      `parse error at line ${line} column ${column}: ` +
+      `expected ${expected.join(", ")}`;
+    throw new Error(message);
+  }
+
+  /**
    * Combines two parsers one after the other, yielding the results of both in
    * an array.
    *
    * @param parserB the next parser
    *
    * ```ts
-   * import * as bnb from "bread-n-butter";
-   *
    * const a = bnb.str("a");
    * const b = bnb.str("b");
    * const ab = a.and(b);
-   * const result = ab.parse("ab");
-   *
+   * const result = ab.tryParse("a;
    * result.value;
    * // => ["a", "b"]
    * ```
@@ -123,31 +145,19 @@ export class Parser<A> {
    * @param parserB the parser to try next if this one fails
    *
    * ```ts
-   * import * as bnb from "bread-n-butter";
-   *
    * const a = bnb.str("a");
    * const b = bnb.str("b");
    * const ab = a.or(b);
-   *
-   * ab.parse("a").value;
-   * // => "a"
-   *
-   * ab.parse("b").value;
-   * // => "b"
+   * ab.tryParse("a"); // => "a"
+   * ab.tryParse("b"); // => "b"
    * ```
    *
    * **Tip:** You can also use this to implement optional parsers:
    *
    * ```ts
-   * import * as bnb from "bread-n-butter";
-   *
    * const aMaybe = bnb.str("a").or(bnb.ok(null));
-   *
-   * aMaybe.parse("a").value;
-   * // => "a"
-   *
-   * aMaybe.parse("").value;
-   * // => null
+   * aMaybe.tryParse("a"); // => "a"
+   * aMaybe.tryParse("");  // => null
    * ```
    */
   or<B>(parserB: Parser<B>): Parser<A | B> {
@@ -170,8 +180,6 @@ export class Parser<A> {
    * programming languages, where many different types of things are applicable.
    *
    * ```ts
-   * import * as bnb from "bread-n-butter";
-   *
    * const balance = bnb
    *   .str("(")
    *   .or(bnb.str("["))
@@ -182,12 +190,8 @@ export class Parser<A> {
    *       return bnb.str("]").map((last) => [first, last]);
    *     }
    *   });
-   *
-   * balance.parse("()").value;
-   * // => ["(", ")"]
-   *
-   * balance.parse("[]").value;
-   * // => ["[", "]"]
+   * balance.tryParse("()"); // => ["(", ")"]
+   * balance.tryParse("[]"); // => ["[", "]"]
    * ```
    */
   chain<B>(fn: (value: A) => Parser<B>): Parser<B> {
@@ -205,19 +209,15 @@ export class Parser<A> {
    * Yields the value from the parser after being called with the callback.
    *
    * ```ts
-   * import * as bnb from "bread-n-butter";
-   *
    * const num = bnb.match(/[0-9]+/).map(str => Number(str));
-   *
-   * num.parse("1312").value;
-   * // => 1312
+   * num.tryParse("1312"); // => 1312
+   * num.tryParse("777");  // =>  777
    *
    * const yes = bnb.str("yes").map(() => true);
    * const no = bnb.str("no").map(() => false);
    * const bool = yes.or(no);
-   *
-   * bool.parse("no").value;
-   * // => false
+   * bool.tryParse("yes"); // => true
+   * bool.tryParse("no");  // => false
    * ```
    */
   map<B>(fn: (value: A) => B): Parser<B> {
@@ -231,8 +231,6 @@ export class Parser<A> {
    * useful so you can put functions in the middle of a method chain.
    *
    * ```ts
-   * import * as bnb from "bread-n-butter";
-   *
    * function paren(parser) {
    *   return parser.wrap(bnb.str("("), bnb.str(")"));
    * }
@@ -241,11 +239,8 @@ export class Parser<A> {
    * // --- vs ---
    * const paren2 = paren(bnb.str("a")).desc("(a)");
    *
-   * paren1.parse("(a)").value;
-   * // => "a"
-   *
-   * paren2.parse("(a)").value;
-   * // => "a"
+   * paren1.tryParse("(a)"); // => "a"
+   * paren2.tryParse("(a)"); // => "a"
    * ```
    */
   thru<B>(fn: (parser: this) => B): B {
@@ -263,18 +258,15 @@ export class Parser<A> {
    * will just be the regular expression source code.
    *
    * ```ts
-   * import * as bnb from "bread-n-butter";
-   *
    * const jsonNumber1 = bnb
    *   .match(/-?(0|[1-9][0-9]*)([.][0-9]+)?([eE][+-]?[0-9]+)?/)
    *   .map(Number)
-   *
-   * jsonNumber1.parse("x").expected;
-   * // => ["/-?(0|[1-9][0-9]*)([.][0-9]+)?([eE][+-]?[0-9]+)?/"]
-   *
    * const jsonNumber2 = jsonNumber1.desc("number");
    *
-   * jsonNumber2.parse("x").expected;
+   * jsonNumber1.tryParse("x");
+   * // => ["/-?(0|[1-9][0-9]*)([.][0-9]+)?([eE][+-]?[0-9]+)?/"]
+   *
+   * jsonNumber2.tryParse("x");
    * // => ["number"]
    * ```
    */
@@ -293,16 +285,12 @@ export class Parser<A> {
    * brackets onto an array parser, object parser, or argument list parser.
    *
    * ```ts
-   * import * as bnb from "bread-n-butter";
-   *
    * const item = bnb.str("a");
    * const comma = bnb.str(",")
    * const lbrack = bnb.str("[");
    * const rbrack = bnb.str("]");
    * const list = item.sepBy0(comma).wrap(lbrack, rbrack);
-   *
-   * list.parse("[a,a,a]").value;
-   * // => ["a", "a", "a"]
+   * list.tryParse("[a,a,a]"); // => ["a", "a", "a"]
    * ```
    */
   wrap<B, C>(before: Parser<B>, after: Parser<C>): Parser<A> {
@@ -316,14 +304,10 @@ export class Parser<A> {
    * parser. Generally used with a parser that parses optional whitespace.
    *
    * ```ts
-   * import * as bnb from "bread-n-butter";
-   *
    * const whitespace = bnb.match(/\s+/);
    * const optWhitespace = whitespace.or(bnb.ok(""));
    * const item = bnb.str("a").trim(optWhitespace);
-   *
-   * item.parse("     a ").value;
-   * // => "a"
+   * item.tryParse("     a "); // => "a"
    * ```
    *
    * **Note:** Whitespace parsers typically also parse code comments, since
@@ -345,8 +329,7 @@ export class Parser<A> {
    * const expression = identifier.and(bnb.str("()")).map(([first]) => first);
    * const statement = expression.and(bnb.str(";")).map(([first]) => first);
    * const block = statement.many0().wrap(bnb.str("{"), bnb.str("}"));
-   *
-   * block.parse("{apple();banana();coconut();}").value
+   * block.tryParse("{apple();banana();coconut();}")
    * // => ["apple", "banana", "coconut"];
    * ```
    */
@@ -355,7 +338,8 @@ export class Parser<A> {
   }
 
   /**
-   * Parsers the current parser **one** or more times. Similar to [[many0]].
+   * Parsers the current parser **one** or more times. See [[many0]] for more
+   * details.
    */
   many1(): Parser<readonly A[]> {
     return new Parser((context) => {
@@ -376,14 +360,10 @@ export class Parser<A> {
    * etc.
    *
    * ```ts
-   * import * as bnb from "bread-n-butter";
-   *
    * const item = bnb.str("a");
    * const comma = bnb.str(",")
    * const list = item.sepBy0(comma);
-   *
-   * list.parse("a,a,a").value;
-   * // => ["a", "a", "a"]
+   * list.tryParse("a,a,a"); // => ["a", "a", "a"]
    * ```
    */
   sepBy0<B>(separator: Parser<B>): Parser<readonly A[]> {
@@ -396,8 +376,6 @@ export class Parser<A> {
    * of interfaces implemented by a class.
    *
    * ```ts
-   * import * as bnb from "bread-n-butter";
-   *
    * const identifier = bnb.match(/[a-z]+/i);
    * const classDecl = bnb
    *   .str("class ")
@@ -414,8 +392,7 @@ export class Parser<A> {
    *         };
    *       });
    *   });
-   *
-   * classDecl.parse("class A implements I, J, K").value;
+   * classDecl.tryParse("class A implements I, J, K");
    * // => { type: "Class", name: "A", interfaces: ["I", "J", "K"] }
    * ```
    */
@@ -448,11 +425,8 @@ export class Parser<A> {
    * @typeParam S the name of this node (e.g. Identifier or String or Number)
    *
    * ```ts
-   * import * as bnb from "bread-n-butter";
-   *
    * const identifier = bnb.match(/[a-z]+/i).node("Identifier");
-   *
-   * identifier.parse("hello").value;
+   * identifier.tryParse("hello");
    * // => {
    * //   type: "ParseNode",
    * //   name: "Identifier",
@@ -482,8 +456,6 @@ export class Parser<A> {
  * readable:
  *
  * ```ts
- * import * as bnb from "bread-n-butter";
- *
  * type LispSymbol = bnb.ParseNode<"LispSymbol", string>;
  * type LispNumber = bnb.ParseNode<"LispNumber", number>;
  * type LispList = bnb.ParseNode<"LispList", readonly LispExpr[]>;
@@ -538,8 +510,6 @@ export function language<Spec>(rules: Rules<Spec>): Language<Spec> {
  * internally by [[node]].
  *
  * ```ts
- * import * as bnb from "bread-n-butter";
- *
  * const identifier = location.chain((start) => {
  *   return bnb.match(/[a-z]+/i).chain((name) => {
  *     return location.map((end) => {
@@ -547,8 +517,7 @@ export function language<Spec>(rules: Rules<Spec>): Language<Spec> {
  *     });
  *   });
  * });
- *
- * identifier.parse("abc").value;
+ * identifier.tryParse("abc");
  * // => {
  * //   type: "Identifier",
  * //   name: "abc",
@@ -567,13 +536,10 @@ export const location = new Parser<SourceLocation>((context) => {
  * all.
  *
  * ```ts
- * import * as bnb from "bread-n-butter";
- *
  * const sign = bnb.str("+").or(bnb.str("-")).or(bnb.of(""));
- *
- * sign.parse("+").value; // => "+"
- * sign.parse("-").value; // => "-"
- * sign.parse("").value; // => ""
+ * sign.tryParse("+"); // => "+"
+ * sign.tryParse("-"); // => "-"
+ * sign.tryParse("");  // => ""
  * ```
  */
 export function ok<A>(value: A): Parser<A> {
@@ -593,16 +559,20 @@ export function ok<A>(value: A): Parser<A> {
  * message like "expected number too big" which doesn't make any sense at all.
  *
  * ```ts
- * import * as bnb from "bread-n-butter";
- *
- * const  = bnb.match(/[0-9]+/).chain(str => {
- *   const num = Number(str);
- *   if (Number.isFinite(num)) {
- *     return bnb.ok(num);
+ * const number = bnb.match(/[0-9]+/).chain(s => {
+ *   const n = Number(s);
+ *   if (Number.isFinite(n)) {
+ *     return bnb.ok(n);
  *   } else {
  *     return bnb.fail(["smaller number"]);
  *   }
  * });
+ *
+ * number.tryParse("1984");
+ * // => 1984
+ *
+ * number.tryParse("9".repeat(999));
+ * // => error: expected smaller number
  * ```
  */
 export function fail<A>(expected: readonly string[]): Parser<A> {
@@ -619,17 +589,13 @@ export function fail<A>(expected: readonly string[]): Parser<A> {
  * trailing newline (many text editors omit this character).
  *
  * ```ts
- * import * as bnb from "bread-n-butter";
- *
  * const endline = bnb.match(/\r?\n/).or(bnb.eof);
  * const statement = bnb
  *   .match(/[a-z]+/i)
  *   .and(endline)
  *   .map(([first]) => first);
  * const file = statement.many0();
- *
- * file.parse("A\nB\nC").value;
- * // => ["A", "B", "C"]
+ * file.tryParse("A\nB\nC"); // => ["A", "B", "C"]
  * ```
  */
 export const eof = new Parser<"<EOF>">((context) => {
@@ -647,16 +613,10 @@ export const eof = new Parser<"<EOF>">((context) => {
  * @param string the string to match
  *
  * ```ts
- * import * as bnb from "bread-n-butter";
- *
  * const keywordWhile = bnb.str("while");
  * const paren = bnb.str("(").and(bnb.str(")"));
- *
- * keywordWhile.parse("while").value;
- * // => "while"
- *
- * paren.parse("()").value;
- * // => ["(", ")"]
+ * keywordWhile.tryParse("while"); // => "while"
+ * paren.tryParse("()"); // => ["(", ")"]
  * ```
  */
 export function str<A extends string>(string: A): Parser<A> {
@@ -685,16 +645,13 @@ export function str<A extends string>(string: A): Parser<A> {
  * match is returned regardless of any capture groups used.
  *
  * ```ts
- * import * as bnb from "bread-n-butter";
- *
  * const identifier = bnb.match(/[a-z_]+/i);
- * const number = bnb.match(/[0-9]+/);
- *
- * number.parse("404").value;
- * // => 404
- *
- * identifier.parse("internal_toString").value;
+ * identifier.tryParse("internal_toString");
  * // => "internal_toString"
+ *
+ * const number = bnb.match(/[0-9]+/);
+ * number.tryParse("404");
+ * // => 404
  * ```
  */
 export function match(regexp: RegExp): Parser<string> {
@@ -733,12 +690,9 @@ export function match(regexp: RegExp): Parser<string> {
  * doesn't assume it's `any`.
  *
  * ```ts
- * import * as bnb from "../src/bread-n-butter";
- *
  * type XExpr = XItem | XList;
  * type XItem = string;
  * type XList = readonly XExpr[];
- *
  * const expr: bnb.Parser<XExpr> = bnb.lazy(() => {
  *   return list.or(item);
  * });
@@ -746,8 +700,7 @@ export function match(regexp: RegExp): Parser<string> {
  * const list: bnb.Parser<XList> = expr
  *   .sepBy0(bnb.str(","))
  *   .wrap(bnb.str("["), bnb.str("]"));
- *
- * expr.parse("[a,b,[c,d,[]],[[e]]]").value;
+ * expr.tryParse("[a,b,[c,d,[]],[[e]]]");
  * // => ["a", "b", ["c", "d", []], [["e"]]]
  * ```
  *

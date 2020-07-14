@@ -12,8 +12,6 @@
 
 - Add `tryParse` and update docs to use it?
 
-- Show how to import bnb depending on environment (native ES Modules in the browser, module using Webpack, or plain old Node require)
-
 - Get this on npm
 
 - Infinite loop detection inside many0 (and many1?)
