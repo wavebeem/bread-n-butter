@@ -471,6 +471,51 @@ ParseOK {
 }
 `;
 
+exports[`trim 1`] = `
+ParseOK {
+  "value": "x",
+}
+`;
+
+exports[`trim 2`] = `
+ParseFail {
+  "expected": Array [
+    "~",
+  ],
+  "location": SourceLocation {
+    "column": 3,
+    "index": 2,
+    "line": 1,
+  },
+}
+`;
+
+exports[`trim 3`] = `
+ParseFail {
+  "expected": Array [
+    "x",
+  ],
+  "location": SourceLocation {
+    "column": 2,
+    "index": 1,
+    "line": 1,
+  },
+}
+`;
+
+exports[`trim 4`] = `
+ParseFail {
+  "expected": Array [
+    "~",
+  ],
+  "location": SourceLocation {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+}
+`;
+
 exports[`wrap 1`] = `
 ParseOK {
   "value": "x",

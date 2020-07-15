@@ -178,6 +178,13 @@ test("wrap", () => {
   expect(p.parse("x>")).toMatchSnapshot();
 });
 
-test.todo("trim");
+test("trim", () => {
+  const p = bnb.str("x").trim(bnb.str("~"));
+  expect(p.parse("~x~")).toMatchSnapshot();
+  expect(p.parse("~x")).toMatchSnapshot();
+  expect(p.parse("~")).toMatchSnapshot();
+  expect(p.parse("x>")).toMatchSnapshot();
+});
+
 test.todo("fail");
 test.todo("lazy");
