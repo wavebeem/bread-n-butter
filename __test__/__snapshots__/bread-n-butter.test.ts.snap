@@ -102,6 +102,35 @@ ParseFail {
 }
 `;
 
+exports[`fail 1`] = `
+ParseFail {
+  "expected": Array [
+    "apple",
+    "banana",
+  ],
+  "location": SourceLocation {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+}
+`;
+
+exports[`fail 2`] = `
+ParseFail {
+  "expected": Array [
+    "apple",
+    "banana",
+    "other",
+  ],
+  "location": SourceLocation {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+}
+`;
+
 exports[`lisp lists 1`] = `
 ParseOK {
   "value": Array [

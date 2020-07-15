@@ -186,5 +186,11 @@ test("trim", () => {
   expect(p.parse("x>")).toMatchSnapshot();
 });
 
-test.todo("fail");
+test("fail", () => {
+  const p = bnb.fail(["apple", "banana"]);
+  const q = bnb.str("other").or(p);
+  expect(p.parse("")).toMatchSnapshot();
+  expect(q.parse("")).toMatchSnapshot();
+});
+
 test.todo("lazy");
