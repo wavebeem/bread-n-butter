@@ -148,7 +148,7 @@ test("node", () => {
 test("tryParse", () => {
   const a = bnb.str("a");
   expect(a.tryParse("a")).toEqual("a");
-  expect(a.tryParse("b")).toThrow();
+  expect(() => a.tryParse("b")).toThrow();
 });
 
 test("desc", () => {
