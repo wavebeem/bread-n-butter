@@ -83,6 +83,25 @@ ParseOK {
 }
 `;
 
+exports[`desc 1`] = `
+ParseOK {
+  "value": 9,
+}
+`;
+
+exports[`desc 2`] = `
+ParseFail {
+  "expected": Array [
+    "number",
+  ],
+  "location": SourceLocation {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+}
+`;
+
 exports[`lisp lists 1`] = `
 ParseOK {
   "value": Array [

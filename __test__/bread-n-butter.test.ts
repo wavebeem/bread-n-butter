@@ -77,6 +77,14 @@ test("many0", () => {
   expect(isAAA.parse("b")).toMatchSnapshot();
 });
 
+test("many0/many1 infinite loop detection", () => {
+  const p = bnb.str("");
+  const p0 = p.many0();
+  const p1 = p.many1();
+  expect(() => p0.parse("abc")).toThrow(/infinite loop/i);
+  expect(() => p1.parse("abc")).toThrow(/infinite loop/i);
+});
+
 test("many1", () => {
   const isA = bnb.str("a");
   const isAAA = isA.many1();
@@ -109,6 +117,9 @@ test("match", () => {
   const isNumber = bnb.match(/\d+/);
   expect(isNumber.parse("12")).toMatchSnapshot();
   expect(isNumber.parse("abc")).toMatchSnapshot();
+  expect(() => bnb.match(/./g)).toThrow();
+  expect(() => bnb.match(/./m)).toThrow();
+  expect(() => bnb.match(/./s)).toThrow();
 });
 
 test("lisp lists", () => {
@@ -133,3 +144,24 @@ test("node", () => {
     .desc("identifier");
   expect(identifier.parse("abc")).toMatchSnapshot();
 });
+
+test("tryParse", () => {
+  const a = bnb.str("a");
+  expect(a.tryParse("a")).toEqual("a");
+  expect(a.tryParse("b")).toThrow();
+});
+
+test("desc", () => {
+  const num = bnb
+    .match(/[0-9]+/)
+    .map(Number)
+    .desc("number");
+  expect(num.parse("9")).toMatchSnapshot();
+  expect(num.parse("x")).toMatchSnapshot();
+});
+
+test.todo("thru");
+test.todo("wrap");
+test.todo("trim");
+test.todo("fail");
+test.todo("lazy");
