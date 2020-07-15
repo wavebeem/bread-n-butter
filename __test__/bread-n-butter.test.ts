@@ -160,8 +160,24 @@ test("desc", () => {
   expect(num.parse("x")).toMatchSnapshot();
 });
 
-test.todo("thru");
-test.todo("wrap");
+test("thru", () => {
+  const n = 4;
+  const p = bnb.str("");
+  const x = p.thru((parser) => {
+    expect(parser).toBe(p);
+    return n;
+  });
+  expect(x).toEqual(n);
+});
+
+test("wrap", () => {
+  const p = bnb.str("x").wrap(bnb.str("<"), bnb.str(">"));
+  expect(p.parse("<x>")).toMatchSnapshot();
+  expect(p.parse("<x")).toMatchSnapshot();
+  expect(p.parse("<")).toMatchSnapshot();
+  expect(p.parse("x>")).toMatchSnapshot();
+});
+
 test.todo("trim");
 test.todo("fail");
 test.todo("lazy");
