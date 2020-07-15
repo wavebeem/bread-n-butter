@@ -131,6 +131,29 @@ ParseFail {
 }
 `;
 
+exports[`language 1`] = `
+ParseOK {
+  "value": Array [
+    "x",
+    "x",
+    Array [
+      "x",
+      Array [],
+      Array [
+        "x",
+      ],
+      Array [
+        Array [
+          "x",
+        ],
+      ],
+      "x",
+    ],
+    "x",
+  ],
+}
+`;
+
 exports[`lazy 1`] = `
 ParseOK {
   "value": Array [
@@ -334,6 +357,28 @@ ParseOK {
     },
     "type": "ParseNode",
     "value": "abc",
+  },
+}
+`;
+
+exports[`node 2`] = `
+ParseOK {
+  "value": Object {
+    "end": SourceLocation {
+      "column": 2,
+      "index": 5,
+      "line": 3,
+    },
+    "name": "ABC",
+    "start": SourceLocation {
+      "column": 1,
+      "index": 0,
+      "line": 1,
+    },
+    "type": "ParseNode",
+    "value": "A
+B
+C",
   },
 }
 `;

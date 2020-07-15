@@ -7,5 +7,3 @@
 - Better readme for TypeDoc?
 
 - Get this on npm
-
-- TEST THE Infinite loop detection inside many0 (and many1?)

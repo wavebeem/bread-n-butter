@@ -142,7 +142,9 @@ test("node", () => {
     .match(/[a-z]+/i)
     .node("Identifier")
     .desc("identifier");
+  const multiline = bnb.str("A\nB\nC").node("ABC");
   expect(identifier.parse("abc")).toMatchSnapshot();
+  expect(multiline.parse("A\nB\nC")).toMatchSnapshot();
 });
 
 test("tryParse", () => {
@@ -202,5 +204,28 @@ test("lazy", () => {
   });
   const item = bnb.str("x");
   const list = expr.sepBy0(bnb.str(" ")).wrap(bnb.str("("), bnb.str(")"));
+  expect(expr.parse("(x x (x () (x) ((x)) x) x)")).toMatchSnapshot();
+});
+
+test("language", () => {
+  type Expr = Item | List;
+  type Item = "x";
+  type List = Expr[];
+  type Spec = {
+    expr: Expr;
+    item: Item;
+    list: List;
+  };
+  const { expr } = bnb.language<Spec>({
+    expr(lang) {
+      return lang.item.or(lang.list);
+    },
+    item() {
+      return bnb.str("x");
+    },
+    list(lang) {
+      return lang.expr.sepBy0(bnb.str(" ")).wrap(bnb.str("("), bnb.str(")"));
+    },
+  });
   expect(expr.parse("(x x (x () (x) ((x)) x) x)")).toMatchSnapshot();
 });
