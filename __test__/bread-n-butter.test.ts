@@ -193,4 +193,14 @@ test("fail", () => {
   expect(q.parse("")).toMatchSnapshot();
 });
 
-test.todo("lazy");
+test("lazy", () => {
+  type Expr = Item | List;
+  type Item = "x";
+  type List = Expr[];
+  const expr: bnb.Parser<Expr> = bnb.lazy(() => {
+    return item.or(list);
+  });
+  const item = bnb.str("x");
+  const list = expr.sepBy0(bnb.str(" ")).wrap(bnb.str("("), bnb.str(")"));
+  expect(expr.parse("(x x (x () (x) ((x)) x) x)")).toMatchSnapshot();
+});

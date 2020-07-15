@@ -131,6 +131,29 @@ ParseFail {
 }
 `;
 
+exports[`lazy 1`] = `
+ParseOK {
+  "value": Array [
+    "x",
+    "x",
+    Array [
+      "x",
+      Array [],
+      Array [
+        "x",
+      ],
+      Array [
+        Array [
+          "x",
+        ],
+      ],
+      "x",
+    ],
+    "x",
+  ],
+}
+`;
+
 exports[`lisp lists 1`] = `
 ParseOK {
   "value": Array [
