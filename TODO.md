@@ -7,3 +7,5 @@
 - Better readme for TypeDoc?
 
 - Get this on npm
+
+- Make more methods private and underscored (search for @ignore)
