@@ -9,3 +9,5 @@
 - Get this on npm
 
 - Make more methods private and underscored (search for @ignore)
+
+- Test `column` on SourceLocation to see that emojis only count as 1 character not several
