@@ -34,7 +34,9 @@ export class Context {
     this.location = location;
   }
 
-  /** @ignore */
+  /**
+   * Returns a new context with the supplied location and the current input.
+   */
   withLocation(location: SourceLocation): Context {
     return new Context(this.input, location);
   }
