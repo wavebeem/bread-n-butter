@@ -1,7 +1,7 @@
 import { SourceLocation } from "./source-location";
 
 /**
- * Represents the result of calling a parse action.
+ * Represents the result of calling a parse.
  *
  * Either a ParseOK<A> or a ParseFail. To check if the parse result is OK, use
  * the `isOK()` method.
@@ -9,7 +9,7 @@ import { SourceLocation } from "./source-location";
 export type ParseResult<A> = ParseOK<A> | ParseFail;
 
 /**
- * Represents a successful parse action result.
+ * Represents a successful parse result.
  *
  * @typeParam A the type of the value parsed
  */
@@ -29,7 +29,7 @@ export class ParseOK<A> {
 }
 
 /**
- * Represents a failed parse action result, where it failed, and what types of
+ * Represents a failed parse result, where it failed, and what types of
  * values were expected at the point of failure.
  */
 export class ParseFail {
