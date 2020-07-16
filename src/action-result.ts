@@ -3,14 +3,14 @@ import { SourceLocation } from "./source-location";
 /**
  * Represents the result of a parser's action callback.
  *
- * Use the [[isOK]] method to check if the result was successful.
+ * Use the `isOK` method to check if the result was successful.
  */
 export type ActionResult<A> = ActionOK<A> | ActionFail;
 
 /**
  * Represents a successful result from a parser's action callback. This is made
- * automatically by calling [[context.ok]]. Make sure to use [[merge]] when
- * writing a custom parser that executes multiple parser actions.
+ * automatically by calling `context.ok`. Make sure to use `merge` when writing
+ * a custom parser that executes multiple parser actions.
  */
 export class ActionOK<A> {
   location: SourceLocation;
@@ -37,9 +37,8 @@ export class ActionOK<A> {
   }
 
   /**
-   * Make sure to call this method with the next [[ActionResult]] you use in
-   * order to properly keep track of error messages via `furthest` and
-   * `expected`.
+   * Make sure to call this method with the next `ActionResult` you use in order
+   * to properly keep track of error messages via `furthest` and `expected`.
    *
    * ```ts
    * // NOTE: This is not the shortest way to write this parser,
@@ -74,8 +73,8 @@ export class ActionOK<A> {
 
 /**
  * Represents a successful result from a parser's action callback. This is made
- * automatically by calling [[context.ok]]. Make sure to use [[merge]] when
- * writing a custom parser that executes multiple parser actions.
+ * automatically by calling `context.ok`. Make sure to use `merge` when writing
+ * a custom parser that executes multiple parser actions.
  */
 export class ActionFail {
   furthest: SourceLocation;
@@ -93,14 +92,13 @@ export class ActionFail {
   }
 
   /**
-   * Make sure to call this method with the next [[ActionResult]] you use in
-   * order to properly keep track of error messages via `furthest` and
-   * `expected`.
+   * Make sure to call this method with the next `ActionResult` you use in order
+   * to properly keep track of error messages via `furthest` and `expected`.
    *
    * ```ts
    * // NOTE: This is not the shortest way to write this parser,
-   * // it's just an example of a custom parser that needs to call multiple
-   * // other parsers.
+   * // it's just an example of a custom parser that needs to
+   * // call multiple other parsers.
    * function multiply(
    *   parser1: bnb.Parser<number>,
    *   parser2: bnb.Parser<number>

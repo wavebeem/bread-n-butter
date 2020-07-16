@@ -1,3 +1,4 @@
 {
-  "readme": "docs.md"
+  "readme": "docs.md",
+  "includeVersion": true
 }

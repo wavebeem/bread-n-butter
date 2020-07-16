@@ -7,8 +7,8 @@ import { ActionResult, ActionOK, ActionFail } from "./action-result";
  * `column` properties).
  *
  * This is not constructable directly, but is passed to every custom parser
- * action. Generally you will return a call to the [[ok]] or [[fail]] methods
- * from inside a custom parser.
+ * action. Generally you will return a call to the `ok` or `fail` methods from
+ * inside a custom parser.
  *
  * ```ts
  * const bracket = new bnb.Parser<"[" | "]">((context) => {

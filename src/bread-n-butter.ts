@@ -6,8 +6,8 @@ import { SourceLocation } from "./source-location";
 /**
  * Represents a parsing action. Avoid using `new Parser(action)` unless you
  * absolutely have to. Most parsing can be done using the exported basic parsers
- * or parser constructors (e.g. [[location]] or [[str]] or [[match]]) and the
- * Parser methods such as [[chain]] and [[map]] and [[or]] and [[and]].
+ * or parser constructors (e.g. `location` or `str` or `match`) and the
+ * Parser methods such as `chain` and `map` and `or` and `and`.
  *
  * @typeParam A the type of value yielded by this parser if it succeeds
  */
@@ -23,8 +23,8 @@ export class Parser<A> {
    * **Note:** That use of this constructor is an advanced feature and not
    * needed for most parsers.
    *
-   * @param action the parsing action, which should return either [[context.ok]]
-   * or [[context.fail]]
+   * @param action the parsing action, which should return either `context.ok`
+   * or `context.fail`.
    *
    * ```ts
    * const number = new bnb.Parser((context) => {
@@ -44,10 +44,10 @@ export class Parser<A> {
   }
 
   /**
-   * Returns a [[ParseResult]] with the parse value if successful, otherwise a
+   * Returns a `ParseResult` with the parse value if successful, otherwise a
    * failure value indicating where the error is and what values we were looking
-   * for at the time of failure. Use [[isOK]] to check if the parse succeeded or
-   * not. Note that [[parse]] assumes you are parsing the entire input and will
+   * for at the time of failure. Use `isOK` to check if the parse succeeded or
+   * not. Note that `parse` assumes you are parsing the entire input and will
    * fail unless you do so.
    *
    * @param input the string to parse
@@ -80,7 +80,7 @@ export class Parser<A> {
    * error with a message describing the line/column and what values were
    * expected. This method is provided for convenience in case you are not
    * interested in handling the failure case. If you plan on handling failures,
-   * use [[parse]] directly to get full information about went wrong so you can
+   * use `parse` directly to get full information about went wrong so you can
    * present the error message better for our application.
    *
    * @param input the string to parse
@@ -172,9 +172,9 @@ export class Parser<A> {
 
   /**
    * Parse using the current parser. If it succeeds, pass the value to the
-   * callback function, which returns the next parser to use. Similar to
-   * [[and]], but you get to choose which parser comes next based on the value
-   * of the first one.
+   * callback function, which returns the next parser to use. Similar to `and`,
+   * but you get to choose which parser comes next based on the value of the
+   * first one.
    *
    * This is good for parsing things like _expressions_ or _statements_ in
    * programming languages, where many different types of things are applicable.
@@ -338,7 +338,7 @@ export class Parser<A> {
   }
 
   /**
-   * Parsers the current parser **one** or more times. See [[many0]] for more
+   * Parsers the current parser **one** or more times. See `many0` for more
    * details.
    */
   many1(): Parser<A[]> {
@@ -416,20 +416,21 @@ export class Parser<A> {
   /**
    * Returns a parser that parses the same content, but has a `type` field set
    * to "ParseNode", `name` field set to the `name` argument passed in, and
-   * `start` and `end` fields containing [[SourceLocation]] objects describing
-   * the `index,` `line`, and `column` where the content started and ended.
+   * `start` and `end` fields containing `SourceLocation` objects describing the
+   * `index,` `line`, and `column` where the content started and ended.
    *
    * This should be used heavily within your parser so that you can do proper
    * error reporting. You may also wish to keep this information available in
    * the runtime of your language for things like stack traces.
    *
-   * This is just a convenience method built around [[location]]. Don't hesitate
-   * to avoid this function and instead use [[thru]] call your own custom node
+   * This is just a convenience method built around `location`. Don't hesitate
+   * to avoid this function and instead use `thru` call your own custom node
    * creation function that fits your domain better.
    *
    * Location `index` is 0-indexed and `line`/`column` information is 1-indexed.
    *
-   * **Note:** The `end` location is _exclusive_ of the parse (one character further)
+   * **Note:** The `end` location is _exclusive_ of the parse (one character
+   * further)
    *
    * @typeParam S the name of this node (e.g. Identifier or String or Number)
    *
@@ -456,7 +457,7 @@ export class Parser<A> {
 }
 
 /**
- * Result type from [[node]]. See [[node]] for more details.
+ * Result type from `node`. See `node` for more details.
  *
  * @typeParam S the node name (e.g. String or Number or Identifier)
  * @typeParam A the value of this node
@@ -513,10 +514,10 @@ export function language<Spec>(rules: Rules<Spec>): Language<Spec> {
 }
 
 /**
- * Parser that yields the current [[SourceLocation]], containing properties
+ * Parser that yields the current `SourceLocation`, containing properties
  * `index`, `line` and `column`. Useful when used before and after a given
  * parser, so you can know the source range for highlighting errors. Used
- * internally by [[node]].
+ * internally by `node`.
  *
  * ```ts
  * const identifier = location.chain((start) => {
@@ -559,7 +560,7 @@ export function ok<A>(value: A): Parser<A> {
 
 /**
  * Returns a parser that fails with the given messages and consumes no input.
- * Usually used in the `else` branch of a [[chain]] callback function.
+ * Usually used in the `else` branch of a `chain` callback function.
  *
  * **Note:** Messages are are typically displayed as part of a comma separated
  * list of "expected" values, like "expected list, number, object", so it's best
@@ -592,10 +593,10 @@ export function fail<A>(expected: string[]): Parser<A> {
 
 /**
  * This parser succeeds if the input has already been fully parsed. Typically
- * you won't need to use this since [[parse]] already checks this for you. But
- * if your language uses newlines to terminate statements, you might want to
- * check for newlines **or** eof in case the text file doesn't end with a
- * trailing newline (many text editors omit this character).
+ * you won't need to use this since `parse` already checks this for you. But if
+ * your language uses newlines to terminate statements, you might want to check
+ * for newlines **or** eof in case the text file doesn't end with a trailing
+ * newline (many text editors omit this character).
  *
  * ```ts
  * const endline = bnb.match(/\r?\n/).or(bnb.eof);
@@ -691,7 +692,7 @@ export function match(regexp: RegExp): Parser<string> {
  * **Note:** This function exists so you can reference parsers that have not yet
  * been defined. Many grammars are recursive, but JavaScript variables are not,
  * so this is a workaround. Typically you will want to use `lazy` on parsers
- * that parse expressions or statements, with lots of [[or]] calls chained
+ * that parse expressions or statements, with lots of `or` calls chained
  * together.
  *
  * **Note:** Recursive references can confuse TypeScript. Whenever you use
@@ -713,7 +714,7 @@ export function match(regexp: RegExp): Parser<string> {
  * // => ["a", "b", ["c", "d", []], [["e"]]]
  * ```
  *
- * Must use `lazy` here in order to reference variables `item` and `list`
+ * `lazy` must be used here in order to reference variables `item` and `list`
  * before they are defined. You could try to put `expr` at the end of the file,
  * but then `list` would reference `expr` before it's defined, so `list` would
  * have to be wrapped in `lazy` instead.
