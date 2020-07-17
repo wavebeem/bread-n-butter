@@ -1,4 +1,5 @@
 {
   "readme": "docs.md",
+  "out": "docs",
   "includeVersion": true
 }
