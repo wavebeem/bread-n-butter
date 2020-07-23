@@ -229,3 +229,15 @@ test("language", () => {
   });
   expect(expr.parse("(x x (x () (x) ((x)) x) x)")).toMatchSnapshot();
 });
+
+test("str", () => {
+  const items = ["", "abc", "🙂", "1\n2\n3"];
+  for (const str of items) {
+    expect(bnb.str(str).tryParse(str)).toBe(str);
+  }
+});
+
+test("emoji length", () => {
+  const result = bnb.str("🙂🙂🙂").node("Emoji").parse("🙂🙂🙂");
+  expect(result).toMatchSnapshot();
+});

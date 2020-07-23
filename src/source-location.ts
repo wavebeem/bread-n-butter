@@ -34,7 +34,11 @@ export class SourceLocation {
   add(chunk: string): SourceLocation {
     let { index, line, column } = this;
     for (const ch of chunk) {
-      index++;
+      // JavaScript strings measure `length` in terms of 16-bit numbers, rather
+      // than Unicode code points, so sometimes each "character" can have a
+      // length bigger than 1, therefore we have to add the "length" of the
+      // character here rather than just using `++` to increment the index.
+      index += ch.length;
       if (ch === "\n") {
         line++;
         column = 1;

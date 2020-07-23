@@ -102,6 +102,26 @@ ParseFail {
 }
 `;
 
+exports[`emoji length 1`] = `
+ParseOK {
+  "value": Object {
+    "end": SourceLocation {
+      "column": 4,
+      "index": 6,
+      "line": 1,
+    },
+    "name": "Emoji",
+    "start": SourceLocation {
+      "column": 1,
+      "index": 0,
+      "line": 1,
+    },
+    "type": "ParseNode",
+    "value": "🙂🙂🙂",
+  },
+}
+`;
+
 exports[`fail 1`] = `
 ParseFail {
   "expected": Array [
