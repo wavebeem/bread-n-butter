@@ -1,3 +1,8 @@
+---
+layout: "layouts/home.njk"
+title: "bread-n-butter"
+---
+
 **EXPERIMENTAL: Do not use in production**
 
 # bread-n-butter
@@ -34,7 +39,7 @@ bnb is heavily inspired by [parsimmon](https://github.com/jneen/parsimmon), but 
 
 ### Parsing Static Strings
 
-bnb is built upon instanced of `bnb.Parser`, but most of the time you will use
+bnb is built upon instances of `bnb.Parser`, but most of the time you will use
 helper functions and methods rather than writing parsers from scratch. `bnb.str` will match the exact string passed to it, and `.and` can be used to combine two parsers and return their values as an array.
 
 Typically you will use `.parse` to get the result of parsing a string, but for the sake of brevity, most examples here will use `.tryParse` which is shorter but throws an exception when parsing fails.
@@ -78,6 +83,6 @@ See [the examples](https://github.com/wavebeem/bread-n-butter/tree/main/examples
 
 ## API
 
-Read the {@link "bread-n-butter" | full API documentation} for more information about every function.
+Read the [full API documentation](api) for more information about every function.
 
 Also, if you are using [Visual Studio Code](https://code.visualstudio.com/) and have installed bnb through npm, you should get automatic API completion with inline documentation so you can save time by never leaving your editor.

@@ -17,7 +17,6 @@ export class ParseOK<A> {
   /** The parsed value */
   value: A;
 
-  /** @ignore */
   constructor(value: A) {
     this.value = value;
   }
@@ -38,7 +37,6 @@ export class ParseFail {
   /** List of expected values at the location the parse failed */
   expected: string[];
 
-  /** @ignore */
   constructor(location: SourceLocation, expected: string[]) {
     this.location = location;
     this.expected = expected;

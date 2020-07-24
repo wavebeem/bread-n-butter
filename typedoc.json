@@ -1,5 +1,8 @@
 {
+  "mode": "library",
   "readme": "docs.md",
   "out": "docs",
+  "excludeNotExported": true,
+  "excludeExternals": true,
   "includeVersion": true
 }

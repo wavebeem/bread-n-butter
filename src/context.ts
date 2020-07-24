@@ -28,7 +28,6 @@ export class Context {
   /** the current parse location */
   location: SourceLocation;
 
-  /** @ignore */
   constructor(input: string, location: SourceLocation) {
     this.input = input;
     this.location = location;
@@ -41,7 +40,6 @@ export class Context {
     return new Context(this.input, location);
   }
 
-  /** @ignore */
   move(index: number): SourceLocation {
     if (index === this.location.index) {
       return this.location;

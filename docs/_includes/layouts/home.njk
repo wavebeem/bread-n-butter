@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'" />
+    <link rel="stylesheet" href="{{ '/css/style.css' | url }}" />
+    <title>{{ renderData.title or title or metadata.title or "Untitled"}}</title>
+  </head>
+  <body>
+    <nav>
+      <a href="{{ '/' | url }}">Home</a>
+      <a href="{{ '/api' | url }}">API</a>
+    </nav>
+    <main>
+      {{ content | safe }}
+    </main>
+    <footer>&copy; Brian Mock</footer>
+  </body>
+</html>

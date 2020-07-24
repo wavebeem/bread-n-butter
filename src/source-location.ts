@@ -23,14 +23,12 @@ export class SourceLocation {
    */
   column: number;
 
-  /** @ignore */
   constructor(index: number, line: number, column: number) {
     this.index = index;
     this.line = line;
     this.column = column;
   }
 
-  /** @ignore */
   add(chunk: string): SourceLocation {
     let { index, line, column } = this;
     for (const ch of chunk) {

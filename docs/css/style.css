@@ -1,0 +1,29 @@
+:root {
+  --color-link: #06c;
+  --color-fg: #222;
+  --color-bg: #fafafa;
+}
+
+html {
+  font-family: sans-serif;
+  font-size: 1.25em;
+  background: var(--color-bg);
+  color: var(--color-fg);
+  padding: 1rem;
+  line-height: 1.5;
+  max-width: 800px;
+  margin: 0 auto;
+  overflow-y: scroll;
+}
+
+a {
+  color: var(--color-link);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-link: #0cf;
+    --color-fg: #ddd;
+    --color-bg: #333;
+  }
+}

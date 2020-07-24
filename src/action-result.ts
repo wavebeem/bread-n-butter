@@ -18,7 +18,6 @@ export class ActionOK<A> {
   furthest: SourceLocation;
   expected: string[];
 
-  /** @ignore */
   constructor(
     location: SourceLocation,
     value: A,
@@ -80,7 +79,6 @@ export class ActionFail {
   furthest: SourceLocation;
   expected: string[];
 
-  /** @ignore */
   constructor(furthest: SourceLocation, expected: string[]) {
     this.furthest = furthest;
     this.expected = expected;
@@ -126,7 +124,6 @@ export class ActionFail {
   }
 }
 
-/** @ignore */
 function merge<A, B>(a: ActionResult<A>, b: ActionResult<B>): ActionResult<A> {
   if (a.furthest.index > b.furthest.index) {
     return a;
@@ -141,7 +138,6 @@ function merge<A, B>(a: ActionResult<A>, b: ActionResult<B>): ActionResult<A> {
   return new ActionFail(b.furthest, expected);
 }
 
-/** @ignore */
 function union(a: string[], b: string[]): string[] {
   return [...new Set([...a, ...b])].sort();
 }
