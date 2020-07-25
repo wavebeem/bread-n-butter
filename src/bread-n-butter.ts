@@ -4,12 +4,7 @@ import { ParseFail, ParseOK, ParseResult } from "./parse-result";
 import { SourceLocation } from "./source-location";
 
 /**
- * Represents a parsing action. Avoid using `new Parser(action)` unless you
- * absolutely have to. Most parsing can be done using the exported basic parsers
- * or parser constructors (e.g. `location` or `str` or `match`) and the
- * Parser methods such as `chain` and `map` and `or` and `and`.
- *
- * @typeParam A the type of value yielded by this parser if it succeeds
+ * Represents a parsing action; typically not created directly via `new`.
  */
 export class Parser<A> {
   /**
@@ -20,24 +15,6 @@ export class Parser<A> {
 
   /**
    * Creates a new custom parser that performs the given parsing action.
-   * **Note:** That use of this constructor is an advanced feature and not
-   * needed for most parsers.
-   *
-   * @param action the parsing action, which should return either `context.ok`
-   * or `context.fail`.
-   *
-   * ```ts
-   * const number = new bnb.Parser((context) => {
-   *   const start = context.location.index;
-   *   const end = context.location.index + 2;
-   *   if (context.input.slice(start, end) === "AA") {
-   *     // Return how far we got, and what value we found
-   *     return context.ok(end, "AA");
-   *   }
-   *   // Return how far we got, and what value we were looking for
-   *   return context.fail(start, ["AA"]);
-   * });
-   * ```
    */
   constructor(action: (context: Context) => ActionResult<A>) {
     this.action = action;
@@ -130,21 +107,7 @@ export class Parser<A> {
   }
 
   /**
-   * Returns the callback called with the parser. Equivalent to `fn(this)`, but
-   * useful so you can put functions in the middle of a method chain.
-   *
-   * ```ts
-   * function paren(parser) {
-   *   return parser.wrap(bnb.str("("), bnb.str(")"));
-   * }
-   *
-   * const paren1 = bnb.str("a").thru(paren).desc("(a)");
-   * // --- vs ---
-   * const paren2 = paren(bnb.str("a")).desc("(a)");
-   *
-   * paren1.tryParse("(a)"); // => "a"
-   * paren2.tryParse("(a)"); // => "a"
-   * ```
+   * Returns the callback called with the parser.
    */
   thru<B>(fn: (parser: this) => B): B {
     return fn(this);
@@ -183,19 +146,7 @@ export class Parser<A> {
 
   /**
    * Repeats the current parser zero or more times, yielding the results in an
-   * array. Given that this can match **zero** times, take care not to parse
-   * this accidentally. Usually this parser should come up in the context of
-   * some other characters that must be present, such as `{}` to indicate a code
-   * block, with zero or more statements inside.
-   *
-   * ```ts
-   * const identifier = bnb.match(/[a-z]+/i);
-   * const expression = identifier.and(bnb.str("()")).map(([first]) => first);
-   * const statement = expression.and(bnb.str(";")).map(([first]) => first);
-   * const block = statement.many0().wrap(bnb.str("{"), bnb.str("}"));
-   * block.tryParse("{apple();banana();coconut();}")
-   * // => ["apple", "banana", "coconut"];
-   * ```
+   * array.
    */
   many0(): Parser<A[]> {
     return this.many1().or(ok([]));
@@ -225,15 +176,7 @@ export class Parser<A> {
 
   /**
    * Returns a parser that parses zero or more times, separated by the separator
-   * parser supplied. Useful for things like arrays, objects, argument lists,
-   * etc.
-   *
-   * ```ts
-   * const item = bnb.str("a");
-   * const comma = bnb.str(",")
-   * const list = item.sepBy0(comma);
-   * list.tryParse("a,a,a"); // => ["a", "a", "a"]
-   * ```
+   * parser supplied.
    */
   sepBy0<B>(separator: Parser<B>): Parser<A[]> {
     return this.sepBy1(separator).or(ok([]));
@@ -241,29 +184,7 @@ export class Parser<A> {
 
   /**
    * Returns a parser that parses one or more times, separated by the separator
-   * parser supplied. Useful for things parsing nonempty lists, such as a list
-   * of interfaces implemented by a class.
-   *
-   * ```ts
-   * const identifier = bnb.match(/[a-z]+/i);
-   * const classDecl = bnb
-   *   .str("class ")
-   *   .and(identifier)
-   *   .chain(([, name]) => {
-   *     return bnb
-   *       .str(" implements ")
-   *       .and(identifier.sepBy1(bnb.str(", ")))
-   *       .map(([, interfaces]) => {
-   *         return {
-   *           type: "Class",
-   *           name: name,
-   *           interfaces: interfaces,
-   *         };
-   *       });
-   *   });
-   * classDecl.tryParse("class A implements I, J, K");
-   * // => { type: "Class", name: "A", interfaces: ["I", "J", "K"] }
-   * ```
+   * parser supplied.
    */
   sepBy1<B>(separator: Parser<B>): Parser<A[]> {
     return this.chain((first) => {
@@ -278,37 +199,7 @@ export class Parser<A> {
   }
 
   /**
-   * Returns a parser that parses the same content, but has a `type` field set
-   * to "ParseNode", `name` field set to the `name` argument passed in, and
-   * `start` and `end` fields containing `SourceLocation` objects describing the
-   * `index,` `line`, and `column` where the content started and ended.
-   *
-   * This should be used heavily within your parser so that you can do proper
-   * error reporting. You may also wish to keep this information available in
-   * the runtime of your language for things like stack traces.
-   *
-   * This is just a convenience method built around `location`. Don't hesitate
-   * to avoid this function and instead use `thru` call your own custom node
-   * creation function that fits your domain better.
-   *
-   * Location `index` is 0-indexed and `line`/`column` information is 1-indexed.
-   *
-   * **Note:** The `end` location is _exclusive_ of the parse (one character
-   * further)
-   *
-   * @typeParam S the name of this node (e.g. Identifier or String or Number)
-   *
-   * ```ts
-   * const identifier = bnb.match(/[a-z]+/i).node("Identifier");
-   * identifier.tryParse("hello");
-   * // => {
-   * //   type: "ParseNode",
-   * //   name: "Identifier",
-   * //   value: "hello",
-   * //   start: SourceLocation { index: 0, line: 1, column: 1 },
-   * //   end: SourceLocation { index: 5, line: 1, column: 6 } }
-   * // }
-   * ```
+   * Returns a parser that adds name and start/end location metadata.
    */
   node<S extends string>(name: S): Parser<ParseNode<S, A>> {
     return location.and(this).chain(([start, value]) => {
@@ -322,19 +213,6 @@ export class Parser<A> {
 
 /**
  * Result type from `node`. See `node` for more details.
- *
- * @typeParam S the node name (e.g. String or Number or Identifier)
- * @typeParam A the value of this node
- *
- * You should set up type aliases using this type to make your code more
- * readable:
- *
- * ```ts
- * type LispSymbol = bnb.ParseNode<"LispSymbol", string>;
- * type LispNumber = bnb.ParseNode<"LispNumber", number>;
- * type LispList = bnb.ParseNode<"LispList", LispExpr[]>;
- * type LispExpr = LispSymbol | LispNumber | LispList;
- * ```
  */
 export interface ParseNode<S extends string, A> {
   type: "ParseNode";
@@ -423,21 +301,7 @@ export function fail<A>(expected: string[]): Parser<A> {
 }
 
 /**
- * This parser succeeds if the input has already been fully parsed. Typically
- * you won't need to use this since `parse` already checks this for you. But if
- * your language uses newlines to terminate statements, you might want to check
- * for newlines **or** eof in case the text file doesn't end with a trailing
- * newline (many text editors omit this character).
- *
- * ```ts
- * const endline = bnb.match(/\r?\n/).or(bnb.eof);
- * const statement = bnb
- *   .match(/[a-z]+/i)
- *   .and(endline)
- *   .map(([first]) => first);
- * const file = statement.many0();
- * file.tryParse("A\nB\nC"); // => ["A", "B", "C"]
- * ```
+ * This parser succeeds if the input has already been fully parsed.
  */
 export const eof = new Parser<"<EOF>">((context) => {
   if (context.location.index < context.input.length) {

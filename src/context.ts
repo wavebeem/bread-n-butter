@@ -2,25 +2,7 @@ import { SourceLocation } from "./source-location";
 import { ActionResult, ActionOK, ActionFail } from "./action-result";
 
 /**
- * Represents the current parsing context. `input` is the string being parsed
- * and `location` is the current parse location (with `index`, `line`, and
- * `column` properties).
- *
- * This is not constructable directly, but is passed to every custom parser
- * action. Generally you will return a call to the `ok` or `fail` methods from
- * inside a custom parser.
- *
- * ```ts
- * const bracket = new bnb.Parser<"[" | "]">((context) => {
- *   const start = context.location.index;
- *   const end = start + 1;
- *   const ch = context.input.slice(start, end);
- *   if (ch === "[" || ch === "]") {
- *     return context.ok(end, ch);
- *   }
- *   return context.fail(start, ["[", "]"]);
- * });
- * ```
+ * Represents the current parsing context.
  */
 export class Context {
   /** the string being parsed */

@@ -299,36 +299,263 @@ item.tryParse("     a "); // => "a"
 
 ### parser.many0
 
+Repeats the current parser zero or more times, yielding the results in an array.
+
+Given that this can match **zero** times, take care not to parse this
+accidentally. Usually this parser should come up in the context of some other
+characters that must be present, such as `{}` to indicate a code block, with
+zero or more statements inside.
+
+```ts
+const identifier = bnb.match(/[a-z]+/i);
+const expression = identifier.and(bnb.str("()")).map(([first]) => first);
+const statement = expression.and(bnb.str(";")).map(([first]) => first);
+const block = statement.many0().wrap(bnb.str("{"), bnb.str("}"));
+block.tryParse("{apple();banana();coconut();}");
+// => ["apple", "banana", "coconut"];
+```
+
 ### parser.many1
+
+Parsers the current parser **one** or more times. See
+[parser.many0](#parser.many0) for more details.
 
 ### parser.sepBy0
 
+Returns a parser that parses zero or more times, separated by the separator
+parser supplied. Useful for things like arrays, objects, argument lists, etc.
+
+```ts
+const item = bnb.str("a");
+const comma = bnb.str(",");
+const list = item.sepBy0(comma);
+list.tryParse("a,a,a"); // => ["a", "a", "a"]
+```
+
 ### parser.sepBy1
+
+Returns a parser that parses one or more times, separated by the separator
+parser supplied.
+
+Useful for things parsing non-empty lists, such as a list of interfaces
+implemented by a class.
+
+```ts
+const identifier = bnb.match(/[a-z]+/i);
+const classDecl = bnb
+  .str("class ")
+  .and(identifier)
+  .chain(([, name]) => {
+    return bnb
+      .str(" implements ")
+      .and(identifier.sepBy1(bnb.str(", ")))
+      .map(([, interfaces]) => {
+        return {
+          type: "Class",
+          name: name,
+          interfaces: interfaces,
+        };
+      });
+  });
+classDecl.tryParse("class A implements I, J, K");
+// => { type: "Class", name: "A", interfaces: ["I", "J", "K"] }
+```
 
 ### parser.node
 
+Returns a parser that adds name and start/end location metadata.
+
+This should be used heavily within your parser so that you can do proper error
+reporting. You may also wish to keep this information available in the runtime
+of your language for things like stack traces.
+
+This is just a convenience method built around `location`. Don't hesitate to
+avoid this function and instead use `thru` call your own custom node creation
+function that fits your domain better.
+
+Location `index` is 0-indexed and `line`/`column` information is 1-indexed.
+
+**Note:** The `end` location is _exclusive_ of the parse (one character further)
+
+```ts
+const identifier = bnb.match(/[a-z]+/i).node("Identifier");
+identifier.tryParse("hello");
+// => {
+//   type: "ParseNode",
+//   name: "Identifier",
+//   value: "hello",
+//   start: SourceLocation { index: 0, line: 1, column: 1 },
+//   end: SourceLocation { index: 5, line: 1, column: 6 } }
+// }
+
+// Create type aliases for TypeScript use
+type LispSymbol = bnb.ParseNode<"LispSymbol", string>;
+type LispNumber = bnb.ParseNode<"LispNumber", number>;
+type LispList = bnb.ParseNode<"LispList", LispExpr[]>;
+type LispExpr = LispSymbol | LispNumber | LispList;
+```
+
 ### parser.thru
+
+Returns the callback called with the parser.
+
+Useful so you can put functions in the middle of a method chain.
+
+```ts
+function paren(parser) {
+  return parser.wrap(bnb.str("("), bnb.str(")"));
+}
+
+const paren1 = bnb.str("a").thru(paren).desc("(a)");
+// --- vs ---
+const paren2 = paren(bnb.str("a")).desc("(a)");
+
+paren1.tryParse("(a)"); // => "a"
+paren2.tryParse("(a)"); // => "a"
+```
 
 ### bnb.Parser
 
+Creates a new custom parser that performs the given parsing action.
+
+**Note:** That use of this constructor is an advanced feature and not needed for
+most parsers.
+
+See also:
+
+- [context.input](#context.input)
+- [context.location](#context.location)
+- [context.ok](#context.ok)
+- [context.fail](#context.fail)
+
+```ts
+const number = new bnb.Parser((context) => {
+  const start = context.location.index;
+  const end = context.location.index + 2;
+  if (context.input.slice(start, end) === "AA") {
+    // Return how far we got, and what value we found
+    return context.ok(end, "AA");
+  }
+  // Return how far we got, and what value we were looking for
+  return context.fail(start, ["AA"]);
+});
+```
+
 ### parser.action
+
+The parsing action.
+
+Takes a parsing [Context](#Context) and returns an [ActionResult](#ActionResult)
+representing success or failure.
+
+This should only be called directly when writing custom parsers using
+[bnb.Parser](#bnb.Parser).
+
+Make sure to use [actionResult.merge](#actionResult.merge) when combining
+multiple `ActionResult`s or else you will lose important parsing information.
 
 ## Built-in Parsers
 
 ### bnb.eof
 
+This parser succeeds if the input has already been fully parsed. Typically
+you won't need to use this since `parse` already checks this for you. But if
+your language uses newlines to terminate statements, you might want to check
+for newlines **or** eof in case the text file doesn't end with a trailing
+newline (many text editors omit this character).
+
+```ts
+const endline = bnb.match(/\r?\n/).or(bnb.eof);
+const statement = bnb
+  .match(/[a-z]+/i)
+  .and(endline)
+  .map(([first]) => first);
+const file = statement.many0();
+file.tryParse("A\nB\nC"); // => ["A", "B", "C"]
+```
+
 ### bnb.location
 
-## Other
+Parser that yields the current [SourceLocation](#SourceLocation), containing
+properties `index`, `line` and `column`. Useful when used before and after a
+given parser, so you can know the source range for highlighting errors. Used
+internally by [parser.node](#parser.node).
+
+```ts
+const identifier = location.chain((start) => {
+  return bnb.match(/[a-z]+/i).chain((name) => {
+    return location.map((end) => {
+      return { type: "Identifier", name, start, end };
+    });
+  });
+});
+identifier.tryParse("abc");
+// => {
+//   type: "Identifier",
+//   name: "abc",
+//   start: SourceLocation { index: 0, line: 1, column: 1 },
+//   end: SourceLocation { index: 2, line: 1, column: 3 }
+// }
+```
+
+## Context
+
+Represents the current parsing context. `input` is the string being parsed and
+`location` is the current parse location (with `index`, `line`, and `column`
+properties).
+
+This is not constructable directly, but is passed to every custom parser action.
+Generally you will return a call to the `ok` or `fail` methods from inside a
+custom parser.
+
+```ts
+const bracket = new bnb.Parser<"[" | "]">((context) => {
+  const start = context.location.index;
+  const end = start + 1;
+  const ch = context.input.slice(start, end);
+  if (ch === "[" || ch === "]") {
+    return context.ok(end, ch);
+  }
+  return context.fail(start, ["[", "]"]);
+});
+```
 
 ### context.input
 
+The current parsing input (a string).
+
 ### context.location
+
+The current parsing location, an object with `index`, `line`
 
 ### context.ok
 
+TODO
+
 ### context.fail
+
+TODO
+
+### context.withLocation
+
+TODO
+
+## ActionResult
+
+TODO
 
 ### actionResult.merge
 
-### what else?
+TODO
+
+## SourceLocation
+
+An object containing:
+
+- `index`: The string index
+- `line`: The line number (1-indexed)
+- `column`: The column number (1-indexed)
+
+The `index` is counted as you would normally index a string for use with
+`.slice` and such. But the `line` and `column` properly count complex Unicode
+characters like emojis. Each `\n` character separates lines.
