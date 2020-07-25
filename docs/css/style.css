@@ -1,26 +1,42 @@
 :root {
-  --color-link: #06c;
-  --color-fg: #222;
-  --color-bg: #fafafa;
-  --color-border: #ddd;
-  --color-codeBG: #eee;
-  --color-codeFG: #000;
+  --hue: 210;
+
+  --color-link: hsl(var(--hue), 100%, 40%);
+  --color-link-hover: hsl(var(--hue), 80%, 60%);
+  --color-fg: hsl(var(--hue), 20%, 13%);
+  --color-bg: hsl(var(--hue), 20%, 98%);
+  --color-border: hsl(var(--hue), 20%, 87%);
+  --color-codeBG: hsl(40, 80%, 93%);
+  --color-codeFG: hsl(40, 80%, 30%);
+
+  --color-syntaxBG: hsl(var(--hue), 20%, 13%);
+  --color-syntaxFG: hsl(var(--hue), 20%, 98%);
+  --color-syntaxComment: hsl(230, 50%, 80%);
+  --color-syntaxLiteral: hsl(30, 90%, 70%);
+  --color-syntaxKeyword: hsl(190, 90%, 70%);
+  --color-syntaxFunction: hsl(40, 90%, 80%);
+  --color-syntaxString: hsl(80, 90%, 70%);
 
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-
   --font-mono: "JetBrains Mono", "Fira Code", "Cascadia Code", Menlo, Consolas,
     monospace;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-link: #0cf;
-    --color-fg: #ddd;
-    --color-bg: #333;
-    --color-border: #888;
-    --color-codeBG: #444;
-    --color-codeFG: #fff;
+    --hue: 192;
+
+    --color-link: hsl(var(--hue), 100%, 50%);
+    --color-link-hover: hsl(var(--hue), 70%, 80%);
+    --color-fg: hsl(var(--hue), 20%, 87%);
+    --color-bg: hsl(var(--hue), 20%, 20%);
+    --color-border: hsl(var(--hue), 20%, 40%);
+    --color-codeBG: hsl(var(--hue), 20%, 27%);
+    --color-codeFG: hsl(var(--hue), 20%, 100%);
+
+    --color-syntaxBG: hsl(var(--hue), 20%, 13%);
+    --color-syntaxFG: hsl(var(--hue), 20%, 98%);
   }
 }
 
@@ -42,7 +58,7 @@ html {
 }
 
 body {
-  padding: 0;
+  padding: 0 1rem;
   max-width: 800px;
   margin: 0 auto;
   overflow-y: scroll;
@@ -62,7 +78,7 @@ body {
 nav,
 main,
 footer {
-  padding: 1rem;
+  padding: 1rem 0;
 }
 
 main {
@@ -73,26 +89,30 @@ a {
   color: var(--color-link);
 }
 
-nav {
-  font-weight: bold;
-  border-bottom: 2px solid var(--color-border);
-  display: flex;
+.page-api a:hover,
+a:hover {
+  color: var(--color-link-hover);
+  text-decoration: underline;
+  border-radius: 2px;
 }
 
-nav > * + * {
-  margin-left: 1rem;
+nav {
+  font-weight: bold;
+  display: grid;
+  gap: 1rem;
+  border-bottom: 2px solid var(--color-border);
+}
+
+@media (min-width: 500px) {
+  nav {
+    grid-template-columns: repeat(5, max-content);
+  }
 }
 
 nav a,
 footer a,
 .markdownIt-TOC a {
   text-decoration: none;
-}
-
-nav a:hover,
-footer a:hover,
-.markdownIt-TOC a:hover {
-  text-decoration: underline;
 }
 
 h2,
@@ -121,14 +141,7 @@ h3 {
 
 .markdownIt-Anchor {
   text-decoration: none;
-  color: var(--color-link);
   font-weight: normal;
-  border-radius: 2px;
-}
-
-.markdownIt-Anchor:hover {
-  background: var(--color-link);
-  color: var(--color-bg);
 }
 
 footer {

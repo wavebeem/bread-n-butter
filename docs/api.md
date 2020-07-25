@@ -615,7 +615,7 @@ function multiply(
 
 ## SourceLocation
 
-`SourceLocation` objects have the following properties
+`SourceLocation` objects have the following properties:
 
 - `index`
   - the string index
