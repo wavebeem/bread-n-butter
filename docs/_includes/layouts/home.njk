@@ -4,13 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'" />
-    <link rel="stylesheet" href="{{ '/css/style.css' | url }}" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/syntax.css" />
     <title>{{ renderData.title or title or metadata.title or "Untitled"}}</title>
   </head>
   <body>
     <nav>
-      <a href="{{ '/' | url }}">Home</a>
-      <a href="{{ '/api' | url }}">API</a>
+      <a href="/">Home</a>
+      <a href="/tutorial">Tutorial</a>
+      <a href="/api">API</a>
     </nav>
     <main>
       {{ content | safe }}

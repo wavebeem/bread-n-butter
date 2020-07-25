@@ -25,12 +25,17 @@
   "author": "Brian Mock <brian@mockbrian.com>",
   "license": "MIT",
   "devDependencies": {
+    "@11ty/eleventy": "^0.11.0",
+    "@11ty/eleventy-plugin-syntaxhighlight": "^3.0.1",
     "@types/jest": "^26.0.3",
     "jest": "^26.1.0",
-    "@11ty/eleventy": "^0.11.0",
     "prettier": "^2.0.5",
     "ts-jest": "^26.1.1",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.6"
+  },
+  "dependencies": {
+    "markdown-it": "^11.0.0",
+    "markdown-it-toc-and-anchor": "^4.2.0"
   }
 }
