@@ -3,14 +3,14 @@
 
   --color-link: hsl(var(--hue), 100%, 40%);
   --color-link-hover: hsl(var(--hue), 80%, 60%);
-  --color-fg: hsl(var(--hue), 20%, 13%);
-  --color-bg: hsl(var(--hue), 20%, 98%);
+  --color-fg: hsl(var(--hue), 20%, 12%);
+  --color-bg: hsl(var(--hue), 20%, 96%);
   --color-border: hsl(var(--hue), 20%, 87%);
-  --color-codeBG: hsl(40, 80%, 93%);
-  --color-codeFG: hsl(40, 80%, 30%);
+  --color-codeBG: hsl(40, 80%, 94%);
+  --color-codeFG: hsl(40, 80%, 20%);
 
-  --color-syntaxBG: hsl(var(--hue), 20%, 13%);
-  --color-syntaxFG: hsl(var(--hue), 20%, 98%);
+  --color-syntaxBG: hsl(var(--hue), 20%, 12%);
+  --color-syntaxFG: hsl(var(--hue), 20%, 96%);
   --color-syntaxComment: hsl(230, 50%, 80%);
   --color-syntaxLiteral: hsl(30, 90%, 70%);
   --color-syntaxKeyword: hsl(190, 90%, 70%);
@@ -46,7 +46,7 @@
 
 *:focus {
   outline: none;
-  box-shadow: 0 0 0 2px black, 0 0 0 3px white;
+  box-shadow: 0 0 0 2px var(--color-fg), 0 0 0 3px var(--color-bg);
 }
 
 html {
@@ -89,11 +89,9 @@ a {
   color: var(--color-link);
 }
 
-.page-api a:hover,
 a:hover {
   color: var(--color-link-hover);
-  text-decoration: underline;
-  border-radius: 2px;
+  text-decoration: underline !important;
 }
 
 nav {
@@ -147,4 +145,5 @@ h3 {
 footer {
   border-top: 2px solid var(--color-border);
   text-align: center;
+  font-weight: bold;
 }
