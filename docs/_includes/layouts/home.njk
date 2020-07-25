@@ -7,17 +7,12 @@
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:site" content="@wavebeem" />
     <meta name="twitter:creator" content="@wavebeem" />
-    <meta name="og:title" content="bread-n-butter" />
-    <meta
-      name="og:description"
-      content="bread-n-butter (bnb) is a parser combinator library for TypeScript and JavaScript."
-    />
+    <meta name="og:title" content="{{ title or 'Untitled'}}" />
+    <meta name="og:description" content="{{ description }}" />
     <link rel="icon" href="/img/favicon.png" />
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/syntax.css" />
-    <title>
-      {{ renderData.title or title or metadata.title or "Untitled"}}
-    </title>
+    <title>{{ title or "Untitled"}}</title>
   </head>
   <body>
     <nav>
