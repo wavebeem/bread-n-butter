@@ -2,21 +2,15 @@
   --color-link: #06c;
   --color-fg: #222;
   --color-bg: #fafafa;
-}
+  --color-border: #ddd;
+  --color-codeBG: #eee;
+  --color-codeFG: #000;
 
-html {
-  font-family: sans-serif;
-  background: var(--color-bg);
-  color: var(--color-fg);
-  padding: 1rem;
-  line-height: 1.5;
-  max-width: 800px;
-  margin: 0 auto;
-  overflow-y: scroll;
-}
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 
-a {
-  color: var(--color-link);
+  --font-mono: "JetBrains Mono", "Fira Code", "Cascadia Code", Menlo, Consolas,
+    monospace;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -24,5 +18,120 @@ a {
     --color-link: #0cf;
     --color-fg: #ddd;
     --color-bg: #333;
+    --color-border: #888;
+    --color-codeBG: #444;
+    --color-codeFG: #fff;
   }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+*:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px black, 0 0 0 3px white;
+}
+
+html {
+  scrollbar-color: var(--color-fg) var(--color-bg);
+  font-family: var(--font-sans);
+  background: var(--color-bg);
+  color: var(--color-fg);
+  line-height: 1.5;
+}
+
+body {
+  padding: 0;
+  max-width: 800px;
+  margin: 0 auto;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+:not(pre) > code {
+  font-family: var(--font-mono);
+  background: var(--color-codeBG);
+  color: var(--color-codeFG);
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+nav,
+main,
+footer {
+  padding: 1rem;
+}
+
+main {
+  flex: 1 1 auto;
+}
+
+a {
+  color: var(--color-link);
+}
+
+nav {
+  font-weight: bold;
+  border-bottom: 2px solid var(--color-border);
+  display: flex;
+}
+
+nav > * + * {
+  margin-left: 1rem;
+}
+
+nav a,
+footer a,
+.markdownIt-TOC a {
+  text-decoration: none;
+}
+
+nav a:hover,
+footer a:hover,
+.markdownIt-TOC a:hover {
+  text-decoration: underline;
+}
+
+h2,
+h3 {
+  margin: 1rem 0;
+  padding-top: 1rem;
+  border-top: 2px solid var(--color-border);
+}
+
+.markdownIt-TOC {
+  padding-left: 0;
+  list-style-type: none;
+  font-weight: bold;
+}
+
+.markdownIt-TOC li {
+  padding: 0.25rem 0;
+}
+
+.markdownIt-TOC ul {
+  list-style-type: none;
+  font-weight: normal;
+  border-left: 2px solid var(--color-border);
+  padding-left: 1rem;
+}
+
+.markdownIt-Anchor {
+  text-decoration: none;
+  color: var(--color-link);
+  font-weight: normal;
+  border-radius: 2px;
+}
+
+.markdownIt-Anchor:hover {
+  background: var(--color-link);
+  color: var(--color-bg);
+}
+
+footer {
+  border-top: 2px solid var(--color-border);
+  text-align: center;
 }

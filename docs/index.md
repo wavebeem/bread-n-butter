@@ -13,7 +13,7 @@ With relatively little code and no build step, you can get a proper parser prepa
 
 ## Installation
 
-```
+```shell
 npm i bread-n-butter
 ```
 

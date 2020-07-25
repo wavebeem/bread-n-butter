@@ -12,8 +12,7 @@ code[class*="language-"],
 pre[class*="language-"] {
   color: #f8f8f2;
   background: none;
-  text-shadow: 0 1px rgba(0, 0, 0, 0.3);
-  font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+  font-family: var(--font-mono);
   font-size: 1em;
   text-align: left;
   white-space: pre;
@@ -21,15 +20,8 @@ pre[class*="language-"] {
   word-break: normal;
   word-wrap: normal;
   line-height: 1.5;
-
-  -moz-tab-size: 4;
-  -o-tab-size: 4;
-  tab-size: 4;
-
-  -webkit-hyphens: none;
-  -moz-hyphens: none;
-  -ms-hyphens: none;
-  hyphens: none;
+  /* Sorry, ligatures fans */
+  font-variant-ligatures: none;
 }
 
 /* Code blocks */
@@ -37,7 +29,8 @@ pre[class*="language-"] {
   padding: 1em;
   margin: 0.5em 0;
   overflow: auto;
-  border-radius: 0.3em;
+  border-radius: 2px;
+  scrollbar-color: #f8f8f2 #272822;
 }
 
 :not(pre) > code[class*="language-"],
@@ -48,7 +41,7 @@ pre[class*="language-"] {
 /* Inline code */
 :not(pre) > code[class*="language-"] {
   padding: 0.1em;
-  border-radius: 0.3em;
+  border-radius: 2px;
   white-space: normal;
 }
 
@@ -118,6 +111,7 @@ pre[class*="language-"] {
 .token.bold {
   font-weight: bold;
 }
+
 .token.italic {
   font-style: italic;
 }

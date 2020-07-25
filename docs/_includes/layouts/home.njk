@@ -1,22 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="{{ rootClass }}">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'" />
+    <link rel="icon" href="/img/favicon.png" />
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/syntax.css" />
     <title>{{ renderData.title or title or metadata.title or "Untitled"}}</title>
   </head>
   <body>
     <nav>
+      <span>bread-n-butter</span>
       <a href="/">Home</a>
       <a href="/tutorial">Tutorial</a>
       <a href="/api">API</a>
+      <a href="https://github.com/wavebeem/bread-n-butter">GitHub</a>
     </nav>
     <main>
       {{ content | safe }}
     </main>
-    <footer>&copy; Brian Mock</footer>
+    <footer>&copy; <a href="https://www.mockbrian.com">Brian Mock</a></footer>
   </body>
 </html>

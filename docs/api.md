@@ -1,6 +1,7 @@
 ---
 layout: "layouts/home.njk"
 title: "API | bread-n-butter"
+rootClass: "page-api"
 ---
 
 # API
@@ -9,9 +10,9 @@ title: "API | bread-n-butter"
 
 ## Parser Creators
 
-### bnb.str
+### bnb.str(text)
 
-Returns a parser that matches the exact text supplied.
+Returns a parser that matches the exact string (`text`) supplied.
 
 This is typically used for things like parsing keywords (`for`, `while`, `if`,
 `else`, `let`...), or parsing static characters such as `{`, `}`, `"`, `'`...
@@ -23,10 +24,10 @@ keywordWhile.tryParse("while"); // => "while"
 paren.tryParse("()"); // => ["(", ")"]
 ```
 
-### bnb.match
+### bnb.match(regexp)
 
-Returns a parser that matches the entire regular expression at the current
-parser position.
+Returns a parser that matches the entire `regexp` at the current parser
+position.
 
 Currently only supports regular expressions with no flags or just the `/.../i`
 flag.
@@ -48,10 +49,10 @@ number.tryParse("404");
 // => 404
 ```
 
-### bnb.lazy
+### bnb.lazy(callback)
 
-Takes a callback that returns a parser. The callback is called at most once, and
-only right when the parse action needs to happen.
+Takes a `callback` that returns a parser. The callback is called at most once,
+and only right when the parse action needs to happen.
 
 **Note:** This function exists so you can reference parsers that have not yet
 been defined. Many grammars are recursive, but JavaScript variables are not, so
@@ -82,9 +83,9 @@ expr.tryParse("[a,b,[c,d,[]],[[e]]]");
 // => ["a", "b", ["c", "d", []], [["e"]]]
 ```
 
-### bnb.ok
+### bnb.ok(value)
 
-Returns a parser that yields the given value and consumes no input.
+Returns a parser that yields the given `value` and consumes no input.
 
 Usually used as a fallback parser in case you want the option of parsing nothing
 at all.
@@ -96,16 +97,17 @@ sign.tryParse("-"); // => "-"
 sign.tryParse(""); // => ""
 ```
 
-### bnb.fail
+### bnb.fail(expected)
 
-Returns a parser that fails with the given messages and consumes no input.
-Usually used in the `else` branch of a `chain` callback function.
+Returns a parser that fails with the given array of strings `expected` and
+consumes no input. Usually used in the `else` branch of a `chain` callback
+function.
 
-**Note:** Messages are are typically displayed as part of a comma separated list
-of "expected" values, like "expected list, number, object", so it's best to keep
-your failure messages limited to nouns. If you used a message like "number too
-big" instead, then you might end up showing the user an error message like
-"expected number too big" which doesn't make any sense at all.
+**Note:** Expected messages are are typically displayed as part of a comma
+separated list of "expected" values, like "expected list, number, object", so
+it's best to keep your failure messages limited to nouns. If you used a message
+like "number too big" instead, then you might end up showing the user an error
+message like "expected number too big" which doesn't make any sense at all.
 
 ```ts
 const number = bnb.match(/[0-9]+/).chain((s) => {
@@ -126,11 +128,12 @@ number.tryParse("9".repeat(999));
 
 ## Parser Methods
 
-### parser.parse
+### parser.parse(input)
 
-Returns a `ParseResult` with the parse value if successful, otherwise a failure
-value indicating where the error is and what values we were looking for at the
-time of failure. Use `isOK` to check if the parse succeeded or not.
+Parses the entire `input` string, returning a [ParseResult](#ParseResult) with
+the parse value if successful, otherwise a failure value indicating where the
+error is and what values we were looking for at the time of failure. Use `isOK`
+to check if the parse succeeded or not.
 
 **Note:** `parse` assumes you are parsing the entire input and will
 fail unless you do so.
@@ -148,9 +151,9 @@ if (result.isOK()) {
 }
 ```
 
-### parser.tryParse
+### parser.tryParse(input)
 
-Return the result from successfully parsing.
+Return the result from successfully parsing the `input` string.
 
 If the parse fails, throws an error with a message describing the line/column
 and what values were expected. This method is provided for convenience in case
@@ -166,10 +169,10 @@ const value = a.tryParse("a");
 value; // => "a"
 ```
 
-### parser.and
+### parser.and(nextParser)
 
-Combines two parsers one after the other, yielding the results of both in an
-array.
+Combines `parser` and `nextParser` one after the other, yielding the results of
+both in an array.
 
 ```ts
 const a = bnb.str("a");
@@ -180,10 +183,9 @@ result.value;
 // => ["a", "b"]
 ```
 
-### parser.or
+### parser.or(otherParser)
 
-Try to parse using the current parser. If that fails, parse using the second
-parser.
+Try to parse using `parser`. If that fails, parse using `otherParser`.
 
 This is good for parsing things like _expressions_ or _statements_ in
 programming languages, where many different types of things are applicable.
@@ -201,10 +203,10 @@ aMaybe.tryParse("a"); // => "a"
 aMaybe.tryParse(""); // => null
 ```
 
-### parser.chain
+### parser.chain(callback)
 
 Parse using the current parser. If it succeeds, pass the value to the
-callback function, which returns the next parser to use. Similar to `and`,
+`callback` function, which returns the next parser to use. Similar to `and`,
 but you get to choose which parser comes next based on the value of the
 first one.
 
@@ -226,9 +228,9 @@ balance.tryParse("()"); // => ["(", ")"]
 balance.tryParse("[]"); // => ["[", "]"]
 ```
 
-### parser.map
+### parser.map(callback)
 
-Yields the value from the parser after being called with the callback.
+Yields the result of calling `callback` with the parser's value.
 
 ```ts
 const num = bnb.match(/[0-9]+/).map((str) => Number(str));
@@ -242,10 +244,10 @@ bool.tryParse("yes"); // => true
 bool.tryParse("no"); // => false
 ```
 
-### parser.desc
+### parser.desc(message)
 
 Returns a parser which parses the same value, but discards other error messages,
-using the one supplied instead.
+using the supplied `message` instead.
 
 This function should only be used on tokens within your grammar. That means
 things like strings or numbers usually. You do not want to use it large things
@@ -266,9 +268,10 @@ jsonNumber2.tryParse("x");
 // => ["number"]
 ```
 
-### parser.wrap
+### parser.wrap(beforeParser, afterParser)
 
-Wraps the current parser with before and after parsers.
+Returns a parser that parses `beforeParser`, `parser`, and `afterParser` in that
+order, yielding only the value from `parser`.
 
 Useful for adding the brackets onto an array parser, object parser, or argument
 list parser, for example.
@@ -282,10 +285,12 @@ const list = item.sepBy0(comma).wrap(lbrack, rbrack);
 list.tryParse("[a,a,a]"); // => ["a", "a", "a"]
 ```
 
-### parser.trim
+### parser.trim(trimParser)
 
-Ignores content before and after the current parser, based on the supplied
-parser. Generally used with a parser that parses optional whitespace.
+Returns a parser that parses `trimParser`, `parser`, and then `trimParser`
+again, in that order, yielding only the value from `parser`.
+
+Generally used with a parser that parses optional whitespace.
 
 **Note:** Whitespace parsers typically also parse code comments, since
 those are generally ignored when parsing, just like whitespace.
@@ -297,7 +302,7 @@ const item = bnb.str("a").trim(optWhitespace);
 item.tryParse("     a "); // => "a"
 ```
 
-### parser.many0
+### parser.many0()
 
 Repeats the current parser zero or more times, yielding the results in an array.
 
@@ -315,15 +320,15 @@ block.tryParse("{apple();banana();coconut();}");
 // => ["apple", "banana", "coconut"];
 ```
 
-### parser.many1
+### parser.many1()
 
 Parsers the current parser **one** or more times. See
 [parser.many0](#parser.many0) for more details.
 
-### parser.sepBy0
+### parser.sepBy0(sepParser)
 
-Returns a parser that parses zero or more times, separated by the separator
-parser supplied. Useful for things like arrays, objects, argument lists, etc.
+Returns a parser that parses zero or more times, separated by `sepParser`.
+Useful for things like arrays, objects, argument lists, etc.
 
 ```ts
 const item = bnb.str("a");
@@ -332,10 +337,9 @@ const list = item.sepBy0(comma);
 list.tryParse("a,a,a"); // => ["a", "a", "a"]
 ```
 
-### parser.sepBy1
+### parser.sepBy1(sepParser)
 
-Returns a parser that parses one or more times, separated by the separator
-parser supplied.
+Returns a parser that parses one or more times, separated by `sepParser`.
 
 Useful for things parsing non-empty lists, such as a list of interfaces
 implemented by a class.
@@ -361,9 +365,9 @@ classDecl.tryParse("class A implements I, J, K");
 // => { type: "Class", name: "A", interfaces: ["I", "J", "K"] }
 ```
 
-### parser.node
+### parser.node(name)
 
-Returns a parser that adds name and start/end location metadata.
+Returns a parser that adds `name` and start/end location metadata.
 
 This should be used heavily within your parser so that you can do proper error
 reporting. You may also wish to keep this information available in the runtime
@@ -395,11 +399,12 @@ type LispList = bnb.ParseNode<"LispList", LispExpr[]>;
 type LispExpr = LispSymbol | LispNumber | LispList;
 ```
 
-### parser.thru
+### parser.thru(callback)
 
-Returns the callback called with the parser.
+Returns the `callback` called with the parser.
 
-Useful so you can put functions in the middle of a method chain.
+Equivalent to `callback(parser)`, but you can use it in the middle of a method
+chain.
 
 ```ts
 function paren(parser) {
@@ -414,14 +419,15 @@ paren1.tryParse("(a)"); // => "a"
 paren2.tryParse("(a)"); // => "a"
 ```
 
-### bnb.Parser
+### new bnb.Parser(action)
 
-Creates a new custom parser that performs the given parsing action.
+Creates a new custom parser that performs the given parsing `action`.
 
 **Note:** That use of this constructor is an advanced feature and not needed for
 most parsers.
 
-See [Context](#Context) for more information.
+See [parser.action](#parser.action) and [Context](#Context) for more
+information.
 
 ```ts
 const number = new bnb.Parser((context) => {
@@ -523,23 +529,24 @@ The current parsing input (a string).
 
 The current parsing location (a [SourceLocation](#SourceLocation)).
 
-### context.ok
+### context.ok(index, value)
 
-This method takes a new source index (a number representing the next character
-to parse) and a parse value, returning a successful
+This method takes a new source `index` (a number representing the next character
+to parse) and a parse `value`, returning a successful
 [ActionResult](#ActionResult).
 
 This should be returned inside custom parsers.
 
-### context.fail
+### context.fail(index, expected)
 
-This method takes a new source index (a number representing where the parse
-failed) and a list of expected values (array of strings), returning a successful
+This method takes a new source `index` (a number representing where the parse
+failed) and a list of `expected` values (array of strings), returning a
+successful
 [ActionResult](#ActionResult).
 
 This should be returned inside custom parsers.
 
-### context.withLocation
+### context.withLocation(location)
 
 Returns a new context using the provided source location. When manually invoking
 multiple parsers, you should write code like this:
@@ -548,15 +555,15 @@ See [actionResult.merge](#actionResult.merge) for an example.
 
 ## ActionResult
 
-### actionResult.isOK
+### actionResult.isOK()
 
 A method that returns true if this is an [ActionOK](#ActionOK) object. Otherwise
 it's an [ActionFail](#ActionFail) object.
 
-### actionResult.merge
+### actionResult.merge(nextActionResult)
 
-Takes the current `ActionResult` and merges its expected values with the next
-`ActionResult`, allowing error messages to be preserved.
+Takes the current `actionResult` and merges its `expected` values with the
+`nextActionResult`, allowing error messages to be preserved.
 
 ```ts
 // NOTE: This is not the shortest way to write this parser,
@@ -585,31 +592,55 @@ function multiply(
 
 `ActionOK` objects have the following properties:
 
-- `location`: a [SourceLocation](#SourceLocation) representing where to start
-  parsing next
-- `value`: the parse value
-- `furthest`: a [SourceLocation](#SourceLocation) representing the furthest any
-  parser has gone so far
-- `expected`: an array of strings containing names of expected things to parse
-  (e.g. `["string", "number", "end of file"]`).
+- `location`
+  - a [SourceLocation](#SourceLocation) representing where to start
+    parsing next
+- `value`
+  - the parse value
+- `furthest`
+  - a [SourceLocation](#SourceLocation) representing the furthest any
+    parser has gone so far
+- `expected`
+  - an array of strings containing names of expected things to parse
+    (e.g. `["string", "number", "end of file"]`).
 
 ## ActionFail
 
 `ActionFail` objects have the following properties:
 
-- `furthest`: a [SourceLocation](#SourceLocation) representing the furthest any
-  parser has gone so far
-- `expected`: an array of strings containing names of expected things to parse
-  (e.g. `["string", "number", "end of file"]`).
+- `furthest`
+  - ([SourceLocation](#SourceLocation)) The furthest any parser has gone so far
+- `expected`
+  - (array of strings) The names of expected things to parse (e.g. `["string", "number", "end of file"]`).
 
 ## SourceLocation
 
 `SourceLocation` objects have the following properties
 
-- `index`: the string index
-- `line`: the line number (1-indexed)
-- `column`: the column number (1-indexed)
+- `index`
+  - the string index
+- `line`
+  - the line number (1-indexed)
+- `column`
+  - the column number (1-indexed)
 
 The `index` is counted as you would normally index a string for use with
 `.slice` and such. But the `line` and `column` properly count complex Unicode
 characters like emojis. Each `\n` character separates lines.
+
+## ParseResult
+
+A `ParseResult` is either a `ParseOK` or a `ParseFail`. Use the method
+`parseResult.isOK()` to check if you got a `ParseOK`.
+
+**ParseOK**
+
+- `value`
+  - The parsed value
+
+**ParseFail**
+
+- `location`
+  - The [SourceLocation](#SourceLocation) where parsing failed
+- `expected`
+  - The list of expected items

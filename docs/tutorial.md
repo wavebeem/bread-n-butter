@@ -5,7 +5,9 @@ title: "Tutorial | bread-n-butter"
 
 # Tutorial
 
-### Parsing Static Strings
+@[toc]
+
+## Parsing Static Strings
 
 bnb is built upon instances of `bnb.Parser`, but most of the time you will use
 helper functions and methods rather than writing parsers from scratch. `bnb.str` will match the exact string passed to it, and `.and` can be used to combine two parsers and return their values as an array.
@@ -20,7 +22,7 @@ ab.tryParse("applebanana");
 // => ["apple", "banana"]
 ```
 
-### Parsing with Regular Expressions
+## Parsing with Regular Expressions
 
 `bnb.match` is one of the most powerful functions offered. You can parse anything that a regular expression can parse with that. But don't be alarmed if regular expressions are not your strong suit: regular expressions used with bnb tend to be very short! Rather than writing extremely long regular expressions to try and parse the entire input at once, in bnb they tend to be quite short and only parse very small chunks of your input at a time.
 

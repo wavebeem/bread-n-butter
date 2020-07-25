@@ -3,4 +3,5 @@
   - https://www.11ty.dev/docs/plugins/syntaxhighlight/
   - Migrate some content from TSDoc to 11ty
 - Get this on npm
+- Should `.desc` take an array of strings like `bnb.fail`?
 - Private methods? Underscores?
