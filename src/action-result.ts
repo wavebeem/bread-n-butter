@@ -38,32 +38,6 @@ export class ActionOK<A> {
   /**
    * Make sure to call this method with the next `ActionResult` you use in order
    * to properly keep track of error messages via `furthest` and `expected`.
-   *
-   * ```ts
-   * // NOTE: This is not the shortest way to write this parser,
-   * // it's just an example of a custom parser that needs to call multiple
-   * // other parsers.
-   * function multiply(
-   *   parser1: bnb.Parser<number>,
-   *   parser2: bnb.Parser<number>
-   * ): bnb.Parser<number> {
-   *   return new bnb.Parser<number>((context) => {
-   *     const result1 = parser1.action(context);
-   *     if (!result1.isOK()) {
-   *       return result1;
-   *     }
-   *     context = context.withLocation(result1.location);
-   *     const result2 = result1.merge(parser2.action(context));
-   *     if (!result2.isOK()) {
-   *       return result2;
-   *     }
-   *     return context.ok(
-   *       result2.location.index,
-   *       result1.value * result2.value
-   *     );
-   *   });
-   * }
-   * ```
    */
   merge<B>(b: ActionResult<B>): ActionResult<B> {
     return merge(b, this);
@@ -93,31 +67,6 @@ export class ActionFail {
    * Make sure to call this method with the next `ActionResult` you use in order
    * to properly keep track of error messages via `furthest` and `expected`.
    *
-   * ```ts
-   * // NOTE: This is not the shortest way to write this parser,
-   * // it's just an example of a custom parser that needs to
-   * // call multiple other parsers.
-   * function multiply(
-   *   parser1: bnb.Parser<number>,
-   *   parser2: bnb.Parser<number>
-   * ): bnb.Parser<number> {
-   *   return new bnb.Parser<number>((context) => {
-   *     const result1 = parser1.action(context);
-   *     if (!result1.isOK()) {
-   *       return result1;
-   *     }
-   *     context = context.withLocation(result1.location);
-   *     const result2 = result1.merge(parser2.action(context));
-   *     if (!result2.isOK()) {
-   *       return result2;
-   *     }
-   *     return context.ok(
-   *       result2.location.index,
-   *       result1.value * result2.value
-   *     );
-   *   });
-   * }
-   * ```
    */
   merge<B>(b: ActionResult<B>): ActionResult<B> {
     return merge(b, this);

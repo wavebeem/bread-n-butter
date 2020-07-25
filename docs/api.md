@@ -421,12 +421,7 @@ Creates a new custom parser that performs the given parsing action.
 **Note:** That use of this constructor is an advanced feature and not needed for
 most parsers.
 
-See also:
-
-- [context.input](#context.input)
-- [context.location](#context.location)
-- [context.ok](#context.ok)
-- [context.fail](#context.fail)
+See [Context](#Context) for more information.
 
 ```ts
 const number = new bnb.Parser((context) => {
@@ -526,35 +521,94 @@ The current parsing input (a string).
 
 ### context.location
 
-The current parsing location, an object with `index`, `line`
+The current parsing location (a [SourceLocation](#SourceLocation)).
 
 ### context.ok
 
-TODO
+This method takes a new source index (a number representing the next character
+to parse) and a parse value, returning a successful
+[ActionResult](#ActionResult).
+
+This should be returned inside custom parsers.
 
 ### context.fail
 
-TODO
+This method takes a new source index (a number representing where the parse
+failed) and a list of expected values (array of strings), returning a successful
+[ActionResult](#ActionResult).
+
+This should be returned inside custom parsers.
 
 ### context.withLocation
 
-TODO
+Returns a new context using the provided source location. When manually invoking
+multiple parsers, you should write code like this:
+
+See [actionResult.merge](#actionResult.merge) for an example.
 
 ## ActionResult
 
-TODO
+### actionResult.isOK
+
+A method that returns true if this is an [ActionOK](#ActionOK) object. Otherwise
+it's an [ActionFail](#ActionFail) object.
 
 ### actionResult.merge
 
-TODO
+Takes the current `ActionResult` and merges its expected values with the next
+`ActionResult`, allowing error messages to be preserved.
+
+```ts
+// NOTE: This is not the shortest way to write this parser,
+// it's just an example of a custom parser that needs to
+// call multiple other parsers.
+function multiply(
+  parser1: bnb.Parser<number>,
+  parser2: bnb.Parser<number>
+): bnb.Parser<number> {
+  return new bnb.Parser<number>((context) => {
+    const result1 = parser1.action(context);
+    if (!result1.isOK()) {
+      return result1;
+    }
+    context = context.withLocation(result1.location);
+    const result2 = result1.merge(parser2.action(context));
+    if (!result2.isOK()) {
+      return result2;
+    }
+    return context.ok(result2.location.index, result1.value * result2.value);
+  });
+}
+```
+
+## ActionOK
+
+`ActionOK` objects have the following properties:
+
+- `location`: a [SourceLocation](#SourceLocation) representing where to start
+  parsing next
+- `value`: the parse value
+- `furthest`: a [SourceLocation](#SourceLocation) representing the furthest any
+  parser has gone so far
+- `expected`: an array of strings containing names of expected things to parse
+  (e.g. `["string", "number", "end of file"]`).
+
+## ActionFail
+
+`ActionFail` objects have the following properties:
+
+- `furthest`: a [SourceLocation](#SourceLocation) representing the furthest any
+  parser has gone so far
+- `expected`: an array of strings containing names of expected things to parse
+  (e.g. `["string", "number", "end of file"]`).
 
 ## SourceLocation
 
-An object containing:
+`SourceLocation` objects have the following properties
 
-- `index`: The string index
-- `line`: The line number (1-indexed)
-- `column`: The column number (1-indexed)
+- `index`: the string index
+- `line`: the line number (1-indexed)
+- `column`: the column number (1-indexed)
 
 The `index` is counted as you would normally index a string for use with
 `.slice` and such. But the `line` and `column` properly count complex Unicode

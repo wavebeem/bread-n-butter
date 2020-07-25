@@ -257,26 +257,7 @@ export function language<Spec>(rules: Rules<Spec>): Language<Spec> {
 
 /**
  * Parser that yields the current `SourceLocation`, containing properties
- * `index`, `line` and `column`. Useful when used before and after a given
- * parser, so you can know the source range for highlighting errors. Used
- * internally by `node`.
- *
- * ```ts
- * const identifier = location.chain((start) => {
- *   return bnb.match(/[a-z]+/i).chain((name) => {
- *     return location.map((end) => {
- *       return { type: "Identifier", name, start, end };
- *     });
- *   });
- * });
- * identifier.tryParse("abc");
- * // => {
- * //   type: "Identifier",
- * //   name: "abc",
- * //   start: SourceLocation { index: 0, line: 1, column: 1 },
- * //   end: SourceLocation { index: 2, line: 1, column: 3 }
- * // }
- * ```
+ * `index`, `line` and `column`.
  */
 export const location = new Parser<SourceLocation>((context) => {
   return context.ok(context.location.index, context.location);

@@ -34,20 +34,7 @@ export class Context {
 
   /**
    * Represents a successful parse ending before the given `index`, with  the
-   * specified `value`. This means that the `index` should generally be
-   * `context.location.index + matchLength` where `matchLength` is the length of
-   * text matched in your parser.
-   *
-   * ```ts
-   * const anyChar = new bnb.Parser((context) => {
-   *   const start = context.location.index;
-   *   const end = start + 1;
-   *   if (end < context.input.length) {
-   *     return context.ok(end, context.slice(start, end));
-   *   }
-   *   return context.fail(start, ["any character"]);
-   * });
-   * ```
+   * specified `value`.
    */
   ok<A>(index: number, value: A): ActionResult<A> {
     return new ActionOK(
@@ -61,17 +48,6 @@ export class Context {
   /**
    * Represents a failed parse starting at the given `index`, with the specified
    * list `expected` messages (note: this list is often length one).
-   *
-   * ```ts
-   * const anyChar = new bnb.Parser((context) => {
-   *   const start = context.location.index;
-   *   const end = start + 1;
-   *   if (end < context.input.length) {
-   *     return context.ok(end, context.slice(start, end));
-   *   }
-   *   return context.fail(start, ["any character"]);
-   * });
-   * ```
    */
   fail<A>(index: number, expected: string[]): ActionResult<A> {
     return new ActionFail(this.move(index), expected);
