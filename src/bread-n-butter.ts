@@ -18,14 +18,21 @@ export class Parser<A> {
   /**
    * Returns a parse result with either the value or error information.
    */
-  parse(input: string): ParseResult<A> {
+  parse(input: string): ParseOK<A> | ParseFail {
     const location = { index: 0, line: 1, column: 1 };
     const context = new Context(input, location);
     const result = this.and(eof).action(context);
-    if (result.isOK()) {
-      return new ParseOK(result.value[0]);
+    if (result.type === "ActionOK") {
+      return {
+        type: "ParseOK",
+        value: result.value[0],
+      };
     }
-    return new ParseFail(result.furthest, result.expected);
+    return {
+      type: "ParseFail",
+      location: result.furthest,
+      expected: result.expected,
+    };
   }
 
   /**
@@ -33,7 +40,7 @@ export class Parser<A> {
    */
   tryParse(input: string): A {
     const result = this.parse(input);
-    if (result.isOK()) {
+    if (result.type === "ParseOK") {
       return result.value;
     }
     const { expected, location } = result;
@@ -51,13 +58,16 @@ export class Parser<A> {
   and<B>(parserB: Parser<B>): Parser<[A, B]> {
     return new Parser((context) => {
       const a = this.action(context);
-      if (!a.isOK()) {
+      if (a.type === "ActionFail") {
         return a;
       }
-      const b = a.merge(parserB.action(context.withLocation(a.location)));
-      if (b.isOK()) {
+      const b = actionResultMerge(
+        a,
+        parserB.action(context.withLocation(a.location))
+      );
+      if (b.type === "ActionOK") {
         const value: [A, B] = [a.value, b.value];
-        return b.merge(context.ok(b.location.index, value));
+        return actionResultMerge(b, context.ok(b.location.index, value));
       }
       return b;
     });
@@ -70,10 +80,10 @@ export class Parser<A> {
   or<B>(parserB: Parser<B>): Parser<A | B> {
     return new Parser<A | B>((context) => {
       const a = this.action(context);
-      if (a.isOK()) {
+      if (a.type === "ActionOK") {
         return a;
       }
-      return a.merge(parserB.action(context));
+      return actionResultMerge(a, parserB.action(context));
     });
   }
 
@@ -84,11 +94,14 @@ export class Parser<A> {
   chain<B>(fn: (value: A) => Parser<B>): Parser<B> {
     return new Parser((context) => {
       const a = this.action(context);
-      if (!a.isOK()) {
+      if (a.type === "ActionFail") {
         return a;
       }
       const parserB = fn(a.value);
-      return a.merge(parserB.action(context.withLocation(a.location)));
+      return actionResultMerge(
+        a,
+        parserB.action(context.withLocation(a.location))
+      );
     });
   }
 
@@ -115,10 +128,10 @@ export class Parser<A> {
   desc(expected: string[]): Parser<A> {
     return new Parser((context) => {
       const result = this.action(context);
-      if (result.isOK()) {
+      if (result.type === "ActionOK") {
         return result;
       }
-      return new ActionFail(result.furthest, expected);
+      return { type: "ActionFail", furthest: result.furthest, expected };
     });
   }
 
@@ -155,7 +168,7 @@ export class Parser<A> {
     return new Parser((context) => {
       const items: A[] = [];
       let result = this.action(context);
-      while (result.isOK()) {
+      while (result.type === "ActionOK") {
         items.push(result.value);
         if (context.location.index === result.location.index) {
           throw new Error(
@@ -163,9 +176,12 @@ export class Parser<A> {
           );
         }
         context = context.withLocation(result.location);
-        result = result.merge(this.action(context));
+        result = actionResultMerge(result, this.action(context));
       }
-      return result.merge(context.ok(context.location.index, items));
+      return actionResultMerge(
+        result,
+        context.ok(context.location.index, items)
+      );
     });
   }
 
@@ -397,86 +413,61 @@ type ActionResult<A> = ActionOK<A> | ActionFail;
 
 /**
  * Represents a successful result from a parser's action callback. This is made
- * automatically by calling `context.ok`. Make sure to use `merge` when writing
- * a custom parser that executes multiple parser actions.
+ * automatically by calling `context.ok`. Make sure to use `actionResultMerge`
+ * when writing a custom parser that executes multiple parser actions.
  */
-class ActionOK<A> {
+interface ActionOK<A> {
+  type: "ActionOK";
   location: SourceLocation;
   value: A;
   furthest: SourceLocation;
   expected: string[];
-
-  constructor(
-    location: SourceLocation,
-    value: A,
-    furthest: SourceLocation,
-    expected: string[]
-  ) {
-    this.location = location;
-    this.value = value;
-    this.furthest = furthest;
-    this.expected = expected;
-  }
-
-  /** Returns true */
-  isOK(): this is ActionOK<A> {
-    return true;
-  }
-
-  /**
-   * Make sure to call this method with the next `ActionResult` you use in order
-   * to properly keep track of error messages via `furthest` and `expected`.
-   */
-  merge<B>(b: ActionResult<B>): ActionResult<B> {
-    return merge(b, this);
-  }
 }
 
 /**
  * Represents a successful result from a parser's action callback. This is made
- * automatically by calling `context.ok`. Make sure to use `merge` when writing
- * a custom parser that executes multiple parser actions.
+ * automatically by calling `context.ok`. Make sure to use `actionResultMerge`
+ * when writing a custom parser that executes multiple parser actions.
  */
-class ActionFail {
+interface ActionFail {
+  type: "ActionFail";
   furthest: SourceLocation;
   expected: string[];
-
-  constructor(furthest: SourceLocation, expected: string[]) {
-    this.furthest = furthest;
-    this.expected = expected;
-  }
-
-  /** Returns false */
-  isOK<A>(): this is ActionOK<A> {
-    return false;
-  }
-
-  /**
-   * Make sure to call this method with the next `ActionResult` you use in order
-   * to properly keep track of error messages via `furthest` and `expected`.
-   *
-   */
-  merge<B>(b: ActionResult<B>): ActionResult<B> {
-    return merge(b, this);
-  }
 }
 
-function merge<A, B>(a: ActionResult<A>, b: ActionResult<B>): ActionResult<A> {
-  if (a.furthest.index > b.furthest.index) {
-    return a;
+/**
+ * Merge two sequential `ActionResult`s so that the `expected` and location data
+ * is preserved correctly.
+ */
+export function actionResultMerge<A, B>(
+  a: ActionResult<A>,
+  b: ActionResult<B>
+): ActionResult<B> {
+  if (b.furthest.index > a.furthest.index) {
+    return b;
   }
   const expected =
-    a.furthest.index === b.furthest.index
+    b.furthest.index === a.furthest.index
       ? union(a.expected, b.expected)
-      : b.expected;
-  if (a.isOK()) {
-    return new ActionOK(a.location, a.value, b.furthest, expected);
+      : a.expected;
+  if (b.type === "ActionOK") {
+    return {
+      type: "ActionOK",
+      location: b.location,
+      value: b.value,
+      furthest: a.furthest,
+      expected,
+    };
   }
-  return new ActionFail(b.furthest, expected);
+  return {
+    type: "ActionFail",
+    furthest: a.furthest,
+    expected,
+  };
 }
 
 function union(a: string[], b: string[]): string[] {
-  return [...new Set([...a, ...b])].sort();
+  return [...new Set([...a, ...b])];
 }
 
 /**
@@ -515,12 +506,13 @@ class Context {
    * specified `value`.
    */
   ok<A>(index: number, value: A): ActionResult<A> {
-    return new ActionOK(
-      this.move(index),
+    return {
+      type: "ActionOK",
       value,
-      { index: -1, line: -1, column: -1 },
-      []
-    );
+      location: this.move(index),
+      furthest: { index: -1, line: -1, column: -1 },
+      expected: [],
+    };
   }
 
   /**
@@ -528,54 +520,31 @@ class Context {
    * list `expected` messages (note: this list is often length one).
    */
   fail<A>(index: number, expected: string[]): ActionResult<A> {
-    return new ActionFail(this.move(index), expected);
+    return {
+      type: "ActionFail",
+      furthest: this.move(index),
+      expected,
+    };
   }
 }
 
 /**
- * Represents the result of calling a parse.
- *
- * Either a ParseOK<A> or a ParseFail. To check if the parse result is OK, use
- * the `isOK()` method.
- */
-type ParseResult<A> = ParseOK<A> | ParseFail;
-
-/**
  * Represents a successful parse result.
- *
- * @typeParam A the type of the value parsed
  */
-class ParseOK<A> {
+interface ParseOK<A> {
+  type: "ParseOK";
   /** The parsed value */
   value: A;
-
-  constructor(value: A) {
-    this.value = value;
-  }
-
-  /** Returns true */
-  isOK(): this is ParseOK<A> {
-    return true;
-  }
 }
 
 /**
  * Represents a failed parse result, where it failed, and what types of
  * values were expected at the point of failure.
  */
-class ParseFail {
+interface ParseFail {
+  type: "ParseFail";
   /** The input location where the parse failed */
   location: SourceLocation;
   /** List of expected values at the location the parse failed */
   expected: string[];
-
-  constructor(location: SourceLocation, expected: string[]) {
-    this.location = location;
-    this.expected = expected;
-  }
-
-  /** Returns false */
-  isOK<A>(): this is ParseOK<A> {
-    return false;
-  }
 }

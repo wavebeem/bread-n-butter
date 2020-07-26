@@ -1,7 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`and 1`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": Array [
     "x",
     "y",
@@ -10,7 +11,7 @@ ParseOK {
 `;
 
 exports[`and failure 1`] = `
-ParseFail {
+Object {
   "expected": Array [
     "y",
   ],
@@ -19,11 +20,12 @@ ParseFail {
     "index": 1,
     "line": 1,
   },
+  "type": "ParseFail",
 }
 `;
 
 exports[`and failure 2`] = `
-ParseFail {
+Object {
   "expected": Array [
     "x",
   ],
@@ -32,11 +34,12 @@ ParseFail {
     "index": 0,
     "line": 1,
   },
+  "type": "ParseFail",
 }
 `;
 
 exports[`and failure 3`] = `
-ParseFail {
+Object {
   "expected": Array [
     "x",
   ],
@@ -45,11 +48,12 @@ ParseFail {
     "index": 0,
     "line": 1,
   },
+  "type": "ParseFail",
 }
 `;
 
 exports[`and failure 4`] = `
-ParseFail {
+Object {
   "expected": Array [
     "x",
   ],
@@ -58,11 +62,13 @@ ParseFail {
     "index": 0,
     "line": 1,
   },
+  "type": "ParseFail",
 }
 `;
 
 exports[`and success triple 2 1`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": Array [
     "x",
     "y",
@@ -72,7 +78,8 @@ ParseOK {
 `;
 
 exports[`and triple 1`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": Array [
     Array [
       "x",
@@ -84,13 +91,14 @@ ParseOK {
 `;
 
 exports[`desc 1`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": 9,
 }
 `;
 
 exports[`desc 2`] = `
-ParseFail {
+Object {
   "expected": Array [
     "number",
   ],
@@ -99,11 +107,13 @@ ParseFail {
     "index": 0,
     "line": 1,
   },
+  "type": "ParseFail",
 }
 `;
 
 exports[`emoji length 1`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": Object {
     "end": Object {
       "column": 4,
@@ -123,7 +133,7 @@ ParseOK {
 `;
 
 exports[`fail 1`] = `
-ParseFail {
+Object {
   "expected": Array [
     "apple",
     "banana",
@@ -133,26 +143,29 @@ ParseFail {
     "index": 0,
     "line": 1,
   },
+  "type": "ParseFail",
 }
 `;
 
 exports[`fail 2`] = `
-ParseFail {
+Object {
   "expected": Array [
+    "other",
     "apple",
     "banana",
-    "other",
   ],
   "location": Object {
     "column": 1,
     "index": 0,
     "line": 1,
   },
+  "type": "ParseFail",
 }
 `;
 
 exports[`language 1`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": Array [
     "x",
     "x",
@@ -175,7 +188,8 @@ ParseOK {
 `;
 
 exports[`lazy 1`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": Array [
     "x",
     "x",
@@ -198,7 +212,8 @@ ParseOK {
 `;
 
 exports[`lisp lists 1`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": Array [
     "a",
     "b",
@@ -208,13 +223,15 @@ ParseOK {
 `;
 
 exports[`many0 1`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": Array [],
 }
 `;
 
 exports[`many0 2`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": Array [
     "a",
   ],
@@ -222,7 +239,8 @@ ParseOK {
 `;
 
 exports[`many0 3`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": Array [
     "a",
     "a",
@@ -231,7 +249,8 @@ ParseOK {
 `;
 
 exports[`many0 4`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": Array [
     "a",
     "a",
@@ -241,7 +260,8 @@ ParseOK {
 `;
 
 exports[`many0 5`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": Array [
     "a",
     "a",
@@ -252,21 +272,23 @@ ParseOK {
 `;
 
 exports[`many0 6`] = `
-ParseFail {
+Object {
   "expected": Array [
-    "<EOF>",
     "a",
+    "<EOF>",
   ],
   "location": Object {
     "column": 1,
     "index": 0,
     "line": 1,
   },
+  "type": "ParseFail",
 }
 `;
 
 exports[`many1 1`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": Array [
     "a",
   ],
@@ -274,7 +296,8 @@ ParseOK {
 `;
 
 exports[`many1 2`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": Array [
     "a",
     "a",
@@ -283,7 +306,8 @@ ParseOK {
 `;
 
 exports[`many1 3`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": Array [
     "a",
     "a",
@@ -293,7 +317,8 @@ ParseOK {
 `;
 
 exports[`many1 4`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": Array [
     "a",
     "a",
@@ -304,33 +329,36 @@ ParseOK {
 `;
 
 exports[`many1 5`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": Array [],
 }
 `;
 
 exports[`many1 6`] = `
-ParseFail {
+Object {
   "expected": Array [
-    "<EOF>",
     "a",
+    "<EOF>",
   ],
   "location": Object {
     "column": 1,
     "index": 0,
     "line": 1,
   },
+  "type": "ParseFail",
 }
 `;
 
 exports[`match 1`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": "12",
 }
 `;
 
 exports[`match 2`] = `
-ParseFail {
+Object {
   "expected": Array [
     "/\\\\d+/",
   ],
@@ -339,17 +367,19 @@ ParseFail {
     "index": 0,
     "line": 1,
   },
+  "type": "ParseFail",
 }
 `;
 
 exports[`matchEOF 1`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": "<EOF>",
 }
 `;
 
 exports[`matchEOF 2`] = `
-ParseFail {
+Object {
   "expected": Array [
     "<EOF>",
   ],
@@ -358,11 +388,13 @@ ParseFail {
     "index": 0,
     "line": 1,
   },
+  "type": "ParseFail",
 }
 `;
 
 exports[`node 1`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": Object {
     "end": Object {
       "column": 4,
@@ -382,7 +414,8 @@ ParseOK {
 `;
 
 exports[`node 2`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": Object {
     "end": Object {
       "column": 2,
@@ -404,19 +437,21 @@ C",
 `;
 
 exports[`or 1`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": "a",
 }
 `;
 
 exports[`or 2`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": "b",
 }
 `;
 
 exports[`or 3`] = `
-ParseFail {
+Object {
   "expected": Array [
     "a",
     "b",
@@ -426,11 +461,12 @@ ParseFail {
     "index": 0,
     "line": 1,
   },
+  "type": "ParseFail",
 }
 `;
 
 exports[`or 4`] = `
-ParseFail {
+Object {
   "expected": Array [
     "<EOF>",
   ],
@@ -439,11 +475,12 @@ ParseFail {
     "index": 1,
     "line": 1,
   },
+  "type": "ParseFail",
 }
 `;
 
 exports[`or 5`] = `
-ParseFail {
+Object {
   "expected": Array [
     "a",
     "b",
@@ -453,17 +490,20 @@ ParseFail {
     "index": 0,
     "line": 1,
   },
+  "type": "ParseFail",
 }
 `;
 
 exports[`sepBy0 1`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": Array [],
 }
 `;
 
 exports[`sepBy0 2`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": Array [
     "a",
   ],
@@ -471,7 +511,8 @@ ParseOK {
 `;
 
 exports[`sepBy0 3`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": Array [
     "a",
     "a",
@@ -480,7 +521,8 @@ ParseOK {
 `;
 
 exports[`sepBy0 4`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": Array [
     "a",
     "a",
@@ -490,7 +532,7 @@ ParseOK {
 `;
 
 exports[`sepBy0 5`] = `
-ParseFail {
+Object {
   "expected": Array [
     "a",
   ],
@@ -499,25 +541,27 @@ ParseFail {
     "index": 4,
     "line": 1,
   },
+  "type": "ParseFail",
 }
 `;
 
 exports[`sepBy0 6`] = `
-ParseFail {
+Object {
   "expected": Array [
-    "<EOF>",
     "a",
+    "<EOF>",
   ],
   "location": Object {
     "column": 1,
     "index": 0,
     "line": 1,
   },
+  "type": "ParseFail",
 }
 `;
 
 exports[`sepBy1 1`] = `
-ParseFail {
+Object {
   "expected": Array [
     "a",
   ],
@@ -526,11 +570,13 @@ ParseFail {
     "index": 0,
     "line": 1,
   },
+  "type": "ParseFail",
 }
 `;
 
 exports[`sepBy1 2`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": Array [
     "a",
   ],
@@ -538,7 +584,8 @@ ParseOK {
 `;
 
 exports[`sepBy1 3`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": Array [
     "a",
     "a",
@@ -547,7 +594,8 @@ ParseOK {
 `;
 
 exports[`sepBy1 4`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": Array [
     "a",
     "a",
@@ -557,7 +605,7 @@ ParseOK {
 `;
 
 exports[`sepBy1 5`] = `
-ParseFail {
+Object {
   "expected": Array [
     "a",
   ],
@@ -566,11 +614,12 @@ ParseFail {
     "index": 4,
     "line": 1,
   },
+  "type": "ParseFail",
 }
 `;
 
 exports[`sepBy1 6`] = `
-ParseFail {
+Object {
   "expected": Array [
     "a",
   ],
@@ -579,23 +628,26 @@ ParseFail {
     "index": 0,
     "line": 1,
   },
+  "type": "ParseFail",
 }
 `;
 
 exports[`test a test 1`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": "x",
 }
 `;
 
 exports[`trim 1`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": "x",
 }
 `;
 
 exports[`trim 2`] = `
-ParseFail {
+Object {
   "expected": Array [
     "~",
   ],
@@ -604,11 +656,12 @@ ParseFail {
     "index": 2,
     "line": 1,
   },
+  "type": "ParseFail",
 }
 `;
 
 exports[`trim 3`] = `
-ParseFail {
+Object {
   "expected": Array [
     "x",
   ],
@@ -617,11 +670,12 @@ ParseFail {
     "index": 1,
     "line": 1,
   },
+  "type": "ParseFail",
 }
 `;
 
 exports[`trim 4`] = `
-ParseFail {
+Object {
   "expected": Array [
     "~",
   ],
@@ -630,17 +684,19 @@ ParseFail {
     "index": 0,
     "line": 1,
   },
+  "type": "ParseFail",
 }
 `;
 
 exports[`wrap 1`] = `
-ParseOK {
+Object {
+  "type": "ParseOK",
   "value": "x",
 }
 `;
 
 exports[`wrap 2`] = `
-ParseFail {
+Object {
   "expected": Array [
     ">",
   ],
@@ -649,11 +705,12 @@ ParseFail {
     "index": 2,
     "line": 1,
   },
+  "type": "ParseFail",
 }
 `;
 
 exports[`wrap 3`] = `
-ParseFail {
+Object {
   "expected": Array [
     "x",
   ],
@@ -662,11 +719,12 @@ ParseFail {
     "index": 1,
     "line": 1,
   },
+  "type": "ParseFail",
 }
 `;
 
 exports[`wrap 4`] = `
-ParseFail {
+Object {
   "expected": Array [
     "<",
   ],
@@ -675,5 +733,6 @@ ParseFail {
     "index": 0,
     "line": 1,
   },
+  "type": "ParseFail",
 }
 `;
