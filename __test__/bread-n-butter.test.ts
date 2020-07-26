@@ -118,8 +118,7 @@ test("match", () => {
   expect(isNumber.parse("12")).toMatchSnapshot();
   expect(isNumber.parse("abc")).toMatchSnapshot();
   expect(() => bnb.match(/./g)).toThrow();
-  expect(() => bnb.match(/./m)).toThrow();
-  expect(() => bnb.match(/./s)).toThrow();
+  expect(() => bnb.match(/./y)).toThrow();
 });
 
 test("lisp lists", () => {
