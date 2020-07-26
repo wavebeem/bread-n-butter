@@ -2,7 +2,7 @@
 .DS_Store
 *.bak
 *~
-
+*.tgz
 node_modules
 dist
 _site
