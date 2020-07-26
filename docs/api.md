@@ -455,9 +455,9 @@ Takes a parsing [Context](#Context) and returns an [ActionResult](#ActionResult)
 representing success or failure.
 
 This should only be called directly when writing custom parsers using
-[bnb.Parser](#bnb.Parser).
+[new bnb.Parser](#new-bnb.Parser).
 
-Make sure to use [actionResult.merge](#actionResult.merge) when combining
+Make sure to use [context.merge](#context.merge) when combining
 multiple `ActionResult`s or else you will lose important parsing information.
 
 ## Built-in Parsers
@@ -503,6 +503,55 @@ identifier.tryParse("abc");
 //   end: SourceLocation { index: 2, line: 1, column: 3 }
 // }
 ```
+
+## ParseResult
+
+A `ParseResult` is either a `ParseOK` or a `ParseFail`. Use the method
+`parseResult.isOK()` to check if you got a `ParseOK`.
+
+### ParseOK
+
+- `type: "ParseOK"`
+
+  Type used to check if the parse was successful or not
+
+- `value: number`
+
+  The parsed value
+
+### ParseFail
+
+- `type: "ParseFail"`
+
+  Type used to check if the parse was successful or not
+
+* `location: SourceLocation`
+
+  The [SourceLocation](#SourceLocation) where parsing failed
+
+* `expected: string[]`
+
+  The list of expected items
+
+## SourceLocation
+
+`SourceLocation` objects have the following properties:
+
+- `index: number`
+
+  the string index
+
+- `line: number`
+
+  the line number (1-indexed)
+
+- `column: number`
+
+  the column number (1-indexed)
+
+The `index` is counted as you would normally index a string for use with
+`.slice` and such. But the `line` and `column` properly count complex Unicode
+characters like emojis. Each `\n` character separates lines.
 
 ## Context
 
@@ -555,19 +604,12 @@ This should be returned inside custom parsers.
 
 Returns a new context using the provided source location.
 
-See [actionResult.merge](#actionResult.merge) for an example.
+See [context.merge](#context.merge) for an example.
 
-## ActionResult
+### context.merge(result1, result2)
 
-### actionResult.isOK()
-
-A method that returns true if this is an [ActionOK](#ActionOK) object. Otherwise
-it's an [ActionFail](#ActionFail) object.
-
-### actionResult.merge(nextActionResult)
-
-Takes the current `actionResult` and merges its `expected` values with the
-`nextActionResult`, allowing error messages to be preserved.
+Takes `result1` and merges its `expected` values with `result2`, allowing error
+messages to be preserved.
 
 ```ts
 // NOTE: This is not the shortest way to write this parser,
@@ -583,7 +625,7 @@ function multiply(
       return result1;
     }
     context = context.moveTo(result1.location);
-    const result2 = result1.merge(parser2.action(context));
+    const result2 = context.merge(result1, parser2.action(context));
     if (!result2.isOK()) {
       return result2;
     }
@@ -592,59 +634,42 @@ function multiply(
 }
 ```
 
-## ActionOK
+## ActionResult
+
+Either an [ActionOK](#ActionOK) or an [ActionFail](#ActionFail).
+
+### ActionOK
 
 `ActionOK` objects have the following properties:
 
-- `location`
-  - a [SourceLocation](#SourceLocation) representing where to start
-    parsing next
-- `value`
-  - the parse value
-- `furthest`
-  - a [SourceLocation](#SourceLocation) representing the furthest any
-    parser has gone so far
-- `expected`
-  - an array of strings containing names of expected things to parse
-    (e.g. `["string", "number", "end of file"]`).
+- `location: SourceLocation`
 
-## ActionFail
+  a [SourceLocation](#SourceLocation) representing where to start
+  parsing next
+
+- `value: A`
+
+  the parse value
+
+- `furthest: SourceLocation`
+
+  a [SourceLocation](#SourceLocation) representing the furthest any
+  parser has gone so far
+
+- `expected: string[]`
+
+  an array of strings containing names of expected things to parse
+  (e.g. `["string", "number", "end of file"]`).
+
+### ActionFail
 
 `ActionFail` objects have the following properties:
 
-- `furthest`
-  - ([SourceLocation](#SourceLocation)) The furthest any parser has gone so far
-- `expected`
-  - (array of strings) The names of expected things to parse (e.g. `["string", "number", "end of file"]`).
+- `furthest: SourceLocation`
 
-## SourceLocation
+  ([SourceLocation](#SourceLocation)) The furthest any parser has gone so far
 
-`SourceLocation` objects have the following properties:
+- `expected: string[]`
 
-- `index`
-  - the string index
-- `line`
-  - the line number (1-indexed)
-- `column`
-  - the column number (1-indexed)
-
-The `index` is counted as you would normally index a string for use with
-`.slice` and such. But the `line` and `column` properly count complex Unicode
-characters like emojis. Each `\n` character separates lines.
-
-## ParseResult
-
-A `ParseResult` is either a `ParseOK` or a `ParseFail`. Use the method
-`parseResult.isOK()` to check if you got a `ParseOK`.
-
-**ParseOK**
-
-- `value`
-  - The parsed value
-
-**ParseFail**
-
-- `location`
-  - The [SourceLocation](#SourceLocation) where parsing failed
-- `expected`
-  - The list of expected items
+  (array of strings) The names of expected things to parse
+  (e.g. `["string", "number", "end of file"]`).

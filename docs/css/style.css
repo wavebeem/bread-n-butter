@@ -6,8 +6,8 @@
   --color-fg: hsl(var(--hue), 20%, 12%);
   --color-bg: hsl(var(--hue), 20%, 96%);
   --color-border: hsl(var(--hue), 20%, 87%);
-  --color-codeBG: hsl(40, 80%, 94%);
-  --color-codeFG: hsl(40, 80%, 20%);
+  --color-codeBG: hsl(var(--hue), 50%, 100%);
+  --color-codeFG: hsl(var(--hue), 50%, 30%);
 
   --color-syntaxBG: hsl(var(--hue), 20%, 12%);
   --color-syntaxFG: hsl(var(--hue), 20%, 96%);
@@ -90,7 +90,15 @@ a {
 
 a:hover {
   color: var(--color-link-hover);
-  text-decoration: underline !important;
+}
+
+li {
+  margin: 0.5rem 0;
+}
+
+ul {
+  padding-left: 1rem;
+  list-style-type: square;
 }
 
 nav {

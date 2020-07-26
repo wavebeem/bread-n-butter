@@ -163,30 +163,6 @@ Object {
 }
 `;
 
-exports[`language 1`] = `
-Object {
-  "type": "ParseOK",
-  "value": Array [
-    "x",
-    "x",
-    Array [
-      "x",
-      Array [],
-      Array [
-        "x",
-      ],
-      Array [
-        Array [
-          "x",
-        ],
-      ],
-      "x",
-    ],
-    "x",
-  ],
-}
-`;
-
 exports[`lazy 1`] = `
 Object {
   "type": "ParseOK",

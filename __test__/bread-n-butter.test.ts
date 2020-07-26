@@ -206,29 +206,6 @@ test("lazy", () => {
   expect(expr.parse("(x x (x () (x) ((x)) x) x)")).toMatchSnapshot();
 });
 
-test("language", () => {
-  type Expr = Item | List;
-  type Item = "x";
-  type List = Expr[];
-  type Spec = {
-    expr: Expr;
-    item: Item;
-    list: List;
-  };
-  const { expr } = bnb.language<Spec>({
-    expr(lang) {
-      return lang.item.or(lang.list);
-    },
-    item() {
-      return bnb.text("x");
-    },
-    list(lang) {
-      return lang.expr.sepBy0(bnb.text(" ")).wrap(bnb.text("("), bnb.text(")"));
-    },
-  });
-  expect(expr.parse("(x x (x () (x) ((x)) x) x)")).toMatchSnapshot();
-});
-
 test("text", () => {
   const items = ["", "abc", "🙂", "1\n2\n3"];
   for (const str of items) {

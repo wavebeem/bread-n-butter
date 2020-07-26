@@ -61,13 +61,11 @@ export class Parser<A> {
       if (a.type === "ActionFail") {
         return a;
       }
-      const b = actionResultMerge(
-        a,
-        parserB.action(context.moveTo(a.location))
-      );
+      context = context.moveTo(a.location);
+      const b = context.merge(a, parserB.action(context));
       if (b.type === "ActionOK") {
         const value: [A, B] = [a.value, b.value];
-        return actionResultMerge(b, context.ok(b.location.index, value));
+        return context.merge(b, context.ok(b.location.index, value));
       }
       return b;
     });
@@ -83,7 +81,7 @@ export class Parser<A> {
       if (a.type === "ActionOK") {
         return a;
       }
-      return actionResultMerge(a, parserB.action(context));
+      return context.merge(a, parserB.action(context));
     });
   }
 
@@ -98,7 +96,8 @@ export class Parser<A> {
         return a;
       }
       const parserB = fn(a.value);
-      return actionResultMerge(a, parserB.action(context.moveTo(a.location)));
+      context = context.moveTo(a.location);
+      return context.merge(a, parserB.action(context));
     });
   }
 
@@ -173,12 +172,9 @@ export class Parser<A> {
           );
         }
         context = context.moveTo(result.location);
-        result = actionResultMerge(result, this.action(context));
+        result = context.merge(result, this.action(context));
       }
-      return actionResultMerge(
-        result,
-        context.ok(context.location.index, items)
-      );
+      return context.merge(result, context.ok(context.location.index, items));
     });
   }
 
@@ -228,39 +224,6 @@ export interface ParseNode<S extends string, A> {
   value: A;
   start: SourceLocation;
   end: SourceLocation;
-}
-
-// https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/parsimmon/index.d.ts#L308
-// Thanks to the DefinitelyTyped folks for this type magic here
-
-/**
- * **This feature is experimental and may be removed.**
- * @ignore
- */
-export type Rules<Spec> = {
-  [P in keyof Spec]: (lang: Language<Spec>) => Parser<Spec[P]>;
-};
-
-/**
- * **This feature is experimental and may be removed.**
- * @ignore
- */
-export type Language<Spec> = {
-  [P in keyof Spec]: Parser<Spec[P]>;
-};
-
-/**
- * **This feature is experimental and may be removed.**
- * @ignore
- */
-export function language<Spec>(rules: Rules<Spec>): Language<Spec> {
-  const lang = {} as Language<Spec>;
-  for (const key of Object.keys(rules)) {
-    const k = key as keyof Spec;
-    const f = () => rules[k](lang);
-    lang[k] = lazy(f);
-  }
-  return lang;
 }
 
 /**
@@ -316,8 +279,6 @@ export function text<A extends string>(string: A): Parser<A> {
  * parser position.
  */
 export function match(regexp: RegExp): Parser<string> {
-  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp
-  // TODO: Support other regexp flags
   for (const flag of regexp.flags) {
     switch (flag) {
       case "i": // ignoreCase
@@ -329,9 +290,8 @@ export function match(regexp: RegExp): Parser<string> {
         throw new Error("only the regexp flags 'imsu' are supported");
     }
   }
+  const sticky = new RegExp(regexp.source, regexp.flags + "y");
   return new Parser((context) => {
-    const flags = regexp.ignoreCase ? "iy" : "y";
-    const sticky = new RegExp(regexp.source, flags);
     const start = context.location.index;
     sticky.lastIndex = start;
     const match = context.input.match(sticky);
@@ -380,37 +340,14 @@ interface SourceLocation {
   column: number;
 }
 
-function sourceLocationAddChunk(
-  location: SourceLocation,
-  chunk: string
-): SourceLocation {
-  let { index, line, column } = location;
-  for (const ch of chunk) {
-    // JavaScript strings measure `length` in terms of 16-bit numbers, rather
-    // than Unicode code points, so sometimes each "character" can have a
-    // length bigger than 1, therefore we have to add the "length" of the
-    // character here rather than just using `++` to increment the index.
-    index += ch.length;
-    if (ch === "\n") {
-      line++;
-      column = 1;
-    } else {
-      column++;
-    }
-  }
-  return { index, line, column };
-}
-
 /**
  * Represents the result of a parser's action callback.
- *
- * Use the `isOK` method to check if the result was successful.
  */
 type ActionResult<A> = ActionOK<A> | ActionFail;
 
 /**
  * Represents a successful result from a parser's action callback. This is made
- * automatically by calling `context.ok`. Make sure to use `actionResultMerge`
+ * automatically by calling `context.ok`. Make sure to use `context.merge`
  * when writing a custom parser that executes multiple parser actions.
  */
 interface ActionOK<A> {
@@ -423,44 +360,13 @@ interface ActionOK<A> {
 
 /**
  * Represents a successful result from a parser's action callback. This is made
- * automatically by calling `context.ok`. Make sure to use `actionResultMerge`
+ * automatically by calling `context.ok`. Make sure to use `context.merge`
  * when writing a custom parser that executes multiple parser actions.
  */
 interface ActionFail {
   type: "ActionFail";
   furthest: SourceLocation;
   expected: string[];
-}
-
-/**
- * Merge two sequential `ActionResult`s so that the `expected` and location data
- * is preserved correctly.
- */
-export function actionResultMerge<A, B>(
-  a: ActionResult<A>,
-  b: ActionResult<B>
-): ActionResult<B> {
-  if (b.furthest.index > a.furthest.index) {
-    return b;
-  }
-  const expected =
-    b.furthest.index === a.furthest.index
-      ? union(a.expected, b.expected)
-      : a.expected;
-  if (b.type === "ActionOK") {
-    return {
-      type: "ActionOK",
-      location: b.location,
-      value: b.value,
-      furthest: a.furthest,
-      expected,
-    };
-  }
-  return {
-    type: "ActionFail",
-    furthest: a.furthest,
-    expected,
-  };
 }
 
 function union(a: string[], b: string[]): string[] {
@@ -470,7 +376,7 @@ function union(a: string[], b: string[]): string[] {
 /**
  * Represents the current parsing context.
  */
-export class Context {
+class Context {
   /** the string being parsed */
   input: string;
   /** the current parse location */
@@ -495,11 +401,20 @@ export class Context {
     const start = this.location.index;
     const end = index;
     const chunk = this.input.slice(start, end);
-    return sourceLocationAddChunk(this.location, chunk);
+    let { line, column } = this.location;
+    for (const ch of chunk) {
+      if (ch === "\n") {
+        line++;
+        column = 1;
+      } else {
+        column++;
+      }
+    }
+    return { index, line, column };
   }
 
   /**
-   * Represents a successful parse ending before the given `index`, with  the
+   * Represents a successful parse ending before the given `index`, with the
    * specified `value`.
    */
   ok<A>(index: number, value: A): ActionResult<A> {
@@ -514,12 +429,40 @@ export class Context {
 
   /**
    * Represents a failed parse starting at the given `index`, with the specified
-   * list `expected` messages (note: this list is often length one).
+   * list `expected` messages (note: this list usually only has one item).
    */
   fail<A>(index: number, expected: string[]): ActionResult<A> {
     return {
       type: "ActionFail",
       furthest: this._internal_move(index),
+      expected,
+    };
+  }
+
+  /**
+   * Merge two sequential `ActionResult`s so that the `expected` and location data
+   * is preserved correctly.
+   */
+  merge<A, B>(a: ActionResult<A>, b: ActionResult<B>): ActionResult<B> {
+    if (b.furthest.index > a.furthest.index) {
+      return b;
+    }
+    const expected =
+      b.furthest.index === a.furthest.index
+        ? union(a.expected, b.expected)
+        : a.expected;
+    if (b.type === "ActionOK") {
+      return {
+        type: "ActionOK",
+        location: b.location,
+        value: b.value,
+        furthest: a.furthest,
+        expected,
+      };
+    }
+    return {
+      type: "ActionFail",
+      furthest: a.furthest,
       expected,
     };
   }

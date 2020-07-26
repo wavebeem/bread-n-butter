@@ -1,4 +1,2 @@
 - Get this on npm
-- Stop using so many classes
-  - Update docs to match
-- Private methods? Underscores?
+- Add more tutorials
