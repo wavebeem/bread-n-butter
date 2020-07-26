@@ -310,8 +310,16 @@ export function text<A extends string>(string: A): Parser<A> {
 export function match(regexp: RegExp): Parser<string> {
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp
   // TODO: Support other regexp flags
-  if (regexp.flags !== "i" && regexp.flags !== "") {
-    throw new Error("only the 'i' regexp flag is supported");
+  for (const flag of regexp.flags) {
+    switch (flag) {
+      case "i": // ignoreCase
+      case "s": // dotAll
+      case "m": // multiline
+      case "u": // unicode
+        continue;
+      default:
+        throw new Error("only the regexp flags 'imsu' are supported");
+    }
   }
   return new Parser((context) => {
     const flags = regexp.ignoreCase ? "iy" : "y";

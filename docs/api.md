@@ -29,8 +29,13 @@ paren.tryParse("()"); // => ["(", ")"]
 Returns a parser that matches the entire `regexp` at the current parser
 position.
 
-Currently only supports regular expressions with no flags or just the `/.../i`
-flag.
+The following regexp flags are supported (any other regexp flag will throw an
+error):
+
+- `i` ([ignoreCase](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/ignoreCase))
+- `s` ([dotAll](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/dotAll))
+- `m` ([multiline](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/multiline))
+- `u` ([unicode](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/unicode))
 
 **Note:** Do not use the `^` anchor at the beginning of your regular expression.
 This internally uses sticky (`/.../y`) regular expressions with `lastIndex` set
