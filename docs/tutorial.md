@@ -15,8 +15,8 @@ helper functions and methods rather than writing parsers from scratch. `bnb.str`
 Typically you will use `.parse` to get the result of parsing a string, but for the sake of brevity, most examples here will use `.tryParse` which is shorter but throws an exception when parsing fails.
 
 ```ts
-const apple = bnb.str("apple");
-const banana = bnb.str("banana");
+const apple = bnb.text("apple");
+const banana = bnb.text("banana");
 const applebanana = apple.and(banana);
 ab.tryParse("applebanana");
 // => ["apple", "banana"]

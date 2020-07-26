@@ -292,7 +292,7 @@ export const eof = new Parser<"<EOF>">((context) => {
 });
 
 /** Returns a parser that matches the exact text supplied. */
-export function str<A extends string>(string: A): Parser<A> {
+export function text<A extends string>(string: A): Parser<A> {
   return new Parser<A>((context) => {
     const start = context.location.index;
     const end = start + string.length;

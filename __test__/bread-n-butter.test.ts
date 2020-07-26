@@ -1,29 +1,29 @@
 import * as bnb from "../src/bread-n-butter";
 
 test("test a test", () => {
-  const isX = bnb.str("x");
+  const isX = bnb.text("x");
   expect(isX.parse("x")).toMatchSnapshot();
 });
 
 test("and", () => {
-  const isX = bnb.str("x");
-  const isY = bnb.str("y");
+  const isX = bnb.text("x");
+  const isY = bnb.text("y");
   const isXY = isX.and(isY);
   expect(isXY.parse("xy")).toMatchSnapshot();
 });
 
 test("and triple", () => {
-  const isX = bnb.str("x");
-  const isY = bnb.str("y");
-  const isZ = bnb.str("z");
+  const isX = bnb.text("x");
+  const isY = bnb.text("y");
+  const isZ = bnb.text("z");
   const isXYZ = isX.and(isY).and(isZ);
   expect(isXYZ.parse("xyz")).toMatchSnapshot();
 });
 
 test("and success triple 2", () => {
-  const isX = bnb.str("x");
-  const isY = bnb.str("y");
-  const isZ = bnb.str("z");
+  const isX = bnb.text("x");
+  const isY = bnb.text("y");
+  const isZ = bnb.text("z");
   const isXYZ = isX.and(isY).chain(([x, y]) => {
     return isZ.map((z) => {
       return [x, y, z] as const;
@@ -33,8 +33,8 @@ test("and success triple 2", () => {
 });
 
 test("and failure", () => {
-  const isX = bnb.str("x");
-  const isY = bnb.str("y");
+  const isX = bnb.text("x");
+  const isY = bnb.text("y");
   const isXY = isX.and(isY);
   expect(isXY.parse("x")).toMatchSnapshot();
   expect(isXY.parse("y")).toMatchSnapshot();
@@ -43,8 +43,8 @@ test("and failure", () => {
 });
 
 test("sepBy0", () => {
-  const isA = bnb.str("a");
-  const isSep = bnb.str(",");
+  const isA = bnb.text("a");
+  const isSep = bnb.text(",");
   const isAList = isA.sepBy0(isSep);
   expect(isAList.parse("")).toMatchSnapshot();
   expect(isAList.parse("a")).toMatchSnapshot();
@@ -55,8 +55,8 @@ test("sepBy0", () => {
 });
 
 test("sepBy1", () => {
-  const isA = bnb.str("a");
-  const isSep = bnb.str(",");
+  const isA = bnb.text("a");
+  const isSep = bnb.text(",");
   const isAList = isA.sepBy1(isSep);
   expect(isAList.parse("")).toMatchSnapshot();
   expect(isAList.parse("a")).toMatchSnapshot();
@@ -67,7 +67,7 @@ test("sepBy1", () => {
 });
 
 test("many0", () => {
-  const isA = bnb.str("a");
+  const isA = bnb.text("a");
   const isAAA = isA.many0();
   expect(isAAA.parse("")).toMatchSnapshot();
   expect(isAAA.parse("a")).toMatchSnapshot();
@@ -78,7 +78,7 @@ test("many0", () => {
 });
 
 test("many0/many1 infinite loop detection", () => {
-  const p = bnb.str("");
+  const p = bnb.text("");
   const p0 = p.many0();
   const p1 = p.many1();
   expect(() => p0.parse("abc")).toThrow(/infinite loop/i);
@@ -86,7 +86,7 @@ test("many0/many1 infinite loop detection", () => {
 });
 
 test("many1", () => {
-  const isA = bnb.str("a");
+  const isA = bnb.text("a");
   const isAAA = isA.many1();
   expect(isAAA.parse("a")).toMatchSnapshot();
   expect(isAAA.parse("aa")).toMatchSnapshot();
@@ -97,8 +97,8 @@ test("many1", () => {
 });
 
 test("or", () => {
-  const isA = bnb.str("a");
-  const isB = bnb.str("b");
+  const isA = bnb.text("a");
+  const isB = bnb.text("b");
   const isAorB = isA.or(isB);
   expect(isAorB.parse("a")).toMatchSnapshot();
   expect(isAorB.parse("b")).toMatchSnapshot();
@@ -124,8 +124,8 @@ test("match", () => {
 
 test("lisp lists", () => {
   const isSymbol = bnb.match(/[a-zA-Z_-]+/);
-  const isLP = bnb.str("(");
-  const isRP = bnb.str(")");
+  const isLP = bnb.text("(");
+  const isRP = bnb.text(")");
   const isWS = bnb.match(/\s+/);
   const isList = isLP.chain(() => {
     return isSymbol.sepBy0(isWS).chain((values) => {
@@ -142,13 +142,13 @@ test("node", () => {
     .match(/[a-z]+/i)
     .node("Identifier")
     .desc("identifier");
-  const multiline = bnb.str("A\nB\nC").node("ABC");
+  const multiline = bnb.text("A\nB\nC").node("ABC");
   expect(identifier.parse("abc")).toMatchSnapshot();
   expect(multiline.parse("A\nB\nC")).toMatchSnapshot();
 });
 
 test("tryParse", () => {
-  const a = bnb.str("a");
+  const a = bnb.text("a");
   expect(a.tryParse("a")).toEqual("a");
   expect(() => a.tryParse("b")).toThrow();
 });
@@ -164,7 +164,7 @@ test("desc", () => {
 
 test("thru", () => {
   const n = 4;
-  const p = bnb.str("");
+  const p = bnb.text("");
   const x = p.thru((parser) => {
     expect(parser).toBe(p);
     return n;
@@ -173,7 +173,7 @@ test("thru", () => {
 });
 
 test("wrap", () => {
-  const p = bnb.str("x").wrap(bnb.str("<"), bnb.str(">"));
+  const p = bnb.text("x").wrap(bnb.text("<"), bnb.text(">"));
   expect(p.parse("<x>")).toMatchSnapshot();
   expect(p.parse("<x")).toMatchSnapshot();
   expect(p.parse("<")).toMatchSnapshot();
@@ -181,7 +181,7 @@ test("wrap", () => {
 });
 
 test("trim", () => {
-  const p = bnb.str("x").trim(bnb.str("~"));
+  const p = bnb.text("x").trim(bnb.text("~"));
   expect(p.parse("~x~")).toMatchSnapshot();
   expect(p.parse("~x")).toMatchSnapshot();
   expect(p.parse("~")).toMatchSnapshot();
@@ -190,7 +190,7 @@ test("trim", () => {
 
 test("fail", () => {
   const p = bnb.fail(["apple", "banana"]);
-  const q = bnb.str("other").or(p);
+  const q = bnb.text("other").or(p);
   expect(p.parse("")).toMatchSnapshot();
   expect(q.parse("")).toMatchSnapshot();
 });
@@ -202,8 +202,8 @@ test("lazy", () => {
   const expr: bnb.Parser<Expr> = bnb.lazy(() => {
     return item.or(list);
   });
-  const item = bnb.str("x");
-  const list = expr.sepBy0(bnb.str(" ")).wrap(bnb.str("("), bnb.str(")"));
+  const item = bnb.text("x");
+  const list = expr.sepBy0(bnb.text(" ")).wrap(bnb.text("("), bnb.text(")"));
   expect(expr.parse("(x x (x () (x) ((x)) x) x)")).toMatchSnapshot();
 });
 
@@ -221,23 +221,23 @@ test("language", () => {
       return lang.item.or(lang.list);
     },
     item() {
-      return bnb.str("x");
+      return bnb.text("x");
     },
     list(lang) {
-      return lang.expr.sepBy0(bnb.str(" ")).wrap(bnb.str("("), bnb.str(")"));
+      return lang.expr.sepBy0(bnb.text(" ")).wrap(bnb.text("("), bnb.text(")"));
     },
   });
   expect(expr.parse("(x x (x () (x) ((x)) x) x)")).toMatchSnapshot();
 });
 
-test("str", () => {
+test("text", () => {
   const items = ["", "abc", "🙂", "1\n2\n3"];
   for (const str of items) {
-    expect(bnb.str(str).tryParse(str)).toBe(str);
+    expect(bnb.text(str).tryParse(str)).toBe(str);
   }
 });
 
 test("emoji length", () => {
-  const result = bnb.str("🙂🙂🙂").node("Emoji").parse("🙂🙂🙂");
+  const result = bnb.text("🙂🙂🙂").node("Emoji").parse("🙂🙂🙂");
   expect(result).toMatchSnapshot();
 });

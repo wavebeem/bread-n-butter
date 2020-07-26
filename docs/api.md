@@ -10,16 +10,16 @@ rootClass: "page-api"
 
 ## Parser Creators
 
-### bnb.str(text)
+### bnb.text(string)
 
-Returns a parser that matches the exact string (`text`) supplied.
+Returns a parser that matches the exact `string` supplied.
 
 This is typically used for things like parsing keywords (`for`, `while`, `if`,
 `else`, `let`...), or parsing static characters such as `{`, `}`, `"`, `'`...
 
 ```ts
-const keywordWhile = bnb.str("while");
-const paren = bnb.str("(").and(bnb.str(")"));
+const keywordWhile = bnb.text("while");
+const paren = bnb.text("(").and(bnb.text(")"));
 keywordWhile.tryParse("while"); // => "while"
 paren.tryParse("()"); // => ["(", ")"]
 ```
@@ -77,8 +77,8 @@ const expr: bnb.Parser<XExpr> = bnb.lazy(() => {
 });
 const item: bnb.Parser<XItem> = bnb.match(/[a-z]+/i);
 const list: bnb.Parser<XList> = expr
-  .sepBy0(bnb.str(","))
-  .wrap(bnb.str("["), bnb.str("]"));
+  .sepBy0(bnb.text(","))
+  .wrap(bnb.text("["), bnb.text("]"));
 expr.tryParse("[a,b,[c,d,[]],[[e]]]");
 // => ["a", "b", ["c", "d", []], [["e"]]]
 ```
@@ -91,7 +91,7 @@ Usually used as a fallback parser in case you want the option of parsing nothing
 at all.
 
 ```ts
-const sign = bnb.str("+").or(bnb.str("-")).or(bnb.of(""));
+const sign = bnb.text("+").or(bnb.text("-")).or(bnb.of(""));
 sign.tryParse("+"); // => "+"
 sign.tryParse("-"); // => "-"
 sign.tryParse(""); // => ""
@@ -139,7 +139,7 @@ to check if the parse succeeded or not.
 fail unless you do so.
 
 ```ts
-const a = bnb.str("a");
+const a = bnb.text("a");
 const result1 = a.parse("a");
 if (result.isOK()) {
   console.log(result.value);
@@ -164,7 +164,7 @@ information about went wrong so you can present the error message better for our
 application.
 
 ```ts
-const a = bnb.str("a");
+const a = bnb.text("a");
 const value = a.tryParse("a");
 value; // => "a"
 ```
@@ -175,8 +175,8 @@ Combines `parser` and `nextParser` one after the other, yielding the results of
 both in an array.
 
 ```ts
-const a = bnb.str("a");
-const b = bnb.str("b");
+const a = bnb.text("a");
+const b = bnb.text("b");
 const ab = a.and(b);
 const result = ab.tryParse("a;
 result.value;
@@ -191,14 +191,14 @@ This is good for parsing things like _expressions_ or _statements_ in
 programming languages, where many different types of things are applicable.
 
 ```ts
-const a = bnb.str("a");
-const b = bnb.str("b");
+const a = bnb.text("a");
+const b = bnb.text("b");
 const ab = a.or(b);
 ab.tryParse("a"); // => "a"
 ab.tryParse("b"); // => "b"
 
 // You can also use this to implement optional parsers
-const aMaybe = bnb.str("a").or(bnb.ok(null));
+const aMaybe = bnb.text("a").or(bnb.ok(null));
 aMaybe.tryParse("a"); // => "a"
 aMaybe.tryParse(""); // => null
 ```
@@ -216,12 +216,12 @@ programming languages, where many different types of things are applicable.
 ```ts
 const balance = bnb
   .str("(")
-  .or(bnb.str("["))
+  .or(bnb.text("["))
   .chain((first) => {
     if (first === "(") {
-      return bnb.str(")").map((last) => [first, last]);
+      return bnb.text(")").map((last) => [first, last]);
     } else {
-      return bnb.str("]").map((last) => [first, last]);
+      return bnb.text("]").map((last) => [first, last]);
     }
   });
 balance.tryParse("()"); // => ["(", ")"]
@@ -237,8 +237,8 @@ const num = bnb.match(/[0-9]+/).map((str) => Number(str));
 num.tryParse("1312"); // => 1312
 num.tryParse("777"); // =>  777
 
-const yes = bnb.str("yes").map(() => true);
-const no = bnb.str("no").map(() => false);
+const yes = bnb.text("yes").map(() => true);
+const no = bnb.text("no").map(() => false);
 const bool = yes.or(no);
 bool.tryParse("yes"); // => true
 bool.tryParse("no"); // => false
@@ -277,10 +277,10 @@ Useful for adding the brackets onto an array parser, object parser, or argument
 list parser, for example.
 
 ```ts
-const item = bnb.str("a");
-const comma = bnb.str(",");
-const lbrack = bnb.str("[");
-const rbrack = bnb.str("]");
+const item = bnb.text("a");
+const comma = bnb.text(",");
+const lbrack = bnb.text("[");
+const rbrack = bnb.text("]");
 const list = item.sepBy0(comma).wrap(lbrack, rbrack);
 list.tryParse("[a,a,a]"); // => ["a", "a", "a"]
 ```
@@ -298,7 +298,7 @@ those are generally ignored when parsing, just like whitespace.
 ```ts
 const whitespace = bnb.match(/\s+/);
 const optWhitespace = whitespace.or(bnb.ok(""));
-const item = bnb.str("a").trim(optWhitespace);
+const item = bnb.text("a").trim(optWhitespace);
 item.tryParse("     a "); // => "a"
 ```
 
@@ -313,9 +313,9 @@ zero or more statements inside.
 
 ```ts
 const identifier = bnb.match(/[a-z]+/i);
-const expression = identifier.and(bnb.str("()")).map(([first]) => first);
-const statement = expression.and(bnb.str(";")).map(([first]) => first);
-const block = statement.many0().wrap(bnb.str("{"), bnb.str("}"));
+const expression = identifier.and(bnb.text("()")).map(([first]) => first);
+const statement = expression.and(bnb.text(";")).map(([first]) => first);
+const block = statement.many0().wrap(bnb.text("{"), bnb.text("}"));
 block.tryParse("{apple();banana();coconut();}");
 // => ["apple", "banana", "coconut"];
 ```
@@ -331,8 +331,8 @@ Returns a parser that parses zero or more times, separated by `sepParser`.
 Useful for things like arrays, objects, argument lists, etc.
 
 ```ts
-const item = bnb.str("a");
-const comma = bnb.str(",");
+const item = bnb.text("a");
+const comma = bnb.text(",");
 const list = item.sepBy0(comma);
 list.tryParse("a,a,a"); // => ["a", "a", "a"]
 ```
@@ -352,7 +352,7 @@ const classDecl = bnb
   .chain(([, name]) => {
     return bnb
       .str(" implements ")
-      .and(identifier.sepBy1(bnb.str(", ")))
+      .and(identifier.sepBy1(bnb.text(", ")))
       .map(([, interfaces]) => {
         return {
           type: "Class",
@@ -408,12 +408,12 @@ chain.
 
 ```ts
 function paren(parser) {
-  return parser.wrap(bnb.str("("), bnb.str(")"));
+  return parser.wrap(bnb.text("("), bnb.text(")"));
 }
 
-const paren1 = bnb.str("a").thru(paren).desc("(a)");
+const paren1 = bnb.text("a").thru(paren).desc("(a)");
 // --- vs ---
-const paren2 = paren(bnb.str("a")).desc("(a)");
+const paren2 = paren(bnb.text("a")).desc("(a)");
 
 paren1.tryParse("(a)"); // => "a"
 paren2.tryParse("(a)"); // => "a"
