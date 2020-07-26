@@ -1,19 +1,11 @@
-/* TODO: Change this up a lot! */
-
-/* Taken from: https://unpkg.com/prismjs@1.20.0/themes/prism-okaidia.css */
-
-/**
- * okaidia theme for JavaScript, CSS and HTML
- * Loosely based on Monokai textmate theme by http://www.monokai.nl/
- * @author ocodia
- */
+/* Based on https://unpkg.com/prismjs@1.20.0/themes/prism-okaidia.css */
 
 code[class*="language-"],
 pre[class*="language-"] {
   color: var(--color-syntaxFG);
   background: none;
   font-family: var(--font-mono);
-  font-size: 1em;
+  font-size: 1rem;
   text-align: left;
   white-space: pre;
   word-spacing: normal;
@@ -26,10 +18,9 @@ pre[class*="language-"] {
 
 /* Code blocks */
 pre[class*="language-"] {
-  padding: 1em;
-  margin: 0.5em 0;
+  padding: 1rem;
+  margin: 0.5rem 0;
   overflow: auto;
-  border-radius: 2px;
   scrollbar-color: var(--color-syntaxFG) var(--color-syntaxBG);
 }
 
@@ -40,8 +31,7 @@ pre[class*="language-"] {
 
 /* Inline code */
 :not(pre) > code[class*="language-"] {
-  padding: 0.1em;
-  border-radius: 2px;
+  padding: 0.1rem;
   white-space: normal;
 }
 

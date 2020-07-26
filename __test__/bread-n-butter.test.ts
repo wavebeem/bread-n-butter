@@ -141,7 +141,7 @@ test("node", () => {
   const identifier = bnb
     .match(/[a-z]+/i)
     .node("Identifier")
-    .desc("identifier");
+    .desc(["identifier"]);
   const multiline = bnb.text("A\nB\nC").node("ABC");
   expect(identifier.parse("abc")).toMatchSnapshot();
   expect(multiline.parse("A\nB\nC")).toMatchSnapshot();
@@ -157,7 +157,7 @@ test("desc", () => {
   const num = bnb
     .match(/[0-9]+/)
     .map(Number)
-    .desc("number");
+    .desc(["number"]);
   expect(num.parse("9")).toMatchSnapshot();
   expect(num.parse("x")).toMatchSnapshot();
 });
