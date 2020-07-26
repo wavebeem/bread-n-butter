@@ -12,7 +12,8 @@
     "docs-serve": "eleventy --serve",
     "check": "prettier --check src examples __test__",
     "test": "jest",
-    "start": "jest --watch"
+    "start": "jest --watch",
+    "postversion": "git push --tags && git push"
   },
   "keywords": [
     "parser",
