@@ -249,10 +249,10 @@ bool.tryParse("yes"); // => true
 bool.tryParse("no"); // => false
 ```
 
-### parser.desc(message)
+### parser.desc(expected)
 
 Returns a parser which parses the same value, but discards other error messages,
-using the supplied `message` instead.
+using the supplied `expected` messages (array of strings) instead.
 
 This function should only be used on tokens within your grammar. That means
 things like strings or numbers usually. You do not want to use it large things
@@ -264,7 +264,7 @@ regular expression source code.
 const jsonNumber1 = bnb
   .match(/-?(0|[1-9][0-9]*)([.][0-9]+)?([eE][+-]?[0-9]+)?/)
   .map(Number);
-const jsonNumber2 = jsonNumber1.desc("number");
+const jsonNumber2 = jsonNumber1.desc(["number"]);
 
 jsonNumber1.tryParse("x");
 // => ["/-?(0|[1-9][0-9]*)([.][0-9]+)?([eE][+-]?[0-9]+)?/"]
@@ -416,9 +416,9 @@ function paren(parser) {
   return parser.wrap(bnb.text("("), bnb.text(")"));
 }
 
-const paren1 = bnb.text("a").thru(paren).desc("(a)");
+const paren1 = bnb.text("a").thru(paren).desc(["(a)"]);
 // --- vs ---
-const paren2 = paren(bnb.text("a")).desc("(a)");
+const paren2 = paren(bnb.text("a")).desc(["(a)"]);
 
 paren1.tryParse("(a)"); // => "a"
 paren2.tryParse("(a)"); // => "a"

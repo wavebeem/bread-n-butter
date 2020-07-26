@@ -1,4 +1,3 @@
 - Get this on npm
-- Should `.desc` take an array of strings like `bnb.fail`?
 - Stop using so many classes
 - Private methods? Underscores?

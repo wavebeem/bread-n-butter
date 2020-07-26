@@ -115,15 +115,15 @@ export class Parser<A> {
 
   /**
    * Returns a parser which parses the same value, but discards other error
-   * messages, using the one supplied instead.
+   * messages, using the ones supplied instead.
    */
-  desc(name: string): Parser<A> {
+  desc(expected: string[]): Parser<A> {
     return new Parser((context) => {
       const result = this.action(context);
       if (result.isOK()) {
         return result;
       }
-      return new ActionFail(result.furthest, [name]);
+      return new ActionFail(result.furthest, expected);
     });
   }
 

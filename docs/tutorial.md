@@ -32,14 +32,14 @@ ab.tryParse("applebanana");
 const integer = bnb
   .match(/[0-9]+/)
   .map((str) => Number(str))
-  .desc("integer");
+  .desc(["integer"]);
 
 const version = integer
   .sepBy1(bnb.string("."))
   .map(([major, minor, patch]) => {
     return { major, minor, patch };
   })
-  .desc("version");
+  .desc(["version"]);
 
 version.tryParse("3.14.15");
 // { major: 3, minor: 14, patch: 15 }
