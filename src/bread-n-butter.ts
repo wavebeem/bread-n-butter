@@ -63,7 +63,7 @@ export class Parser<A> {
       }
       const b = actionResultMerge(
         a,
-        parserB.action(context.withLocation(a.location))
+        parserB.action(context.moveTo(a.location))
       );
       if (b.type === "ActionOK") {
         const value: [A, B] = [a.value, b.value];
@@ -98,10 +98,7 @@ export class Parser<A> {
         return a;
       }
       const parserB = fn(a.value);
-      return actionResultMerge(
-        a,
-        parserB.action(context.withLocation(a.location))
-      );
+      return actionResultMerge(a, parserB.action(context.moveTo(a.location)));
     });
   }
 
@@ -175,7 +172,7 @@ export class Parser<A> {
             "infinite loop detected; don't call many0 or many1 with parsers that can accept zero characters"
           );
         }
-        context = context.withLocation(result.location);
+        context = context.moveTo(result.location);
         result = actionResultMerge(result, this.action(context));
       }
       return actionResultMerge(
@@ -473,7 +470,7 @@ function union(a: string[], b: string[]): string[] {
 /**
  * Represents the current parsing context.
  */
-class Context {
+export class Context {
   /** the string being parsed */
   input: string;
   /** the current parse location */
@@ -487,11 +484,11 @@ class Context {
   /**
    * Returns a new context with the supplied location and the current input.
    */
-  withLocation(location: SourceLocation): Context {
+  moveTo(location: SourceLocation): Context {
     return new Context(this.input, location);
   }
 
-  move(index: number): SourceLocation {
+  private _internal_move(index: number): SourceLocation {
     if (index === this.location.index) {
       return this.location;
     }
@@ -509,7 +506,7 @@ class Context {
     return {
       type: "ActionOK",
       value,
-      location: this.move(index),
+      location: this._internal_move(index),
       furthest: { index: -1, line: -1, column: -1 },
       expected: [],
     };
@@ -522,7 +519,7 @@ class Context {
   fail<A>(index: number, expected: string[]): ActionResult<A> {
     return {
       type: "ActionFail",
-      furthest: this.move(index),
+      furthest: this._internal_move(index),
       expected,
     };
   }

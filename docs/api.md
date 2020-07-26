@@ -551,10 +551,9 @@ successful
 
 This should be returned inside custom parsers.
 
-### context.withLocation(location)
+### context.moveTo(location)
 
-Returns a new context using the provided source location. When manually invoking
-multiple parsers, you should write code like this:
+Returns a new context using the provided source location.
 
 See [actionResult.merge](#actionResult.merge) for an example.
 
@@ -583,7 +582,7 @@ function multiply(
     if (!result1.isOK()) {
       return result1;
     }
-    context = context.withLocation(result1.location);
+    context = context.moveTo(result1.location);
     const result2 = result1.merge(parser2.action(context));
     if (!result2.isOK()) {
       return result2;
