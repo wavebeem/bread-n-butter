@@ -14,7 +14,7 @@ ParseFail {
   "expected": Array [
     "y",
   ],
-  "location": SourceLocation {
+  "location": Object {
     "column": 2,
     "index": 1,
     "line": 1,
@@ -27,7 +27,7 @@ ParseFail {
   "expected": Array [
     "x",
   ],
-  "location": SourceLocation {
+  "location": Object {
     "column": 1,
     "index": 0,
     "line": 1,
@@ -40,7 +40,7 @@ ParseFail {
   "expected": Array [
     "x",
   ],
-  "location": SourceLocation {
+  "location": Object {
     "column": 1,
     "index": 0,
     "line": 1,
@@ -53,7 +53,7 @@ ParseFail {
   "expected": Array [
     "x",
   ],
-  "location": SourceLocation {
+  "location": Object {
     "column": 1,
     "index": 0,
     "line": 1,
@@ -94,7 +94,7 @@ ParseFail {
   "expected": Array [
     "number",
   ],
-  "location": SourceLocation {
+  "location": Object {
     "column": 1,
     "index": 0,
     "line": 1,
@@ -105,13 +105,13 @@ ParseFail {
 exports[`emoji length 1`] = `
 ParseOK {
   "value": Object {
-    "end": SourceLocation {
+    "end": Object {
       "column": 4,
       "index": 6,
       "line": 1,
     },
     "name": "Emoji",
-    "start": SourceLocation {
+    "start": Object {
       "column": 1,
       "index": 0,
       "line": 1,
@@ -128,7 +128,7 @@ ParseFail {
     "apple",
     "banana",
   ],
-  "location": SourceLocation {
+  "location": Object {
     "column": 1,
     "index": 0,
     "line": 1,
@@ -143,7 +143,7 @@ ParseFail {
     "banana",
     "other",
   ],
-  "location": SourceLocation {
+  "location": Object {
     "column": 1,
     "index": 0,
     "line": 1,
@@ -257,7 +257,7 @@ ParseFail {
     "<EOF>",
     "a",
   ],
-  "location": SourceLocation {
+  "location": Object {
     "column": 1,
     "index": 0,
     "line": 1,
@@ -315,7 +315,7 @@ ParseFail {
     "<EOF>",
     "a",
   ],
-  "location": SourceLocation {
+  "location": Object {
     "column": 1,
     "index": 0,
     "line": 1,
@@ -334,7 +334,7 @@ ParseFail {
   "expected": Array [
     "/\\\\d+/",
   ],
-  "location": SourceLocation {
+  "location": Object {
     "column": 1,
     "index": 0,
     "line": 1,
@@ -353,7 +353,7 @@ ParseFail {
   "expected": Array [
     "<EOF>",
   ],
-  "location": SourceLocation {
+  "location": Object {
     "column": 1,
     "index": 0,
     "line": 1,
@@ -364,13 +364,13 @@ ParseFail {
 exports[`node 1`] = `
 ParseOK {
   "value": Object {
-    "end": SourceLocation {
+    "end": Object {
       "column": 4,
       "index": 3,
       "line": 1,
     },
     "name": "Identifier",
-    "start": SourceLocation {
+    "start": Object {
       "column": 1,
       "index": 0,
       "line": 1,
@@ -384,13 +384,13 @@ ParseOK {
 exports[`node 2`] = `
 ParseOK {
   "value": Object {
-    "end": SourceLocation {
+    "end": Object {
       "column": 2,
       "index": 5,
       "line": 3,
     },
     "name": "ABC",
-    "start": SourceLocation {
+    "start": Object {
       "column": 1,
       "index": 0,
       "line": 1,
@@ -421,7 +421,7 @@ ParseFail {
     "a",
     "b",
   ],
-  "location": SourceLocation {
+  "location": Object {
     "column": 1,
     "index": 0,
     "line": 1,
@@ -434,7 +434,7 @@ ParseFail {
   "expected": Array [
     "<EOF>",
   ],
-  "location": SourceLocation {
+  "location": Object {
     "column": 2,
     "index": 1,
     "line": 1,
@@ -448,7 +448,7 @@ ParseFail {
     "a",
     "b",
   ],
-  "location": SourceLocation {
+  "location": Object {
     "column": 1,
     "index": 0,
     "line": 1,
@@ -494,7 +494,7 @@ ParseFail {
   "expected": Array [
     "a",
   ],
-  "location": SourceLocation {
+  "location": Object {
     "column": 5,
     "index": 4,
     "line": 1,
@@ -508,7 +508,7 @@ ParseFail {
     "<EOF>",
     "a",
   ],
-  "location": SourceLocation {
+  "location": Object {
     "column": 1,
     "index": 0,
     "line": 1,
@@ -521,7 +521,7 @@ ParseFail {
   "expected": Array [
     "a",
   ],
-  "location": SourceLocation {
+  "location": Object {
     "column": 1,
     "index": 0,
     "line": 1,
@@ -561,7 +561,7 @@ ParseFail {
   "expected": Array [
     "a",
   ],
-  "location": SourceLocation {
+  "location": Object {
     "column": 5,
     "index": 4,
     "line": 1,
@@ -574,7 +574,7 @@ ParseFail {
   "expected": Array [
     "a",
   ],
-  "location": SourceLocation {
+  "location": Object {
     "column": 1,
     "index": 0,
     "line": 1,
@@ -599,7 +599,7 @@ ParseFail {
   "expected": Array [
     "~",
   ],
-  "location": SourceLocation {
+  "location": Object {
     "column": 3,
     "index": 2,
     "line": 1,
@@ -612,7 +612,7 @@ ParseFail {
   "expected": Array [
     "x",
   ],
-  "location": SourceLocation {
+  "location": Object {
     "column": 2,
     "index": 1,
     "line": 1,
@@ -625,7 +625,7 @@ ParseFail {
   "expected": Array [
     "~",
   ],
-  "location": SourceLocation {
+  "location": Object {
     "column": 1,
     "index": 0,
     "line": 1,
@@ -644,7 +644,7 @@ ParseFail {
   "expected": Array [
     ">",
   ],
-  "location": SourceLocation {
+  "location": Object {
     "column": 3,
     "index": 2,
     "line": 1,
@@ -657,7 +657,7 @@ ParseFail {
   "expected": Array [
     "x",
   ],
-  "location": SourceLocation {
+  "location": Object {
     "column": 2,
     "index": 1,
     "line": 1,
@@ -670,7 +670,7 @@ ParseFail {
   "expected": Array [
     "<",
   ],
-  "location": SourceLocation {
+  "location": Object {
     "column": 1,
     "index": 0,
     "line": 1,

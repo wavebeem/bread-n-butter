@@ -1,8 +1,3 @@
-import { ActionResult, ActionFail } from "./action-result";
-import { Context } from "./context";
-import { ParseFail, ParseOK, ParseResult } from "./parse-result";
-import { SourceLocation } from "./source-location";
-
 /**
  * Represents a parsing action; typically not created directly via `new`.
  */
@@ -24,7 +19,7 @@ export class Parser<A> {
    * Returns a parse result with either the value or error information.
    */
   parse(input: string): ParseResult<A> {
-    const location = new SourceLocation(0, 1, 1);
+    const location = { index: 0, line: 1, column: 1 };
     const context = new Context(input, location);
     const result = this.and(eof).action(context);
     if (result.isOK()) {
@@ -351,4 +346,236 @@ export function lazy<A>(fn: () => Parser<A>): Parser<A> {
     return parser.action(context);
   });
   return parser;
+}
+
+/**
+ * Represents a location in the input (source code). Keeps track of `index` (for
+ * use with `.slice` and such), as well as `line` and `column` for displaying to
+ * users.
+ */
+interface SourceLocation {
+  /** The string index into the input (e.g. for use with `.slice`) */
+  index: number;
+  /**
+   * The line number for error reporting. Only the character `\n` is used to
+   * signify the beginning of a new line.
+   */
+  line: number;
+  /**
+   * The column number for error reporting.
+   */
+  column: number;
+}
+
+function sourceLocationAddChunk(
+  location: SourceLocation,
+  chunk: string
+): SourceLocation {
+  let { index, line, column } = location;
+  for (const ch of chunk) {
+    // JavaScript strings measure `length` in terms of 16-bit numbers, rather
+    // than Unicode code points, so sometimes each "character" can have a
+    // length bigger than 1, therefore we have to add the "length" of the
+    // character here rather than just using `++` to increment the index.
+    index += ch.length;
+    if (ch === "\n") {
+      line++;
+      column = 1;
+    } else {
+      column++;
+    }
+  }
+  return { index, line, column };
+}
+
+/**
+ * Represents the result of a parser's action callback.
+ *
+ * Use the `isOK` method to check if the result was successful.
+ */
+type ActionResult<A> = ActionOK<A> | ActionFail;
+
+/**
+ * Represents a successful result from a parser's action callback. This is made
+ * automatically by calling `context.ok`. Make sure to use `merge` when writing
+ * a custom parser that executes multiple parser actions.
+ */
+class ActionOK<A> {
+  location: SourceLocation;
+  value: A;
+  furthest: SourceLocation;
+  expected: string[];
+
+  constructor(
+    location: SourceLocation,
+    value: A,
+    furthest: SourceLocation,
+    expected: string[]
+  ) {
+    this.location = location;
+    this.value = value;
+    this.furthest = furthest;
+    this.expected = expected;
+  }
+
+  /** Returns true */
+  isOK(): this is ActionOK<A> {
+    return true;
+  }
+
+  /**
+   * Make sure to call this method with the next `ActionResult` you use in order
+   * to properly keep track of error messages via `furthest` and `expected`.
+   */
+  merge<B>(b: ActionResult<B>): ActionResult<B> {
+    return merge(b, this);
+  }
+}
+
+/**
+ * Represents a successful result from a parser's action callback. This is made
+ * automatically by calling `context.ok`. Make sure to use `merge` when writing
+ * a custom parser that executes multiple parser actions.
+ */
+class ActionFail {
+  furthest: SourceLocation;
+  expected: string[];
+
+  constructor(furthest: SourceLocation, expected: string[]) {
+    this.furthest = furthest;
+    this.expected = expected;
+  }
+
+  /** Returns false */
+  isOK<A>(): this is ActionOK<A> {
+    return false;
+  }
+
+  /**
+   * Make sure to call this method with the next `ActionResult` you use in order
+   * to properly keep track of error messages via `furthest` and `expected`.
+   *
+   */
+  merge<B>(b: ActionResult<B>): ActionResult<B> {
+    return merge(b, this);
+  }
+}
+
+function merge<A, B>(a: ActionResult<A>, b: ActionResult<B>): ActionResult<A> {
+  if (a.furthest.index > b.furthest.index) {
+    return a;
+  }
+  const expected =
+    a.furthest.index === b.furthest.index
+      ? union(a.expected, b.expected)
+      : b.expected;
+  if (a.isOK()) {
+    return new ActionOK(a.location, a.value, b.furthest, expected);
+  }
+  return new ActionFail(b.furthest, expected);
+}
+
+function union(a: string[], b: string[]): string[] {
+  return [...new Set([...a, ...b])].sort();
+}
+
+/**
+ * Represents the current parsing context.
+ */
+class Context {
+  /** the string being parsed */
+  input: string;
+  /** the current parse location */
+  location: SourceLocation;
+
+  constructor(input: string, location: SourceLocation) {
+    this.input = input;
+    this.location = location;
+  }
+
+  /**
+   * Returns a new context with the supplied location and the current input.
+   */
+  withLocation(location: SourceLocation): Context {
+    return new Context(this.input, location);
+  }
+
+  move(index: number): SourceLocation {
+    if (index === this.location.index) {
+      return this.location;
+    }
+    const start = this.location.index;
+    const end = index;
+    const chunk = this.input.slice(start, end);
+    return sourceLocationAddChunk(this.location, chunk);
+  }
+
+  /**
+   * Represents a successful parse ending before the given `index`, with  the
+   * specified `value`.
+   */
+  ok<A>(index: number, value: A): ActionResult<A> {
+    return new ActionOK(
+      this.move(index),
+      value,
+      { index: -1, line: -1, column: -1 },
+      []
+    );
+  }
+
+  /**
+   * Represents a failed parse starting at the given `index`, with the specified
+   * list `expected` messages (note: this list is often length one).
+   */
+  fail<A>(index: number, expected: string[]): ActionResult<A> {
+    return new ActionFail(this.move(index), expected);
+  }
+}
+
+/**
+ * Represents the result of calling a parse.
+ *
+ * Either a ParseOK<A> or a ParseFail. To check if the parse result is OK, use
+ * the `isOK()` method.
+ */
+type ParseResult<A> = ParseOK<A> | ParseFail;
+
+/**
+ * Represents a successful parse result.
+ *
+ * @typeParam A the type of the value parsed
+ */
+class ParseOK<A> {
+  /** The parsed value */
+  value: A;
+
+  constructor(value: A) {
+    this.value = value;
+  }
+
+  /** Returns true */
+  isOK(): this is ParseOK<A> {
+    return true;
+  }
+}
+
+/**
+ * Represents a failed parse result, where it failed, and what types of
+ * values were expected at the point of failure.
+ */
+class ParseFail {
+  /** The input location where the parse failed */
+  location: SourceLocation;
+  /** List of expected values at the location the parse failed */
+  expected: string[];
+
+  constructor(location: SourceLocation, expected: string[]) {
+    this.location = location;
+    this.expected = expected;
+  }
+
+  /** Returns false */
+  isOK<A>(): this is ParseOK<A> {
+    return false;
+  }
 }
