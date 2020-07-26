@@ -1,5 +1,6 @@
 language: node_js
 node_js:
+  - "node"
   - "lts/*"
 script:
   - npm test
@@ -12,3 +13,4 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
+    node_js: "lts/*"

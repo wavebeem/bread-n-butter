@@ -1,2 +1,1 @@
-- Get this on npm
 - Add more tutorials
