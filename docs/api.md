@@ -135,7 +135,7 @@ number.tryParse("9".repeat(999));
 
 ### parser.parse(input)
 
-Parses the entire `input` string, returning a [ParseResult](#ParseResult) with
+Parses the entire `input` string, returning a [ParseResult](#parseresult) with
 the parse value if successful, otherwise a failure value indicating where the
 error is and what values we were looking for at the time of failure.
 
@@ -430,7 +430,7 @@ Creates a new custom parser that performs the given parsing `action`.
 **Note:** That use of this constructor is an advanced feature and not needed for
 most parsers.
 
-See [parser.action](#parser.action) and [Context](#Context) for more
+See [parser.action](#parser.action) and [Context](#context) for more
 information.
 
 ```ts
@@ -450,11 +450,11 @@ const number = new bnb.Parser((context) => {
 
 The parsing action.
 
-Takes a parsing [Context](#Context) and returns an [ActionResult](#ActionResult)
+Takes a parsing [Context](#context) and returns an [ActionResult](#actionresult)
 representing success or failure.
 
 This should only be called directly when writing custom parsers using
-[new bnb.Parser](#new-bnb.Parser).
+[new bnb.Parser](#new-bnb.parser).
 
 Make sure to use [context.merge](#context.merge) when combining
 multiple `ActionResult`s or else you will lose important parsing information.
@@ -481,7 +481,7 @@ file.tryParse("A\nB\nC"); // => ["A", "B", "C"]
 
 ### bnb.location
 
-Parser that yields the current [SourceLocation](#SourceLocation), containing
+Parser that yields the current [SourceLocation](#sourcelocation), containing
 properties `index`, `line` and `column`. Useful when used before and after a
 given parser, so you can know the source range for highlighting errors. Used
 internally by [parser.node](#parser.node).
@@ -526,7 +526,7 @@ to see which one it is!
 
 * `location: SourceLocation`
 
-  The [SourceLocation](#SourceLocation) where parsing failed
+  The [SourceLocation](#sourcelocation) where parsing failed
 
 * `expected: string[]`
 
@@ -580,13 +580,13 @@ The current parsing input (a string).
 
 ### context.location
 
-The current parsing location (a [SourceLocation](#SourceLocation)).
+The current parsing location (a [SourceLocation](#sourcelocation)).
 
 ### context.ok(index, value)
 
 This method takes a new source `index` (a number representing the next character
 to parse) and a parse `value`, returning a successful
-[ActionResult](#ActionResult).
+[ActionResult](#actionresult).
 
 This should be returned inside custom parsers.
 
@@ -595,7 +595,7 @@ This should be returned inside custom parsers.
 This method takes a new source `index` (a number representing where the parse
 failed) and a list of `expected` values (array of strings), returning a
 successful
-[ActionResult](#ActionResult).
+[ActionResult](#actionresult).
 
 This should be returned inside custom parsers.
 
@@ -628,14 +628,15 @@ function multiply(
     if (result2.type === "ParseFail") {
       return result2;
     }
-    return context.ok(result2.location.index, result1.value * result2.value);
+    context = context.moveTo(result2.location);
+    return context.ok(context.location.index, result1.value * result2.value);
   });
 }
 ```
 
 ## ActionResult
 
-Either an [ActionOK](#ActionOK) or an [ActionFail](#ActionFail). Check the
+Either an [ActionOK](#actionok) or an [ActionFail](#actionfail). Check the
 `type` property to see which one it is.
 
 ### ActionOK
@@ -644,7 +645,7 @@ Either an [ActionOK](#ActionOK) or an [ActionFail](#ActionFail). Check the
 
 - `location: SourceLocation`
 
-  a [SourceLocation](#SourceLocation) representing where to start
+  a [SourceLocation](#sourcelocation) representing where to start
   parsing next
 
 - `value: A`
@@ -653,7 +654,7 @@ Either an [ActionOK](#ActionOK) or an [ActionFail](#ActionFail). Check the
 
 - `furthest: SourceLocation`
 
-  a [SourceLocation](#SourceLocation) representing the furthest any
+  a [SourceLocation](#sourcelocation) representing the furthest any
   parser has gone so far
 
 - `expected: string[]`
@@ -667,7 +668,7 @@ Either an [ActionOK](#ActionOK) or an [ActionFail](#ActionFail). Check the
 
 - `furthest: SourceLocation`
 
-  ([SourceLocation](#SourceLocation)) The furthest any parser has gone so far
+  ([SourceLocation](#sourcelocation)) The furthest any parser has gone so far
 
 - `expected: string[]`
 

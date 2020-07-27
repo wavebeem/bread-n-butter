@@ -5,7 +5,10 @@ const markdownIt = require("markdown-it");
 const markdownItTocAndAnchor = require("markdown-it-toc-and-anchor").default;
 
 function slugify(text) {
-  return text.replace(/ /g, () => "-").replace(/\(.*\)/, "");
+  return text
+    .toLowerCase()
+    .replace(/ /g, () => "-")
+    .replace(/\(.*\)/, "");
 }
 
 module.exports = (config) => {
