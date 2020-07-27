@@ -6,16 +6,9 @@ import * as bnb from "../src/bread-n-butter";
 type PyBlock = { type: "Block"; statements: PyStatement[] };
 type PyIdent = { type: "Ident"; value: string };
 type PyStatement = PyBlock | PyIdent;
-type PyLanguage = {
-  block: PyBlock;
-  statement: PyStatement;
-  restStatement: PyStatement;
-  ident: PyIdent;
-  countSpaces: number;
-  indentSame: number;
-  indentMore: number;
-  nl: "\r\n" | "\n";
-  end: "\r\n" | "\n" | "<EOF>";
+type Py = {
+  pyStatement: bnb.Parser<PyStatement>;
+  pyRestStatement: bnb.Parser<PyStatement>;
 };
 
 // Because parsing indentation-sensitive languages such as Python requires
@@ -28,103 +21,87 @@ type PyLanguage = {
 // Implementing all of Python's various whitespace requirements, including
 // comments and line continuations (backslash at the end of the line) is left as
 // an exercise for the reader. I've tried and frankly it's pretty tricky.
-function py(indent: number): bnb.Language<PyLanguage> {
-  return bnb.language<PyLanguage>({
-    // This is where the magic happens. Basically we need to parse a deeper
-    // indentation level on the first statement of the block and keep track of
-    // new indentation level. Then we make a whole new set of parsers that use
-    // that new indentation level for all their parsing. Each line past the
-    // first is required to be indented to the same level as that new deeper
-    // indentation level.
-    block(lang) {
-      return bnb
-        .str("block:")
-        .and(lang.nl)
-        .chain(() => {
-          return lang.indentMore.chain((n) => {
-            return lang.statement.chain((first) => {
-              return py(n)
-                .restStatement.many0()
-                .map((rest) => {
-                  return {
-                    type: "Block",
-                    statements: [first, ...rest],
-                  };
-                });
-            });
-          });
-        });
-    },
+function py(indent: number): Py {
+  // Consume zero or more spaces and then return the number consumed. For a
+  // more Python-like language, this parser would also accept tabs and then
+  // expand them to the correct number of spaces
+  //
+  // https://docs.python.org/3/reference/lexical_analysis.html#indentation
+  const pyCountSpaces = bnb.match(/[ ]*/).map((s) => s.length);
 
-    // This is just a statement in our language. To simplify, this is either a
-    // block of code or just an identifier
-    statement(lang) {
-      return lang.block.or(lang.ident);
-    },
-
-    // This is a statement which is indented to the level of the current parse
-    // state. It's called RestStatement because the first statement in a block
-    // is indented more than the previous state, but the *rest* of the
-    // statements match up with the new state.
-    restStatement(lang) {
-      return lang.indentSame.and(lang.statement).map((pair) => pair[1]);
-    },
-
-    // Just a variable and then the end of the line.
-    ident(lang) {
-      return bnb
-        .match(/[a-z]+/i)
-        .and(lang.end)
-        .map((pair) => {
-          return {
-            type: "Ident",
-            value: pair[0],
-          } as const;
-        });
-    },
-
-    // Consume zero or more spaces and then return the number consumed. For a
-    // more Python-like language, this parser would also accept tabs and then
-    // expand them to the correct number of spaces
-    //
-    // https://docs.python.org/3/reference/lexical_analysis.html#indentation
-    countSpaces() {
-      return bnb.match(/[ ]*/).map((s) => s.length);
-    },
-
-    // Count the current indentation level and assert it's more than the current
-    // parse state's desired indentation
-    indentSame(lang) {
-      return lang.countSpaces.chain((n) => {
-        if (n === indent) {
-          return bnb.ok(n);
-        }
-        return bnb.fail([`${n} spaces`]);
-      });
-    },
-
-    // Count the current indentation level and assert it's equal to the current
-    // parse state's desired indentation
-    indentMore(lang) {
-      return lang.countSpaces.chain((n) => {
-        if (n > indent) {
-          return bnb.ok(n);
-        }
-        return bnb.fail([`more than ${n} spaces`]);
-      });
-    },
-
-    // Support UNIX and Windows line endings
-    nl() {
-      return bnb.str("\r\n").or(bnb.str("\n"));
-    },
-
-    // Lines should always end in a newline sequence, but many files are missing
-    // the final newline
-    end(lang) {
-      return lang.nl.or(bnb.eof);
-    },
+  // Count the current indentation level and assert it's more than the current
+  // parse state's desired indentation
+  const pyIndentSame = pyCountSpaces.chain((n) => {
+    if (n === indent) {
+      return bnb.ok(n);
+    }
+    return bnb.fail<number>([`${n} spaces`]);
   });
+
+  // Count the current indentation level and assert it's equal to the current
+  // parse state's desired indentation
+  const pyIndentMore = pyCountSpaces.chain((n) => {
+    if (n > indent) {
+      return bnb.ok(n);
+    }
+    return bnb.fail<number>([`more than ${n} spaces`]);
+  });
+
+  // Support UNIX and Windows line endings
+  const pyNL = bnb.text("\r\n").or(bnb.text("\n"));
+
+  // Lines should always end in a newline sequence, but many files are missing
+  // the final newline
+  const pyEnd = pyNL.or(bnb.eof);
+
+  // This is just a statement in our language. To simplify, this is either a
+  // block of code or just an identifier
+  const pyStatement: bnb.Parser<PyStatement> = bnb.lazy(() => {
+    return pyBlock.or(pyIdent);
+  });
+
+  // This is a statement which is indented to the level of the current parse
+  // state. It's called RestStatement because the first statement in a block
+  // is indented more than the previous state, but the *rest* of the
+  // statements match up with the new state.
+  const pyRestStatement = pyIndentSame.and(pyStatement).map((pair) => pair[1]);
+
+  // This is where the magic happens. Basically we need to parse a deeper
+  // indentation level on the first statement of the block and keep track of
+  // new indentation level. Then we make a whole new set of parsers that use
+  // that new indentation level for all their parsing. Each line past the
+  // first is required to be indented to the same level as that new deeper
+  // indentation level.
+  const pyBlock = bnb
+    .text("block:")
+    .and(pyNL)
+    .chain(() => {
+      return pyIndentMore.chain((n) => {
+        return pyStatement.chain((first) => {
+          return py(n)
+            .pyRestStatement.many0()
+            .map<PyStatement>((rest) => {
+              return {
+                type: "Block",
+                statements: [first, ...rest],
+              };
+            });
+        });
+      });
+    });
+
+  // Just a variable and then the end of the line.
+  const pyIdent = bnb
+    .match(/[a-z]+/i)
+    .and(pyEnd)
+    .map<PyIdent>((pair) => {
+      return {
+        type: "Ident",
+        value: pair[0],
+      };
+    });
+
+  return { pyStatement, pyRestStatement };
 }
 
 // Start parsing at zero indentation
@@ -149,5 +126,5 @@ function prettyPrint(x: any): void {
   console.log(util.inspect(x, { depth: null, colors: true }));
 }
 
-const ast = pythonish.statement.parse(text);
+const ast = pythonish.pyStatement.parse(text);
 prettyPrint(ast);

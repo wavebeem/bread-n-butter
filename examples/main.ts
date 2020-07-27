@@ -1,18 +1,18 @@
 import * as bnb from "../src/bread-n-butter";
 
-const a = bnb.str("a");
-const b = bnb.str("b");
+const a = bnb.text("a");
+const b = bnb.text("b");
 const ab = a.and(b);
 const aOrB = a.or(b);
 const abOrA = ab.or(a);
 const balance = bnb
-  .str("(")
-  .or(bnb.str("["))
+  .text("(")
+  .or(bnb.text("["))
   .chain((value) => {
     if (value === "(") {
-      return bnb.str(")");
+      return bnb.text(")");
     } else {
-      return bnb.str("]");
+      return bnb.text("]");
     }
   });
 const alpha = bnb.match(/[a-z]+/i);

@@ -13,20 +13,20 @@ const lispExpr: bnb.Parser<LispExpr> = bnb.lazy(() => {
 const lispSymbol = bnb
   .match(/[a-z_-][a-z0-9_-]*/i)
   .node("LispSymbol")
-  .desc("symbol");
+  .desc(["symbol"]);
 
 const lispNumber = bnb
   .match(/[0-9]+/)
   .map(Number)
   .node("LispNumber")
-  .desc("number");
+  .desc(["number"]);
 
 const lispWS = bnb.match(/\s*/);
 
 const lispList = lispExpr
   .trim(lispWS)
   .many0()
-  .wrap(bnb.str("("), bnb.str(")"))
+  .wrap(bnb.text("("), bnb.text(")"))
   .node("LispList");
 
 const lispFile = lispExpr.trim(lispWS).many0().node("LispFile");
