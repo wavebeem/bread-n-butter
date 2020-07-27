@@ -137,8 +137,7 @@ number.tryParse("9".repeat(999));
 
 Parses the entire `input` string, returning a [ParseResult](#ParseResult) with
 the parse value if successful, otherwise a failure value indicating where the
-error is and what values we were looking for at the time of failure. Use `isOK`
-to check if the parse succeeded or not.
+error is and what values we were looking for at the time of failure.
 
 **Note:** `parse` assumes you are parsing the entire input and will
 fail unless you do so.
@@ -146,7 +145,7 @@ fail unless you do so.
 ```ts
 const a = bnb.text("a");
 const result1 = a.parse("a");
-if (result.isOK()) {
+if (result.type === "ParseOK") {
   console.log(result.value);
   // => "a"
 } else {
@@ -506,8 +505,8 @@ identifier.tryParse("abc");
 
 ## ParseResult
 
-A `ParseResult` is either a `ParseOK` or a `ParseFail`. Use the method
-`parseResult.isOK()` to check if you got a `ParseOK`.
+A `ParseResult` is either a `ParseOK` or a `ParseFail`. Check the `type` field
+to see which one it is!
 
 ### ParseOK
 
@@ -621,12 +620,12 @@ function multiply(
 ): bnb.Parser<number> {
   return new bnb.Parser<number>((context) => {
     const result1 = parser1.action(context);
-    if (!result1.isOK()) {
+    if (result1.type === "ParseFail") {
       return result1;
     }
     context = context.moveTo(result1.location);
     const result2 = context.merge(result1, parser2.action(context));
-    if (!result2.isOK()) {
+    if (result2.type === "ParseFail") {
       return result2;
     }
     return context.ok(result2.location.index, result1.value * result2.value);
@@ -636,7 +635,8 @@ function multiply(
 
 ## ActionResult
 
-Either an [ActionOK](#ActionOK) or an [ActionFail](#ActionFail).
+Either an [ActionOK](#ActionOK) or an [ActionFail](#ActionFail). Check the
+`type` property to see which one it is.
 
 ### ActionOK
 
