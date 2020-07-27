@@ -3,40 +3,6 @@ import * as bnb from "../src/bread-n-butter";
 
 ///////////////////////////////////////////////////////////////////////
 
-// Turn escaped characters into real ones (e.g. "\\n" becomes "\n").
-function interpretEscapes(str: string): string {
-  return str.replace(/\\(u[0-9a-fA-F]{4}|[^u])/, (_, escape: string) => {
-    const type = escape.charAt(0);
-    switch (type) {
-      case "u":
-        const hex = escape.slice(1);
-        return String.fromCharCode(parseInt(hex, 16));
-      case "b":
-        return "\b";
-      case "f":
-        return "\f";
-      case "n":
-        return "\n";
-      case "r":
-        return "\r";
-      case "t":
-        return "\t";
-      default:
-        return type;
-    }
-  });
-}
-
-function objectFromPairs(
-  pairs: [string, JSONValue][]
-): Record<string, JSONValue> {
-  const obj: Record<string, any> = {};
-  for (const [key, value] of pairs) {
-    obj[key] = value;
-  }
-  return obj;
-}
-
 // Use the JSON standard's definition of whitespace rather than Parsimmon's.
 const whitespace = bnb.match(/\s*/m);
 
@@ -73,23 +39,39 @@ const jsonValue: bnb.Parser<JSONValue> = bnb.lazy(() =>
 );
 
 // The basic tokens in JSON, with optional whitespace afterward.
-const jsonLbrace = word("{");
-const jsonRbrace = word("}");
-const jsonLbracket = word("[");
-const jsonRbracket = word("]");
+const jsonLBrace = word("{");
+const jsonRBrace = word("}");
+const jsonLCurly = word("[");
+const jsonRCurly = word("]");
 const jsonComma = word(",");
 const jsonColon = word(":");
 const jsonNull = word("null").map<null>(() => null);
 const jsonTrue = word("true").map<true>(() => true);
 const jsonFalse = word("false").map<false>(() => false);
 
-// Regexp based parsers should generally be named for better error reporting.
-const jsonString = bnb
-  // Zero or more backslash escaped pieces of text, or anything besides `"`
-  .match(/(\\.|[^"])*/)
+// A string escape sequence
+const strEscape = bnb
+  .match(/\\u[0-9a-fA-F]{4}/)
+  .map((str) => {
+    return String.fromCharCode(parseInt(str.slice(2), 16));
+  })
+  .or(bnb.text("\\b").map(() => "\b"))
+  .or(bnb.text("\\n").map(() => "\n"))
+  .or(bnb.text("\\f").map(() => "\f"))
+  .or(bnb.text("\\r").map(() => "\r"))
+  .or(bnb.text("\\t").map(() => "\t"))
+  .or(bnb.match(/\\./).map((str) => str.slice(1)));
+
+// One or more characters that aren't `"` or `\`
+const strChunk = bnb.match(/[^"\\]+/);
+
+const strPart = strEscape.or(strChunk);
+
+const jsonString = strPart
+  .many0()
+  .map((parts) => parts.join(""))
   .trim(bnb.text('"'))
   .thru(token)
-  .map(interpretEscapes)
   .desc(["string"]);
 
 const numSign = bnb.text("-").or(bnb.text(""));
@@ -108,6 +90,9 @@ const jsonNumber = numSign
     return numInt.chain((integer) => {
       return numFrac.chain((fractional) => {
         return numExp.map((exp) => {
+          // Seeing as JSON numbers are a subset of JS numbers, we can cheat by
+          // passing the whole thing off to the `Number` function, so we don't
+          // have to evaluate the number ourselves
           return Number(sign + integer + fractional + exp);
         });
       });
@@ -120,7 +105,7 @@ const jsonNumber = numSign
 // documents as possible. Notice that we're using the parser `jsonValue` we just
 // defined above. Arrays and objects in the JSON grammar are recursive because
 // they can contain any other JSON document within them.
-const jsonArray = jsonValue.sepBy0(jsonComma).wrap(jsonLbracket, jsonRbracket);
+const jsonArray = jsonValue.sepBy0(jsonComma).wrap(jsonLCurly, jsonRCurly);
 
 // Object parsing is a little trickier because we have to collect all the key-
 // value pairs in order as length-2 arrays, then manually copy them into an
@@ -129,8 +114,14 @@ const objPair = jsonString.and(jsonColon.chain(() => jsonValue));
 
 const jsonObject = objPair
   .sepBy0(jsonComma)
-  .wrap(jsonLbrace, jsonRbrace)
-  .map(objectFromPairs);
+  .wrap(jsonLBrace, jsonRBrace)
+  .map((pairs) => {
+    const obj: Record<string, any> = {};
+    for (const [key, value] of pairs) {
+      obj[key] = value;
+    }
+    return obj;
+  });
 
 ///////////////////////////////////////////////////////////////////////
 
