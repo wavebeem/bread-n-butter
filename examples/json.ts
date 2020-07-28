@@ -145,5 +145,10 @@ function prettyPrint(x: any): void {
   console.log(util.inspect(x, { depth: null, colors: true }));
 }
 
-const ast = jsonValue.tryParse(text);
-prettyPrint(ast);
+export function parse(json: string): JSONValue {
+  return jsonValue.tryParse(json);
+}
+
+if (require.main === module) {
+  prettyPrint(parse(text));
+}
