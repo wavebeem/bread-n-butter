@@ -8,3 +8,4 @@ dist
 _site
 coverage
 docs/api
+docs/js/bread-n-butter.js
