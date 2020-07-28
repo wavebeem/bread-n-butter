@@ -1,5 +1,5 @@
-import * as util from "util";
 import * as bnb from "../src/bread-n-butter";
+import { prettyPrint } from "./util";
 
 type LispSymbol = bnb.ParseNode<"LispSymbol", string>;
 type LispNumber = bnb.ParseNode<"LispNumber", number>;
@@ -35,10 +35,6 @@ const text = `\
 (list 1 2 (cons 1 (list)))
 (print 5 golden rings)
 `;
-
-function prettyPrint(x: any): void {
-  console.log(util.inspect(x, { depth: null, colors: true }));
-}
 
 const ast = lispFile.parse(text);
 prettyPrint(ast);

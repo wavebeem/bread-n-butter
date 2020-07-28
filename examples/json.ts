@@ -1,5 +1,5 @@
-import * as util from "util";
 import * as bnb from "../src/bread-n-butter";
+import { prettyPrint } from "./util";
 
 ///////////////////////////////////////////////////////////////////////
 
@@ -116,7 +116,7 @@ const jsonObject = objPair
   .sepBy0(jsonComma)
   .wrap(jsonLBrace, jsonRBrace)
   .map((pairs) => {
-    const obj: Record<string, any> = {};
+    const obj: Record<string, JSONValue> = {};
     for (const [key, value] of pairs) {
       obj[key] = value;
     }
@@ -140,10 +140,6 @@ const text = `\
   ]
 }
 `;
-
-function prettyPrint(x: any): void {
-  console.log(util.inspect(x, { depth: null, colors: true }));
-}
 
 export function parse(json: string): JSONValue {
   return jsonValue.tryParse(json);

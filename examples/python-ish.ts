@@ -1,5 +1,5 @@
-import * as util from "util";
 import * as bnb from "../src/bread-n-butter";
+import { prettyPrint } from "./util";
 
 ///////////////////////////////////////////////////////////////////////
 
@@ -121,10 +121,6 @@ block:
           foxtrot
   golf\
 `;
-
-function prettyPrint(x: any): void {
-  console.log(util.inspect(x, { depth: null, colors: true }));
-}
 
 const ast = pythonish.pyStatement.parse(text);
 prettyPrint(ast);

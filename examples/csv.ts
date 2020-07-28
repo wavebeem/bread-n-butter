@@ -1,5 +1,5 @@
-import * as util from "util";
 import * as bnb from "../src/bread-n-butter";
+import { prettyPrint } from "./util";
 
 const csvEnd = bnb.text("\r\n").or(bnb.text("\n"));
 const csvFieldSimple = bnb.match(/[^\r\n,"]*/);
@@ -33,10 +33,6 @@ a,,c,"a ""complex"" field, i think"\r\n\
 d,eeeeee,FFFF,cool\r\n\
 nice,nice,nice3,nice4\
 `;
-
-function prettyPrint(x: any): void {
-  console.log(util.inspect(x, { depth: null, colors: true }));
-}
 
 const ast = csvFile.tryParse(text);
 prettyPrint(ast);
