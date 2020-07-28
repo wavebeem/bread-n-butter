@@ -15,6 +15,9 @@ With relatively little code and no build step, you can get a proper parser
 prepared for the language or input of your choice. A few functions and methods,
 paired with a bit of regular expression experience, is all you need.
 
+bnb has zero dependencies and is only 1.6 KB minified and gzipped (11.7 KB
+raw compiled JS from TypeScript source).
+
 ## Installation
 
 ```shell
