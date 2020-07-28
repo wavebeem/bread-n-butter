@@ -1,5 +1,5 @@
-import * as util from "util";
+import { inspect } from "util";
 
 export function prettyPrint(x: unknown): void {
-  console.log(util.inspect(x, { depth: null, colors: true }));
+  console.log(inspect(x, { depth: null, colors: true }));
 }
