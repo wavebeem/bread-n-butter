@@ -1,13 +1,15 @@
 {
   "name": "bread-n-butter",
   "version": "0.0.2",
-  "description": "Parser combinators for TypeScript and JavaScript",
-  "main": "dist/bread-n-butter.js",
+  "description": "Parser combinators for  JavaScript and TypeScript",
+  "main": "dist/cjs/bread-n-butter.js",
+  "module": "dist/esm/bread-n-butter.js",
+  "types": "dist/esm/bread-n-butter.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "rimraf dist && tsc",
+    "build": "rimraf dist && tsc --module es2015 --outDir dist/esm && tsc --module commonjs --outdir dist/cjs",
     "docs": "eleventy",
     "docs-serve": "eleventy --serve",
     "check": "prettier --check src examples __test__",
