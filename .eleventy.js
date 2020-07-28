@@ -26,6 +26,7 @@ module.exports = (config) => {
   config.addPlugin(syntaxHighlight);
   config.addPassthroughCopy("docs/css");
   config.addPassthroughCopy("docs/img");
+  config.addPassthroughCopy("docs/js");
   return {
     dir: {
       input: "docs",

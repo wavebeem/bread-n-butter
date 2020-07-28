@@ -6,6 +6,9 @@ rootClass: "page-api"
 
 # API
 
+bread-n-butter has been loaded in the browser as `bnb`, so feel free to open
+your dev tools and follow along in the console with any of these examples.
+
 @[toc]
 
 ## Parser Creators
