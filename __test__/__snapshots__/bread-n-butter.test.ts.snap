@@ -306,8 +306,15 @@ Object {
 
 exports[`many1 5`] = `
 Object {
-  "type": "ParseOK",
-  "value": Array [],
+  "expected": Array [
+    "a",
+  ],
+  "location": Object {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+  "type": "ParseFail",
 }
 `;
 
@@ -315,7 +322,6 @@ exports[`many1 6`] = `
 Object {
   "expected": Array [
     "a",
-    "<EOF>",
   ],
   "location": Object {
     "column": 1,

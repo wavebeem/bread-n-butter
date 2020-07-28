@@ -164,9 +164,12 @@ export class Parser<A> {
     return new Parser((context) => {
       const items: A[] = [];
       let result = this.action(context);
+      if (result.type === "ActionFail") {
+        return result;
+      }
       while (result.type === "ActionOK") {
         items.push(result.value);
-        if (context.location.index === result.location.index) {
+        if (result.location.index === context.location.index) {
           throw new Error(
             "infinite loop detected; don't call many0 or many1 with parsers that can accept zero characters"
           );
