@@ -487,9 +487,9 @@ given parser, so you can know the source range for highlighting errors. Used
 internally by [parser.node](#parser.node).
 
 ```ts
-const identifier = location.chain((start) => {
+const identifier = bnb.location.chain((start) => {
   return bnb.match(/[a-z]+/i).chain((name) => {
-    return location.map((end) => {
+    return bnb.location.map((end) => {
       return { type: "Identifier", name, start, end };
     });
   });
@@ -629,7 +629,8 @@ function multiply(
       return result2;
     }
     context = context.moveTo(result2.location);
-    return context.ok(context.location.index, result1.value * result2.value);
+    const value = result1.value * result2.value;
+    return context.merge(result2, context.ok(context.location.index, value));
   });
 }
 ```
@@ -642,6 +643,10 @@ Either an [ActionOK](#actionok) or an [ActionFail](#actionfail). Check the
 ### ActionOK
 
 `ActionOK` objects have the following properties:
+
+- `type: "ActionOK"`
+
+  used to check if this is an `ActionOK` or `ActionFail`
 
 - `location: SourceLocation`
 
@@ -665,6 +670,10 @@ Either an [ActionOK](#actionok) or an [ActionFail](#actionfail). Check the
 ### ActionFail
 
 `ActionFail` objects have the following properties:
+
+- `type: "ActionFail"`
+
+  used to check if this is an `ActionOK` or `ActionFail`
 
 - `furthest: SourceLocation`
 
