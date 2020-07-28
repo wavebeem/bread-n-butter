@@ -1,3 +1,10 @@
+# v0.2.0 (2020-07-28)
+
+- Exports interface `SourceLocation`
+- Exports interfaces `ActionResult`, `ActionOK`, `ActionFail`
+- Exports interfaces `ParseOK`, `ParseFail`
+- Exports class `Context`
+
 # v0.1.0 (2020-07-28)
 
 - Adds ES Modules build

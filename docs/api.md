@@ -561,9 +561,11 @@ Represents the current parsing context. `input` is the string being parsed and
 `location` is the current parse location (with `index`, `line`, and `column`
 properties).
 
-This is not constructable directly, but is passed to every custom parser action.
-Generally you will return a call to the `ok` or `fail` methods from inside a
-custom parser.
+It is passed to every parser action. Generally you will return a call to the
+`ok` or `fail` methods from inside a custom parser.
+
+While you can construct your own `Context` directly, it is not necessary or
+advised.
 
 ```ts
 const bracket = new bnb.Parser<"[" | "]">((context) => {

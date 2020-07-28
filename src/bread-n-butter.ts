@@ -20,7 +20,7 @@ export class Parser<A> {
    */
   parse(input: string): ParseOK<A> | ParseFail {
     const location = { index: 0, line: 1, column: 1 };
-    const context = new Context(input, location);
+    const context = new Context({ input, location });
     const result = this.and(eof).action(context);
     if (result.type === "ActionOK") {
       return {
@@ -329,7 +329,7 @@ export function lazy<A>(fn: () => Parser<A>): Parser<A> {
  * use with `.slice` and such), as well as `line` and `column` for displaying to
  * users.
  */
-interface SourceLocation {
+export interface SourceLocation {
   /** The string index into the input (e.g. for use with `.slice`) */
   index: number;
   /**
@@ -346,14 +346,14 @@ interface SourceLocation {
 /**
  * Represents the result of a parser's action callback.
  */
-type ActionResult<A> = ActionOK<A> | ActionFail;
+export type ActionResult<A> = ActionOK<A> | ActionFail;
 
 /**
  * Represents a successful result from a parser's action callback. This is made
  * automatically by calling `context.ok`. Make sure to use `context.merge`
  * when writing a custom parser that executes multiple parser actions.
  */
-interface ActionOK<A> {
+export interface ActionOK<A> {
   type: "ActionOK";
   location: SourceLocation;
   value: A;
@@ -366,7 +366,7 @@ interface ActionOK<A> {
  * automatically by calling `context.ok`. Make sure to use `context.merge`
  * when writing a custom parser that executes multiple parser actions.
  */
-interface ActionFail {
+export interface ActionFail {
   type: "ActionFail";
   furthest: SourceLocation;
   expected: string[];
@@ -385,16 +385,19 @@ class Context {
   /** the current parse location */
   location: SourceLocation;
 
-  constructor(input: string, location: SourceLocation) {
-    this.input = input;
-    this.location = location;
+  constructor(options: { input: string; location: SourceLocation }) {
+    this.input = options.input;
+    this.location = options.location;
   }
 
   /**
    * Returns a new context with the supplied location and the current input.
    */
   moveTo(location: SourceLocation): Context {
-    return new Context(this.input, location);
+    return new Context({
+      input: this.input,
+      location,
+    });
   }
 
   private _internal_move(index: number): SourceLocation {
@@ -474,7 +477,7 @@ class Context {
 /**
  * Represents a successful parse result.
  */
-interface ParseOK<A> {
+export interface ParseOK<A> {
   type: "ParseOK";
   /** The parsed value */
   value: A;
@@ -484,7 +487,7 @@ interface ParseOK<A> {
  * Represents a failed parse result, where it failed, and what types of
  * values were expected at the point of failure.
  */
-interface ParseFail {
+export interface ParseFail {
   type: "ParseFail";
   /** The input location where the parse failed */
   location: SourceLocation;
