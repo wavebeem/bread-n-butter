@@ -9,8 +9,10 @@
     "dist"
   ],
   "scripts": {
-    "build": "rimraf dist && tsc --module es2015 --outDir dist/esm && tsc --module commonjs --outdir dist/cjs && cp dist/esm/bread-n-butter.js docs/js",
-    "docs": "rimraf dist && tsc --module es2015 --outDir dist/esm && eleventy",
+    "build:esm": "tsc --module es2015 --outDir dist/esm && cp dist/esm/bread-n-butter.js docs/js",
+    "build:cjs": "tsc --module commonjs --outdir dist/cjs",
+    "build": "rimraf dist && npm run -s build:esm && npm run -s build:cjs",
+    "docs": "rimraf dist && npm run -s build:esm && eleventy",
     "docs-serve": "eleventy --serve",
     "check": "prettier --check src examples __test__ && eslint --ext .js,.ts src examples __test__",
     "test": "jest",
