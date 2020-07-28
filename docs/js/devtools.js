@@ -1,5 +1,4 @@
 /* eslint-env browser */
-
 import * as bnb from "/js/bread-n-butter.js";
 
 window.bnb = bnb;
