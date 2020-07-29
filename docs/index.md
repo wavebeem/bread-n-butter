@@ -18,6 +18,10 @@ paired with a bit of regular expression experience, is all you need.
 bnb has zero dependencies and is only 1.6 KB minified and gzipped (11.7 KB
 raw compiled JS from TypeScript source).
 
+bnb has 100% test coverage and full documentation. bnb supports ES2015
+JavaScript environments (roughly: any modern browser (not IE), and any long term
+support Node.js release).
+
 ## Installation
 
 ```shell
