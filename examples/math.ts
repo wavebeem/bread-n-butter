@@ -1,28 +1,23 @@
 import * as bnb from "../src/bread-n-butter";
 import { prettyPrint } from "./util";
 
-// TODO: Ensure that `**` associates right
-
 // ---[ Abstract Syntax Tree and Evaluator Combined ]---
 
-class MathExpr {
-  evaluate(): number {
-    throw new Error("not implemented");
-  }
+interface MathExpr {
+  calculate(): number;
+  toString(): string;
 }
 
-class MathOperator2 extends MathExpr {
+class MathOperator2 implements MathExpr {
   constructor(
     public operator: string,
     public left: MathExpr,
     public right: MathExpr
-  ) {
-    super();
-  }
+  ) {}
 
-  evaluate(): number {
-    const left = this.left.evaluate();
-    const right = this.right.evaluate();
+  calculate(): number {
+    const left = this.left.calculate();
+    const right = this.right.calculate();
     switch (this.operator) {
       case "+":
         return left + right;
@@ -44,13 +39,11 @@ class MathOperator2 extends MathExpr {
   }
 }
 
-class MathOperator1 extends MathExpr {
-  constructor(public operator: string, public expression: MathExpr) {
-    super();
-  }
+class MathOperator1 implements MathExpr {
+  constructor(public operator: string, public expression: MathExpr) {}
 
-  evaluate(): number {
-    const expression = this.expression.evaluate();
+  calculate(): number {
+    const expression = this.expression.calculate();
     switch (this.operator) {
       case "-":
         return -expression;
@@ -64,12 +57,10 @@ class MathOperator1 extends MathExpr {
   }
 }
 
-class MathNumber extends MathExpr {
-  constructor(public value: number) {
-    super();
-  }
+class MathNumber implements MathExpr {
+  constructor(public value: number) {}
 
-  evaluate(): number {
+  calculate(): number {
     return this.value;
   }
 
@@ -172,4 +163,4 @@ console.log();
 console.log(`= ${ast}`);
 console.log();
 // Show the result of calculating the math expression
-console.log(`= ${ast.evaluate()}`);
+console.log(`= ${ast.calculate()}`);
