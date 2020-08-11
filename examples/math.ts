@@ -90,9 +90,14 @@ function operator<S extends string>(string: S) {
 
 const mathWS = bnb.match(/\s*/);
 
-// Lowest level
+// Each precedence level builds upon the previous one. Meaning that the previous
+// parser is used in the next parser, over and over. An astute reader could
+// shorten this code using `reduce`, but it becomes much harder to read when you
+// do that, in my opinion.
+
+// Highest level
 const mathNum = bnb
-  .match(/-?[0-9]+([.][0-9]+)?/)
+  .match(/[0-9]+([.][0-9]+)?/)
   .map((str) => new MathNumber(Number(str)));
 
 // Next level
@@ -113,33 +118,7 @@ const mathUnaryPrefix: bnb.Parser<MathExpr> = bnb.lazy(() => {
 });
 
 // Next level
-const mathAddSub: bnb.Parser<MathExpr> = mathUnaryPrefix.chain((expr) => {
-  return operator("+")
-    .or(operator("-"))
-    .and(mathUnaryPrefix)
-    .many0()
-    .map((pairs) => {
-      return pairs.reduce((accum, [operator, expr]) => {
-        return new MathOperator2(operator, accum, expr);
-      }, expr);
-    });
-});
-
-// Next level
-const mathMulDiv: bnb.Parser<MathExpr> = mathAddSub.chain((expr) => {
-  return operator("*")
-    .or(operator("/"))
-    .and(mathAddSub)
-    .many0()
-    .map((pairs) => {
-      return pairs.reduce((accum, [operator, expr]) => {
-        return new MathOperator2(operator, accum, expr);
-      }, expr);
-    });
-});
-
-// Next level
-const mathPow: bnb.Parser<MathExpr> = mathMulDiv.chain((expr) => {
+const mathPow: bnb.Parser<MathExpr> = mathUnaryPrefix.chain((expr) => {
   // Exponentiaton is right associative, meaning that `2 ** 3 ** 4` is
   // equivalent to `2 ** (3 ** 4)` rather than `(2 ** 3) ** 4`, so we can use
   // recursion to process side by side exponentiation into a nested structure.
@@ -151,23 +130,46 @@ const mathPow: bnb.Parser<MathExpr> = mathMulDiv.chain((expr) => {
     .or(bnb.ok(expr));
 });
 
-// Highest level
-const mathExpr = mathPow;
+// Next level
+const mathMulDiv: bnb.Parser<MathExpr> = mathPow.chain((expr) => {
+  return operator("*")
+    .or(operator("/"))
+    .and(mathPow)
+    .many0()
+    .map((pairs) => {
+      return pairs.reduce((accum, [operator, expr]) => {
+        return new MathOperator2(operator, accum, expr);
+      }, expr);
+    });
+});
 
-const text = "2 + 3 * 4 - 5 / 7 ** 6";
-// const text = "-2+3*4-5/0.25**6";
-// -20470
-// const text = "3 ** 3 ** 3 ** 3";
-// const text = "1 * 2 * 3 * 4";
-// const text = "1 ** 2 ** 3 ** 4";
-// const text = "3 ** 3";
-// const text = "3";
+// Next level
+const mathAddSub: bnb.Parser<MathExpr> = mathMulDiv.chain((expr) => {
+  return operator("+")
+    .or(operator("-"))
+    .and(mathMulDiv)
+    .many0()
+    .map((pairs) => {
+      return pairs.reduce((accum, [operator, expr]) => {
+        return new MathOperator2(operator, accum, expr);
+      }, expr);
+    });
+});
+
+// Lowest level
+const mathExpr = mathAddSub;
+
+const text = "-2 + 3 * 4 - 5 / 7 ** 6";
 
 const ast = mathExpr.tryParse(text);
+// Show the AST
 prettyPrint(ast);
 console.log();
+// Show the text that was parsed
 console.log(text);
 console.log();
+// Show the math expression with parentheses added
 console.log(`= ${ast}`);
 console.log();
+// Show the result of calculating the math expression
 console.log(`= ${ast.evaluate()}`);
