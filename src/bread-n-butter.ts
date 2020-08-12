@@ -324,7 +324,7 @@ export function all<A extends any[]>(...parsers: ManyParsers<A>): Parser<A> {
         return [...array, value];
       });
     });
-  }, ok<A[]>([]));
+  }, ok([]));
 }
 
 /**
