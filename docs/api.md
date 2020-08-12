@@ -11,9 +11,9 @@ your dev tools and follow along in the console with any of these examples.
 
 @[toc]
 
-## Parser Creators
+## Parser Functions
 
-### bnb.text(string)
+### `bnb.text(string)`
 
 Returns a parser that matches the exact `string` supplied.
 
@@ -27,7 +27,7 @@ keywordWhile.tryParse("while"); // => "while"
 paren.tryParse("()"); // => ["(", ")"]
 ```
 
-### bnb.match(regexp)
+### `bnb.match(regexp)`
 
 Returns a parser that matches the entire `regexp` at the current parser
 position.
@@ -57,7 +57,28 @@ number.tryParse("404");
 // => 404
 ```
 
-### bnb.lazy(callback)
+### `bnb.all(...parsers)`
+
+Parses all parsers in order, returning the values in the same order.
+
+**Note:** The parsers do not all have to return the same type.
+
+```ts
+const abc = bnb
+  .all(bnb.text("a"), bnb.text("b"), bnb.text("c"))
+  .map(([first, second, third]) => {
+    return { first, second, third };
+  });
+
+threeChars.tryParse("abc");
+// => {
+//   first: "a",
+//   second: "b",
+//   third: "c",
+// }
+```
+
+### `bnb.lazy(callback)`
 
 Takes a `callback` that returns a parser. The callback is called at most once,
 and only right when the parse action needs to happen.
@@ -91,7 +112,7 @@ expr.tryParse("[a,b,[c,d,[]],[[e]]]");
 // => ["a", "b", ["c", "d", []], [["e"]]]
 ```
 
-### bnb.ok(value)
+### `bnb.ok(value)`
 
 Returns a parser that yields the given `value` and consumes no input.
 
@@ -105,7 +126,7 @@ sign.tryParse("-"); // => "-"
 sign.tryParse(""); // => ""
 ```
 
-### bnb.fail(expected)
+### `bnb.fail(expected)`
 
 Returns a parser that fails with the given array of strings `expected` and
 consumes no input. Usually used in the `else` branch of a `chain` callback
@@ -136,7 +157,7 @@ number.tryParse("9".repeat(999));
 
 ## Parser Methods
 
-### parser.parse(input)
+### `parser.parse(input)`
 
 Parses the entire `input` string, returning a [ParseResult](#parseresult) with
 the parse value if successful, otherwise a failure value indicating where the
@@ -158,7 +179,7 @@ if (result.type === "ParseOK") {
 }
 ```
 
-### parser.tryParse(input)
+### `parser.tryParse(input)`
 
 Return the result from successfully parsing the `input` string.
 
@@ -176,7 +197,7 @@ const value = a.tryParse("a");
 value; // => "a"
 ```
 
-### parser.and(nextParser)
+### `parser.and(nextParser)`
 
 Combines `parser` and `nextParser` one after the other, yielding the results of
 both in an array.
@@ -190,7 +211,7 @@ result.value;
 // => ["a", "b"]
 ```
 
-### parser.or(otherParser)
+### `parser.or(otherParser)`
 
 Try to parse using `parser`. If that fails, parse using `otherParser`.
 
@@ -210,7 +231,7 @@ aMaybe.tryParse("a"); // => "a"
 aMaybe.tryParse(""); // => null
 ```
 
-### parser.chain(callback)
+### `parser.chain(callback)`
 
 Parse using the current parser. If it succeeds, pass the value to the
 `callback` function, which returns the next parser to use. Similar to `and`,
@@ -235,7 +256,7 @@ balance.tryParse("()"); // => ["(", ")"]
 balance.tryParse("[]"); // => ["[", "]"]
 ```
 
-### parser.map(callback)
+### `parser.map(callback)`
 
 Yields the result of calling `callback` with the parser's value.
 
@@ -251,7 +272,7 @@ bool.tryParse("yes"); // => true
 bool.tryParse("no"); // => false
 ```
 
-### parser.desc(expected)
+### `parser.desc(expected)`
 
 Returns a parser which parses the same value, but discards other error messages,
 using the supplied `expected` messages (array of strings) instead.
@@ -275,7 +296,7 @@ jsonNumber2.tryParse("x");
 // => ["number"]
 ```
 
-### parser.wrap(beforeParser, afterParser)
+### `parser.wrap(beforeParser, afterParser)`
 
 Returns a parser that parses `beforeParser`, `parser`, and `afterParser` in that
 order, yielding only the value from `parser`.
@@ -292,7 +313,7 @@ const list = item.sepBy0(comma).wrap(lbrack, rbrack);
 list.tryParse("[a,a,a]"); // => ["a", "a", "a"]
 ```
 
-### parser.trim(trimParser)
+### `parser.trim(trimParser)`
 
 Returns a parser that parses `trimParser`, `parser`, and then `trimParser`
 again, in that order, yielding only the value from `parser`.
@@ -309,7 +330,7 @@ const item = bnb.text("a").trim(optWhitespace);
 item.tryParse("     a "); // => "a"
 ```
 
-### parser.many0()
+### `parser.many0()`
 
 Repeats the current parser zero or more times, yielding the results in an array.
 
@@ -327,12 +348,12 @@ block.tryParse("{apple();banana();coconut();}");
 // => ["apple", "banana", "coconut"];
 ```
 
-### parser.many1()
+### `parser.many1()`
 
 Parsers the current parser **one** or more times. See
 [parser.many0](#parser.many0) for more details.
 
-### parser.sepBy0(sepParser)
+### `parser.sepBy0(sepParser)`
 
 Returns a parser that parses zero or more times, separated by `sepParser`.
 Useful for things like arrays, objects, argument lists, etc.
@@ -344,7 +365,7 @@ const list = item.sepBy0(comma);
 list.tryParse("a,a,a"); // => ["a", "a", "a"]
 ```
 
-### parser.sepBy1(sepParser)
+### `parser.sepBy1(sepParser)`
 
 Returns a parser that parses one or more times, separated by `sepParser`.
 
@@ -372,7 +393,7 @@ classDecl.tryParse("class A implements I, J, K");
 // => { type: "Class", name: "A", interfaces: ["I", "J", "K"] }
 ```
 
-### parser.node(name)
+### `parser.node(name)`
 
 Returns a parser that adds `name` and start/end location metadata.
 
@@ -406,7 +427,7 @@ type LispList = bnb.ParseNode<"LispList", LispExpr[]>;
 type LispExpr = LispSymbol | LispNumber | LispList;
 ```
 
-### parser.thru(callback)
+### `parser.thru(callback)`
 
 Returns the `callback` called with the parser.
 
@@ -426,7 +447,7 @@ paren1.tryParse("(a)"); // => "a"
 paren2.tryParse("(a)"); // => "a"
 ```
 
-### new bnb.Parser(action)
+### `new bnb.Parser(action)`
 
 Creates a new custom parser that performs the given parsing `action`.
 
@@ -449,7 +470,7 @@ const number = new bnb.Parser((context) => {
 });
 ```
 
-### parser.action
+### `parser.action`
 
 The parsing action.
 
@@ -464,7 +485,7 @@ multiple `ActionResult`s or else you will lose important parsing information.
 
 ## Built-in Parsers
 
-### bnb.eof
+### `bnb.eof`
 
 This parser succeeds if the input has already been fully parsed. Typically
 you won't need to use this since `parse` already checks this for you. But if
@@ -482,7 +503,7 @@ const file = statement.many0();
 file.tryParse("A\nB\nC"); // => ["A", "B", "C"]
 ```
 
-### bnb.location
+### `bnb.location`
 
 Parser that yields the current [SourceLocation](#sourcelocation), containing
 properties `index`, `line` and `column`. Useful when used before and after a
@@ -511,7 +532,7 @@ identifier.tryParse("abc");
 A `ParseResult` is either a `ParseOK` or a `ParseFail`. Check the `type` field
 to see which one it is!
 
-### ParseOK
+### `ParseOK`
 
 - `type: "ParseOK"`
 
@@ -521,7 +542,7 @@ to see which one it is!
 
   The parsed value
 
-### ParseFail
+### `ParseFail`
 
 - `type: "ParseFail"`
 
@@ -579,15 +600,15 @@ const bracket = new bnb.Parser<"[" | "]">((context) => {
 });
 ```
 
-### context.input
+### `context.input`
 
 The current parsing input (a string).
 
-### context.location
+### `context.location`
 
 The current parsing location (a [SourceLocation](#sourcelocation)).
 
-### context.ok(index, value)
+### `context.ok(index, value)`
 
 This method takes a new source `index` (a number representing the next character
 to parse) and a parse `value`, returning a successful
@@ -595,7 +616,7 @@ to parse) and a parse `value`, returning a successful
 
 This should be returned inside custom parsers.
 
-### context.fail(index, expected)
+### `context.fail(index, expected)`
 
 This method takes a new source `index` (a number representing where the parse
 failed) and a list of `expected` values (array of strings), returning a
@@ -604,13 +625,13 @@ successful
 
 This should be returned inside custom parsers.
 
-### context.moveTo(location)
+### `context.moveTo(location)`
 
 Returns a new context using the provided source location.
 
 See [context.merge](#context.merge) for an example.
 
-### context.merge(result1, result2)
+### `context.merge(result1, result2)`
 
 Takes `result1` and merges its `expected` values with `result2`, allowing error
 messages to be preserved.
@@ -645,7 +666,7 @@ function multiply(
 Either an [ActionOK](#actionok) or an [ActionFail](#actionfail). Check the
 `type` property to see which one it is.
 
-### ActionOK
+### `ActionOK`
 
 `ActionOK` objects have the following properties:
 
@@ -672,7 +693,7 @@ Either an [ActionOK](#actionok) or an [ActionFail](#actionfail). Check the
   an array of strings containing names of expected things to parse
   (e.g. `["string", "number", "end of file"]`).
 
-### ActionFail
+### `ActionFail`
 
 `ActionFail` objects have the following properties:
 

@@ -307,6 +307,26 @@ export function match(regexp: RegExp): Parser<string> {
   });
 }
 
+/** A tuple of parsers */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ManyParsers<A extends any[]> = {
+  [P in keyof A]: Parser<A[P]>;
+};
+
+/** Parse all items, returning their values in the same order. */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function all<A extends any[]>(...parsers: ManyParsers<A>): Parser<A> {
+  // TODO: This could be optimized with a custom parser, but I should probably add
+  // benchmarking first to see if it really matters enough to rewrite it
+  return parsers.reduce((acc, p) => {
+    return acc.chain((array) => {
+      return p.map((value) => {
+        return [...array, value];
+      });
+    });
+  }, ok<A[]>([]));
+}
+
 /**
  * Takes a lazily invoked callback that returns a parser, so you can create
  * recursive parsers.
