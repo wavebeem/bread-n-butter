@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Function `bnb.all`
+- Function `bnb.all` (thanks [@sveyret] for the type signature)
 
 ## [0.2.0] - 2020-07-28
 
@@ -37,3 +37,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Initial release
+
+[@sveyret]: https://github.com/sveyret
