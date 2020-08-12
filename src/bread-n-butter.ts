@@ -307,48 +307,17 @@ export function match(regexp: RegExp): Parser<string> {
   });
 }
 
-/** Parse all items, returning their values in the same order. */
-export function all<A>(parsers: Parser<A>[]): Parser<A[]>;
-
-/** Parse 2 items and return their values in the same order. */
-export function all<T1, T2>(
-  parsers: [Parser<T1>, Parser<T2>]
-): Parser<[T1, T2]>;
-
-/** Parse 3 items and return their values in the same order. */
-export function all<T1, T2, T3>(
-  parsers: [Parser<T1>, Parser<T2>, Parser<T3>]
-): Parser<[T1, T2, T3]>;
-
-/** Parse 4 items and return their values in the same order. */
-export function all<T1, T2, T3, T4>(
-  parsers: [Parser<T1>, Parser<T2>, Parser<T3>, Parser<T4>]
-): Parser<[T1, T2, T3, T4]>;
-
-/** Parse 5 items and return their values in the same order. */
-export function all<T1, T2, T3, T4, T5>(
-  parsers: [Parser<T1>, Parser<T2>, Parser<T3>, Parser<T4>, Parser<T5>]
-): Parser<[T1, T2, T3, T4, T5]>;
-
-/** Parse 6 items and return their values in the same order. */
-export function all<T1, T2, T3, T4, T5, T6>(
-  parsers: [
-    Parser<T1>,
-    Parser<T2>,
-    Parser<T3>,
-    Parser<T4>,
-    Parser<T5>,
-    Parser<T6>
-  ]
-): Parser<[T1, T2, T3, T4, T5, T6]>;
-
-// Please don't ask for more than 6 overloads here... no reasonable parser
-// should juggle six different parsers at the same time...
+/** A tuple of parsers */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ManyParsers<A extends any[]> = {
+  [P in keyof A]: Parser<A[P]>;
+};
 
 /** Parse all items, returning their values in the same order. */
-export function all<A>(parsers: Parser<A>[]): Parser<A[]> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function all<A extends any[]>(...parsers: ManyParsers<A>): Parser<A> {
   // TODO: This could be optimized with a custom parser, but I should probably add
-  // benchmarking first to see if it really matters enough to do?
+  // benchmarking first to see if it really matters enough to rewrite it
   return parsers.reduce((acc, p) => {
     return acc.chain((array) => {
       return p.map((value) => {
