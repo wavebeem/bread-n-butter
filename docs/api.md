@@ -57,6 +57,28 @@ number.tryParse("404");
 // => 404
 ```
 
+### bnb.all(parsers)
+
+Parses all parsers in order, returning the values in the same order.
+
+**Note:** The parsers do not all have to return the same type.
+
+```ts
+const oneChar = bnb.match(/./);
+const threeChars = bnb
+  .all(oneChar, oneChar, oneChar)
+  .map(([first, second, third]) => {
+    return { first, second, third };
+  });
+
+threeChars.tryParse("abc");
+// => {
+//   first: "a",
+//   second: "b",
+//   third: "c",
+// }
+```
+
 ### bnb.lazy(callback)
 
 Takes a `callback` that returns a parser. The callback is called at most once,

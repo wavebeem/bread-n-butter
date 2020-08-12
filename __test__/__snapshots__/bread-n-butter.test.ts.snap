@@ -1,5 +1,100 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`all 1`] = `
+Object {
+  "expected": Array [
+    "b",
+  ],
+  "location": Object {
+    "column": 2,
+    "index": 1,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`all 2`] = `
+Object {
+  "expected": Array [
+    "b",
+  ],
+  "location": Object {
+    "column": 2,
+    "index": 1,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`all 3`] = `
+Object {
+  "type": "ParseOK",
+  "value": Array [
+    "a",
+    "b",
+    "c",
+  ],
+}
+`;
+
+exports[`all 4`] = `
+Object {
+  "expected": Array [
+    "b",
+  ],
+  "location": Object {
+    "column": 2,
+    "index": 1,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`all 5`] = `
+Object {
+  "expected": Array [
+    "c",
+  ],
+  "location": Object {
+    "column": 3,
+    "index": 2,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`all 6`] = `
+Object {
+  "expected": Array [
+    "a",
+  ],
+  "location": Object {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`all 7`] = `
+Object {
+  "expected": Array [
+    "a",
+  ],
+  "location": Object {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
 exports[`and 1`] = `
 Object {
   "type": "ParseOK",

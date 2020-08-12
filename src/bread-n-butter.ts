@@ -307,6 +307,24 @@ export function match(regexp: RegExp): Parser<string> {
   });
 }
 
+// TODO: This could be optimized with a custom parser, but I should probably add
+// benchmarking first to see if it really matters enough to do?
+/**
+ * Returns a parser that matches every parser in order, returning their values
+ * in order also.
+ */
+export function all<A>(parsers: Parser<A>[]): Parser<A[]> {
+  let ret = ok<A[]>([]);
+  for (const p of parsers) {
+    ret = ret.chain((array) => {
+      return p.map((value) => {
+        return [...array, value];
+      });
+    });
+  }
+  return ret;
+}
+
 /**
  * Takes a lazily invoked callback that returns a parser, so you can create
  * recursive parsers.
