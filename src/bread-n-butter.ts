@@ -307,22 +307,55 @@ export function match(regexp: RegExp): Parser<string> {
   });
 }
 
-// TODO: This could be optimized with a custom parser, but I should probably add
-// benchmarking first to see if it really matters enough to do?
-/**
- * Returns a parser that matches every parser in order, returning their values
- * in order also.
- */
+/** Returns all items, returning the values in the same order. */
+export function all<A>(parsers: Parser<A>[]): Parser<A[]>;
+
+/** Parse 2 items and return their values in the same order. */
+export function all<T1, T2>(
+  parsers: [Parser<T1>, Parser<T2>]
+): Parser<[T1, T2]>;
+
+/** Parse 3 items and return their values in the same order. */
+export function all<T1, T2, T3>(
+  parsers: [Parser<T1>, Parser<T2>, Parser<T3>]
+): Parser<[T1, T2, T3]>;
+
+/** Parse 4 items and return their values in the same order. */
+export function all<T1, T2, T3, T4>(
+  parsers: [Parser<T1>, Parser<T2>, Parser<T3>, Parser<T4>]
+): Parser<[T1, T2, T3, T4]>;
+
+/** Parse 5 items and return their values in the same order. */
+export function all<T1, T2, T3, T4, T5>(
+  parsers: [Parser<T1>, Parser<T2>, Parser<T3>, Parser<T4>, Parser<T5>]
+): Parser<[T1, T2, T3, T4, T5]>;
+
+/** Parse 6 items and return their values in the same order. */
+export function all<T1, T2, T3, T4, T5, T6>(
+  parsers: [
+    Parser<T1>,
+    Parser<T2>,
+    Parser<T3>,
+    Parser<T4>,
+    Parser<T5>,
+    Parser<T6>
+  ]
+): Parser<[T1, T2, T3, T4, T5, T6]>;
+
+// Please don't ask for more than 6 overloads here... no reasonable parser
+// should juggle six different parsers at the same time...
+
+/** Returns all items, returning the values in the same order. */
 export function all<A>(parsers: Parser<A>[]): Parser<A[]> {
-  let ret = ok<A[]>([]);
-  for (const p of parsers) {
-    ret = ret.chain((array) => {
+  // TODO: This could be optimized with a custom parser, but I should probably add
+  // benchmarking first to see if it really matters enough to do?
+  return parsers.reduce((acc, p) => {
+    return acc.chain((array) => {
       return p.map((value) => {
         return [...array, value];
       });
     });
-  }
-  return ret;
+  }, ok<A[]>([]));
 }
 
 /**

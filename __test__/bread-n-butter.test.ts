@@ -87,6 +87,7 @@ test("many0/many1 infinite loop detection", () => {
 
 test("all", () => {
   const abc = bnb.all([bnb.text("a"), bnb.text("b"), bnb.text("c")]);
+  bnb.all();
   expect(abc.parse("a")).toMatchSnapshot();
   expect(abc.parse("aa")).toMatchSnapshot();
   expect(abc.parse("abc")).toMatchSnapshot();
