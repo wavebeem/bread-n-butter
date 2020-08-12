@@ -7,26 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Function `bnb.all`
+
 ## [0.2.0] - 2020-07-28
 
 ### Added
 
-- Exports interface `SourceLocation`
-- Exports interfaces `ActionResult`, `ActionOK`, `ActionFail`
-- Exports interfaces `ParseOK`, `ParseFail`
-- Exports class `Context`
+- Interface `SourceLocation`
+- Interfaces `ActionResult`, `ActionOK`, `ActionFail`
+- Interfaces `ParseOK`, `ParseFail`
+- Class `Context`
 
 ## [0.1.0] - 2020-07-28
 
 ### Added
 
-- Adds ES Modules build
+- ES Modules build
 
 ## [0.0.2] - 2020-07-27
 
 ### Fixed
 
-- Fixes a bug where `parser.many1` was equivalent to `parser.many0`
+- `parser.many1` was equivalent to `parser.many0`
 
 ## [0.0.1] - 2020-07-26
 
