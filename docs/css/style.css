@@ -137,8 +137,12 @@ h3 {
   padding: 0.25rem 0;
 }
 
-.page-api .markdownIt-TOC ul li {
-  font-family: var(--font-mono);
+h1 code,
+h2 code,
+h3 code,
+.page-api .markdownIt-TOC ul li code {
+  background: inherit;
+  color: inherit;
 }
 
 .markdownIt-TOC ul {
