@@ -4,6 +4,7 @@
   "description": "Parser combinators for JavaScript and TypeScript",
   "main": "dist/cjs/bread-n-butter.js",
   "module": "dist/esm/bread-n-butter.js",
+  "browser": "dist/esm/bread-n-butter.js",
   "types": "dist/esm/bread-n-butter.d.ts",
   "files": [
     "dist"
