@@ -11,7 +11,7 @@ your dev tools and follow along in the console with any of these examples.
 
 @[toc]
 
-## Parser Creators
+## Parser Functions
 
 ### bnb.text(string)
 
@@ -64,9 +64,8 @@ Parses all parsers in order, returning the values in the same order.
 **Note:** The parsers do not all have to return the same type.
 
 ```ts
-const oneChar = bnb.match(/./);
-const threeChars = bnb
-  .all(oneChar, oneChar, oneChar)
+const abc = bnb
+  .all([bnb.string("a"), bnb.string("b"), bnb.string("c")])
   .map(([first, second, third]) => {
     return { first, second, third };
   });
