@@ -307,7 +307,7 @@ export function match(regexp: RegExp): Parser<string> {
   });
 }
 
-/** Returns all items, returning the values in the same order. */
+/** Parse all items, returning their values in the same order. */
 export function all<A>(parsers: Parser<A>[]): Parser<A[]>;
 
 /** Parse 2 items and return their values in the same order. */
@@ -345,7 +345,7 @@ export function all<T1, T2, T3, T4, T5, T6>(
 // Please don't ask for more than 6 overloads here... no reasonable parser
 // should juggle six different parsers at the same time...
 
-/** Returns all items, returning the values in the same order. */
+/** Parse all items, returning their values in the same order. */
 export function all<A>(parsers: Parser<A>[]): Parser<A[]> {
   // TODO: This could be optimized with a custom parser, but I should probably add
   // benchmarking first to see if it really matters enough to do?
