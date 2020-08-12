@@ -15,7 +15,7 @@ With relatively little code and no build step, you can get a proper parser
 prepared for the language or input of your choice. A few functions and methods,
 paired with a bit of regular expression experience, is all you need.
 
-bnb has zero dependencies and is only 1.6 KB minified and gzipped (11.7 KB
+bnb has zero dependencies and is about 1.5 KB minified and gzipped (about 12 KB
 raw compiled JS from TypeScript source).
 
 bnb has 100% test coverage and full documentation. bnb supports ES2015
@@ -57,8 +57,7 @@ Check out the [tutorial](/tutorial) for help getting started.
 
 ## Examples
 
-See [the
-examples](https://github.com/wavebeem/bread-n-butter/tree/main/examples) on
+See [the examples](https://github.com/wavebeem/bread-n-butter/tree/main/examples) on
 GitHub for how to implement various language parsers using bnb.
 
 ## API
