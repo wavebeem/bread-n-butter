@@ -65,7 +65,7 @@ Parses all parsers in order, returning the values in the same order.
 
 ```ts
 const abc = bnb
-  .all([bnb.string("a"), bnb.string("b"), bnb.string("c")])
+  .all([bnb.text("a"), bnb.text("b"), bnb.text("c")])
   .map(([first, second, third]) => {
     return { first, second, third };
   });
