@@ -27,16 +27,19 @@ type JSONValue =
   | false;
 
 // This is the main entry point of the parser: a full JSON value.
-const jsonValue: bnb.Parser<JSONValue> = bnb.lazy(() =>
-  jsonObject
-    .or(jsonArray)
-    .or(jsonString)
-    .or(jsonNumber)
-    .or(jsonNull)
-    .or(jsonTrue)
-    .or(jsonFalse)
-    .thru(token)
-);
+const jsonValue: bnb.Parser<JSONValue> = bnb.lazy(() => {
+  return bnb
+    .choice<JSONValue>(
+      jsonObject,
+      jsonArray,
+      jsonString,
+      jsonNumber,
+      jsonNull,
+      jsonTrue,
+      jsonFalse
+    )
+    .thru(token);
+});
 
 // The basic tokens in JSON, with optional whitespace afterward.
 const jsonLBrace = word("{");
@@ -50,17 +53,17 @@ const jsonTrue = word("true").map<true>(() => true);
 const jsonFalse = word("false").map<false>(() => false);
 
 // A string escape sequence
-const strEscape = bnb
-  .match(/\\u[0-9a-fA-F]{4}/)
-  .map((str) => {
+const strEscape = bnb.choice(
+  bnb.match(/\\u[0-9a-fA-F]{4}/).map((str) => {
     return String.fromCharCode(parseInt(str.slice(2), 16));
-  })
-  .or(bnb.text("\\b").map(() => "\b"))
-  .or(bnb.text("\\n").map(() => "\n"))
-  .or(bnb.text("\\f").map(() => "\f"))
-  .or(bnb.text("\\r").map(() => "\r"))
-  .or(bnb.text("\\t").map(() => "\t"))
-  .or(bnb.match(/\\./).map((str) => str.slice(1)));
+  }),
+  bnb.text("\\b").map(() => "\b"),
+  bnb.text("\\n").map(() => "\n"),
+  bnb.text("\\f").map(() => "\f"),
+  bnb.text("\\r").map(() => "\r"),
+  bnb.text("\\t").map(() => "\t"),
+  bnb.match(/\\./).map((str) => str.slice(1))
+);
 
 // One or more characters that aren't `"` or `\`
 const strChunk = bnb.match(/[^"\\]+/);
@@ -85,18 +88,13 @@ const numExp = bnb.match(/e[+-]?[0-9]+/i).or(bnb.ok(""));
 // ```ts
 // /-?(0|[1-9][0-9]*)([.][0-9]+)?([eE][+-]?[0-9]+)?/
 // ```
-const jsonNumber = numSign
-  .chain((sign) => {
-    return numInt.chain((integer) => {
-      return numFrac.chain((fractional) => {
-        return numExp.map((exp) => {
-          // Seeing as JSON numbers are a subset of JS numbers, we can cheat by
-          // passing the whole thing off to the `Number` function, so we don't
-          // have to evaluate the number ourselves
-          return Number(sign + integer + fractional + exp);
-        });
-      });
-    });
+const jsonNumber = bnb
+  .all(numSign, numInt, numFrac, numExp)
+  .map(([sign, integer, fractional, exp]) => {
+    // Seeing as JSON numbers are a subset of JS numbers, we can cheat by
+    // passing the whole thing off to the `Number` function, so we don't
+    // have to evaluate the number ourselves
+    return Number(sign + integer + fractional + exp);
   })
   .thru(token)
   .desc(["number"]);
@@ -116,7 +114,7 @@ const jsonObject = objPair
   .sepBy0(jsonComma)
   .wrap(jsonLBrace, jsonRBrace)
   .map((pairs) => {
-    const obj: Record<string, JSONValue> = {};
+    const obj: { [key: string]: JSONValue } = {};
     for (const [key, value] of pairs) {
       obj[key] = value;
     }
