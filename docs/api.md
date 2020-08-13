@@ -63,6 +63,8 @@ Parses all parsers in order, returning the values in the same order.
 
 **Note:** The parsers do not all have to return the same type.
 
+See also [parser.and](#parser.and).
+
 ```ts
 const abc = bnb
   .all(bnb.text("a"), bnb.text("b"), bnb.text("c"))
@@ -76,6 +78,22 @@ threeChars.tryParse("abc");
 //   second: "b",
 //   third: "c",
 // }
+```
+
+### `bnb.choice(...parsers)`
+
+Parse using the parsers given, returning the first one that succeeds.
+
+**Note:** The parsers do not all have to return the same type.
+
+See also [parser.or](#parser.or).
+
+```ts
+const abc = bnb.choice(bnb.text("a"), bnb.text("b"), bnb.text("c"));
+
+abc.tryParse("a"); // => "a"
+abc.tryParse("b"); // => "b"
+abc.tryParse("c"); // => "c"
 ```
 
 ### `bnb.lazy(callback)`

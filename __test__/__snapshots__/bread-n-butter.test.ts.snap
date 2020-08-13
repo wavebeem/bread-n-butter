@@ -185,6 +185,71 @@ Object {
 }
 `;
 
+exports[`choice 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": "a",
+}
+`;
+
+exports[`choice 2`] = `
+Object {
+  "type": "ParseOK",
+  "value": "b",
+}
+`;
+
+exports[`choice 3`] = `
+Object {
+  "type": "ParseOK",
+  "value": "c",
+}
+`;
+
+exports[`choice 4`] = `
+Object {
+  "expected": Array [
+    "<EOF>",
+  ],
+  "location": Object {
+    "column": 2,
+    "index": 1,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`choice 5`] = `
+Object {
+  "expected": Array [
+    "<EOF>",
+  ],
+  "location": Object {
+    "column": 2,
+    "index": 1,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`choice 6`] = `
+Object {
+  "expected": Array [
+    "a",
+    "b",
+    "c",
+  ],
+  "location": Object {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
 exports[`desc 1`] = `
 Object {
   "type": "ParseOK",
