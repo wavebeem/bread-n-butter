@@ -193,8 +193,7 @@ application.
 
 ```ts
 const a = bnb.text("a");
-const value = a.tryParse("a");
-value; // => "a"
+a.tryParse("a"); // => "a"
 ```
 
 ### `parser.and(nextParser)`
@@ -206,8 +205,7 @@ both in an array.
 const a = bnb.text("a");
 const b = bnb.text("b");
 const ab = a.and(b);
-const result = ab.tryParse("a;
-result.value;
+ab.tryParse("a");
 // => ["a", "b"]
 ```
 
@@ -229,6 +227,30 @@ ab.tryParse("b"); // => "b"
 const aMaybe = bnb.text("a").or(bnb.ok(null));
 aMaybe.tryParse("a"); // => "a"
 aMaybe.tryParse(""); // => null
+```
+
+### `parser.next(nextParser)`
+
+Combines `parser` and `nextParser` one after the other, yielding the result of `nextParser`.
+
+```ts
+const a = bnb.text("a");
+const b = bnb.text("b");
+const ab = a.next(b);
+ab.tryParse("ab");
+// => "b"
+```
+
+### `parser.skip(nextParser)`
+
+Combines `parser` and `nextParser` one after the other, yielding the result of `parser`.
+
+```ts
+const a = bnb.text("a");
+const b = bnb.text("b");
+const ab = a.skip(b);
+ab.tryParse("ab");
+// => "a"
 ```
 
 ### `parser.chain(callback)`

@@ -71,6 +71,16 @@ export class Parser<A> {
     });
   }
 
+  /** Parse both and return the value of the first */
+  skip<B>(parserB: Parser<B>): Parser<A> {
+    return this.and(parserB).map(([a]) => a);
+  }
+
+  /** Parse both and return the value of the second */
+  next<B>(parserB: Parser<B>): Parser<B> {
+    return this.and(parserB).map(([, b]) => b);
+  }
+
   /**
    * Try to parse using the current parser. If that fails, parse using the
    * second parser.

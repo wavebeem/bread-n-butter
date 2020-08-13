@@ -42,4 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-Nothing, yet
+### Added
+
+- Method `parser.skip`
+- Method `parser.next`

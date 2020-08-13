@@ -96,6 +96,24 @@ test("all", () => {
   expect(abc.parse("b")).toMatchSnapshot();
 });
 
+test("next", () => {
+  const ab = bnb.text("a").next(bnb.text("b"));
+  expect(ab.parse("ab")).toMatchSnapshot();
+  expect(ab.parse("a")).toMatchSnapshot();
+  expect(ab.parse("b")).toMatchSnapshot();
+  expect(ab.parse("")).toMatchSnapshot();
+  expect(ab.parse("aba")).toMatchSnapshot();
+});
+
+test("skip", () => {
+  const ab = bnb.text("a").skip(bnb.text("b"));
+  expect(ab.parse("ab")).toMatchSnapshot();
+  expect(ab.parse("a")).toMatchSnapshot();
+  expect(ab.parse("b")).toMatchSnapshot();
+  expect(ab.parse("")).toMatchSnapshot();
+  expect(ab.parse("aba")).toMatchSnapshot();
+});
+
 test("many1", () => {
   const isA = bnb.text("a");
   const isAAA = isA.many1();
