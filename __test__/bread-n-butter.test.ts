@@ -165,13 +165,7 @@ test("lisp lists", () => {
   const lp = bnb.text("(");
   const rp = bnb.text(")");
   const ws = bnb.match(/\s+/);
-  const list = lp.chain(() => {
-    return symbol.sepBy0(ws).chain((values) => {
-      return rp.map(() => {
-        return values;
-      });
-    });
-  });
+  const list = lp.next(symbol.sepBy0(ws)).skip(rp);
   expect(list.parse("(a b c)")).toMatchSnapshot();
 });
 
