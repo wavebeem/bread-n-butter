@@ -1,5 +1,5 @@
 ---
-layout: "layouts/home.njk"
+layout: "layouts/home"
 title: "bread-n-butter"
 description: "bread-n-butter (bnb) is a parser combinator library for TypeScript and JavaScript."
 ---

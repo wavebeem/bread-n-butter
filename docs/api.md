@@ -1,5 +1,5 @@
 ---
-layout: "layouts/home.njk"
+layout: "layouts/home"
 title: "API | bread-n-butter"
 rootClass: "page-api"
 ---
