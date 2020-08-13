@@ -337,6 +337,15 @@ export function all<A extends any[]>(...parsers: ManyParsers<A>): Parser<A> {
   }, ok([]));
 }
 
+/** Parse using the parsers given, returning the first one that succeeds. */
+export function choice<A>(...parsers: Parser<A>[]): Parser<A> {
+  // TODO: This could be optimized with a custom parser, but I should probably add
+  // benchmarking first to see if it really matters enough to rewrite it
+  return parsers.reduce((acc, p) => {
+    return acc.or(p);
+  });
+}
+
 /**
  * Takes a lazily invoked callback that returns a parser, so you can create
  * recursive parsers.
