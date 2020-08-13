@@ -1,5 +1,5 @@
 ---
-layout: "layouts/home.njk"
+layout: "layouts/home"
 title: "Tutorial | bread-n-butter"
 ---
 
@@ -90,10 +90,26 @@ language, a string, number, boolean, array, or object are all valid as
 "expressions", so your expression parser should combine all the other parsers
 using `.or`.
 
+If you have a lot of parsers combined with `.or`, you can use
+[bnb.choice](/api#bnb.choice) instead, which takes as many parsers as you want,
+yielding the result from the first one that succeeds.
+
+```ts
+const a = bnb.text("a");
+const b = bnb.text("b");
+const c = bnb.text("c");
+
+const abc = bnb.choice(a, b, c);
+
+abc.tryParse("a"); // => "a"
+abc.tryParse("b"); // => "b"
+abc.tryParse("c"); // => "c"
+```
+
 `.chain` can also let you make choices between multiple options, though it's a
 bit different. With `.chain` you can read the value from the last parser and
-return a new parser. So you can use an `if` statement to choose what to parse
-next.
+return a new parser. So you can even use an `if` statement to choose what to
+parse next.
 
 ```ts
 const customString = bnb.match(/[a-z]/);
@@ -146,6 +162,32 @@ Notice that `.map` is used on the final nested call. `.chain` must always return
 a parser, not just a plain value. So you could use `.chain` for the final call,
 but then you'd have to use `bnb.ok(value)` instead of just the value itself.
 
+As a shortcut, you can use [bnb.all](/api#bnb.all) when you want to match
+multiple parsers in a row and use all their values.
+
+```ts
+const oneChar = bnb.match(/./ms);
+const threeChars = bnb.all(oneChar, oneChar, oneChar);
+
+threeChars.tryParse("abc"); // => ["a", "b", "c"]
+```
+
+And if you need to access their values, you can use array destructuring.
+
+```ts
+const oneChar = bnb.match(/./ms);
+const threeChars = bnb.all(oneChar, oneChar, oneChar).map(([c1, ct, c3]) => {
+  return { c1, c2, c3 };
+});
+
+threeChars.tryParse("abc");
+// => {
+//   c1: "a",
+//   c2: "b",
+//   c3: "c",
+// }
+```
+
 ## Lazy Parsers and Recursive Grammar
 
 Most languages are _recursive_. This means you can put things together like
@@ -164,6 +206,7 @@ array is nested back inside itself again.
 // We have to use lazy here because `number` and `array` aren't defined yet
 const expression = bnb.lazy(() => {
   return number.or(array);
+  // NOTE: You can use bnb.choice(...parsers) if you have several parsers
 });
 
 const number = bnb.match(/[0-9]+/).map(Number);
@@ -225,13 +268,12 @@ create your own without too much fuss.
 ```ts
 function node(type: string) {
   return function <A>(parser: bnb.Parser<A>) {
-    return bnb.location.chain((start) => {
-      return parser.chain((value) => {
-        return bnb.location.map((end) => {
-          return { type, value, start, end };
-        });
+    return bnb
+      .all(bnb.location, parser, bnb.location)
+      .map(([start, value, end]) => {
+        // You could also use classes instead of plain objects
+        return { type, value, start, end };
       });
-    });
   };
 }
 

@@ -74,9 +74,9 @@ function py(indent: number): Py {
   // indentation level.
   const pyBlock = bnb
     .text("block:")
-    .and(pyNL)
-    .chain(() => {
-      return pyIndentMore.chain((n) => {
+    .next(pyNL)
+    .next(
+      pyIndentMore.chain((n) => {
         return pyStatement.chain((first) => {
           return py(n)
             .pyRestStatement.many0()
@@ -87,18 +87,15 @@ function py(indent: number): Py {
               };
             });
         });
-      });
-    });
+      })
+    );
 
   // Just a variable and then the end of the line.
   const pyIdent = bnb
     .match(/[a-z]+/i)
-    .and(pyEnd)
-    .map<PyIdent>((pair) => {
-      return {
-        type: "Ident",
-        value: pair[0],
-      };
+    .skip(pyEnd)
+    .map<PyIdent>((value) => {
+      return { type: "Ident", value };
     });
 
   return { pyStatement, pyRestStatement };
