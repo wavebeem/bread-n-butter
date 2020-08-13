@@ -112,6 +112,7 @@ test("skip", () => {
   expect(ab.parse("b")).toMatchSnapshot();
   expect(ab.parse("")).toMatchSnapshot();
   expect(ab.parse("aba")).toMatchSnapshot();
+});
 
 test("choice", () => {
   const abc = bnb.choice(bnb.text("a"), bnb.text("b"), bnb.text("c"));
