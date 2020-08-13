@@ -96,6 +96,16 @@ test("all", () => {
   expect(abc.parse("b")).toMatchSnapshot();
 });
 
+test("choice", () => {
+  const abc = bnb.choice(bnb.text("a"), bnb.text("b"), bnb.text("c"));
+  expect(abc.parse("a")).toMatchSnapshot();
+  expect(abc.parse("b")).toMatchSnapshot();
+  expect(abc.parse("c")).toMatchSnapshot();
+  expect(abc.parse("aaaa")).toMatchSnapshot();
+  expect(abc.parse("abb")).toMatchSnapshot();
+  expect(abc.parse("")).toMatchSnapshot();
+});
+
 test("many1", () => {
   const isA = bnb.text("a");
   const isAAA = isA.many1();
