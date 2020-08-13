@@ -415,19 +415,12 @@ implemented by a class.
 ```ts
 const identifier = bnb.match(/[a-z]+/i);
 const classDecl = bnb
-  .str("class ")
-  .and(identifier)
-  .chain(([, name]) => {
-    return bnb
-      .str(" implements ")
-      .and(identifier.sepBy1(bnb.text(", ")))
-      .map(([, interfaces]) => {
-        return {
-          type: "Class",
-          name: name,
-          interfaces: interfaces,
-        };
-      });
+  .all(
+    bnb.text("class ").next(identifier),
+    bnb.text(" implements ").next(identifier.sepBy1(bnb.text(", ")))
+  )
+  .map(([name, interfaces]) => {
+    return { type: "Class", name, interfaces };
   });
 classDecl.tryParse("class A implements I, J, K");
 // => { type: "Class", name: "A", interfaces: ["I", "J", "K"] }

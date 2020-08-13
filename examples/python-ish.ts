@@ -64,7 +64,7 @@ function py(indent: number): Py {
   // state. It's called RestStatement because the first statement in a block
   // is indented more than the previous state, but the *rest* of the
   // statements match up with the new state.
-  const pyRestStatement = pyIndentSame.and(pyStatement).map((pair) => pair[1]);
+  const pyRestStatement = pyIndentSame.next(pyStatement);
 
   // This is where the magic happens. Basically we need to parse a deeper
   // indentation level on the first statement of the block and keep track of

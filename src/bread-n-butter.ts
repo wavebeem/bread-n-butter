@@ -21,11 +21,11 @@ export class Parser<A> {
   parse(input: string): ParseOK<A> | ParseFail {
     const location = { index: 0, line: 1, column: 1 };
     const context = new Context({ input, location });
-    const result = this.and(eof).action(context);
+    const result = this.skip(eof).action(context);
     if (result.type === "ActionOK") {
       return {
         type: "ParseOK",
-        value: result.value[0],
+        value: result.value,
       };
     }
     return {
@@ -145,9 +145,7 @@ export class Parser<A> {
    * Wraps the current parser with before & after parsers.
    */
   wrap<B, C>(before: Parser<B>, after: Parser<C>): Parser<A> {
-    return before.and(this).chain(([, value]) => {
-      return after.map(() => value);
-    });
+    return before.next(this).skip(after);
   }
 
   /**
@@ -206,8 +204,7 @@ export class Parser<A> {
   sepBy1<B>(separator: Parser<B>): Parser<A[]> {
     return this.chain((first) => {
       return separator
-        .and(this)
-        .map(([, value]) => value)
+        .next(this)
         .many0()
         .map((rest) => {
           return [first, ...rest];
@@ -219,11 +216,9 @@ export class Parser<A> {
    * Returns a parser that adds name and start/end location metadata.
    */
   node<S extends string>(name: S): Parser<ParseNode<S, A>> {
-    return location.and(this).chain(([start, value]) => {
-      return location.map((end) => {
-        const type = "ParseNode";
-        return { type, name, value, start, end } as const;
-      });
+    return all(location, this, location).map(([start, value, end]) => {
+      const type = "ParseNode";
+      return { type, name, value, start, end } as const;
     });
   }
 }
