@@ -46,3 +46,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Method `parser.skip`
 - Method `parser.next`
+- Function `bnb.choice(...parsers)`
