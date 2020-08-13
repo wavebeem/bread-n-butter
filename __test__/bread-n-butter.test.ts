@@ -1,80 +1,80 @@
 import * as bnb from "../src/bread-n-butter";
 
 test("test a test", () => {
-  const isX = bnb.text("x");
-  expect(isX.parse("x")).toMatchSnapshot();
+  const x = bnb.text("x");
+  expect(x.parse("x")).toMatchSnapshot();
 });
 
 test("and", () => {
-  const isX = bnb.text("x");
-  const isY = bnb.text("y");
-  const isXY = isX.and(isY);
-  expect(isXY.parse("xy")).toMatchSnapshot();
+  const x = bnb.text("x");
+  const y = bnb.text("y");
+  const xy = x.and(y);
+  expect(xy.parse("xy")).toMatchSnapshot();
 });
 
 test("and triple", () => {
-  const isX = bnb.text("x");
-  const isY = bnb.text("y");
-  const isZ = bnb.text("z");
-  const isXYZ = isX.and(isY).and(isZ);
-  expect(isXYZ.parse("xyz")).toMatchSnapshot();
+  const x = bnb.text("x");
+  const y = bnb.text("y");
+  const z = bnb.text("z");
+  const xyz = x.and(y).and(z);
+  expect(xyz.parse("xyz")).toMatchSnapshot();
 });
 
 test("and success triple 2", () => {
-  const isX = bnb.text("x");
-  const isY = bnb.text("y");
-  const isZ = bnb.text("z");
-  const isXYZ = isX.and(isY).chain(([x, y]) => {
-    return isZ.map((z) => {
+  const x = bnb.text("x");
+  const y = bnb.text("y");
+  const z = bnb.text("z");
+  const xyz = x.and(y).chain(([x, y]) => {
+    return z.map((z) => {
       return [x, y, z] as const;
     });
   });
-  expect(isXYZ.parse("xyz")).toMatchSnapshot();
+  expect(xyz.parse("xyz")).toMatchSnapshot();
 });
 
 test("and failure", () => {
-  const isX = bnb.text("x");
-  const isY = bnb.text("y");
-  const isXY = isX.and(isY);
-  expect(isXY.parse("x")).toMatchSnapshot();
-  expect(isXY.parse("y")).toMatchSnapshot();
-  expect(isXY.parse("yx")).toMatchSnapshot();
-  expect(isXY.parse("")).toMatchSnapshot();
+  const x = bnb.text("x");
+  const y = bnb.text("y");
+  const xy = x.and(y);
+  expect(xy.parse("x")).toMatchSnapshot();
+  expect(xy.parse("y")).toMatchSnapshot();
+  expect(xy.parse("yx")).toMatchSnapshot();
+  expect(xy.parse("")).toMatchSnapshot();
 });
 
 test("sepBy0", () => {
-  const isA = bnb.text("a");
-  const isSep = bnb.text(",");
-  const isAList = isA.sepBy0(isSep);
-  expect(isAList.parse("")).toMatchSnapshot();
-  expect(isAList.parse("a")).toMatchSnapshot();
-  expect(isAList.parse("a,a")).toMatchSnapshot();
-  expect(isAList.parse("a,a,a")).toMatchSnapshot();
-  expect(isAList.parse("a,a,b")).toMatchSnapshot();
-  expect(isAList.parse("b")).toMatchSnapshot();
+  const a = bnb.text("a");
+  const sep = bnb.text(",");
+  const list = a.sepBy0(sep);
+  expect(list.parse("")).toMatchSnapshot();
+  expect(list.parse("a")).toMatchSnapshot();
+  expect(list.parse("a,a")).toMatchSnapshot();
+  expect(list.parse("a,a,a")).toMatchSnapshot();
+  expect(list.parse("a,a,b")).toMatchSnapshot();
+  expect(list.parse("b")).toMatchSnapshot();
 });
 
 test("sepBy1", () => {
-  const isA = bnb.text("a");
-  const isSep = bnb.text(",");
-  const isAList = isA.sepBy1(isSep);
-  expect(isAList.parse("")).toMatchSnapshot();
-  expect(isAList.parse("a")).toMatchSnapshot();
-  expect(isAList.parse("a,a")).toMatchSnapshot();
-  expect(isAList.parse("a,a,a")).toMatchSnapshot();
-  expect(isAList.parse("a,a,b")).toMatchSnapshot();
-  expect(isAList.parse("b")).toMatchSnapshot();
+  const a = bnb.text("a");
+  const sep = bnb.text(",");
+  const list = a.sepBy1(sep);
+  expect(list.parse("")).toMatchSnapshot();
+  expect(list.parse("a")).toMatchSnapshot();
+  expect(list.parse("a,a")).toMatchSnapshot();
+  expect(list.parse("a,a,a")).toMatchSnapshot();
+  expect(list.parse("a,a,b")).toMatchSnapshot();
+  expect(list.parse("b")).toMatchSnapshot();
 });
 
 test("many0", () => {
-  const isA = bnb.text("a");
-  const isAAA = isA.many0();
-  expect(isAAA.parse("")).toMatchSnapshot();
-  expect(isAAA.parse("a")).toMatchSnapshot();
-  expect(isAAA.parse("aa")).toMatchSnapshot();
-  expect(isAAA.parse("aaa")).toMatchSnapshot();
-  expect(isAAA.parse("aaaa")).toMatchSnapshot();
-  expect(isAAA.parse("b")).toMatchSnapshot();
+  const a = bnb.text("a");
+  const aaa = a.many0();
+  expect(aaa.parse("")).toMatchSnapshot();
+  expect(aaa.parse("a")).toMatchSnapshot();
+  expect(aaa.parse("aa")).toMatchSnapshot();
+  expect(aaa.parse("aaa")).toMatchSnapshot();
+  expect(aaa.parse("aaaa")).toMatchSnapshot();
+  expect(aaa.parse("b")).toMatchSnapshot();
 });
 
 test("many0/many1 infinite loop detection", () => {
@@ -96,6 +96,24 @@ test("all", () => {
   expect(abc.parse("b")).toMatchSnapshot();
 });
 
+test("next", () => {
+  const ab = bnb.text("a").next(bnb.text("b"));
+  expect(ab.parse("ab")).toMatchSnapshot();
+  expect(ab.parse("a")).toMatchSnapshot();
+  expect(ab.parse("b")).toMatchSnapshot();
+  expect(ab.parse("")).toMatchSnapshot();
+  expect(ab.parse("aba")).toMatchSnapshot();
+});
+
+test("skip", () => {
+  const ab = bnb.text("a").skip(bnb.text("b"));
+  expect(ab.parse("ab")).toMatchSnapshot();
+  expect(ab.parse("a")).toMatchSnapshot();
+  expect(ab.parse("b")).toMatchSnapshot();
+  expect(ab.parse("")).toMatchSnapshot();
+  expect(ab.parse("aba")).toMatchSnapshot();
+});
+
 test("choice", () => {
   const abc = bnb.choice(bnb.text("a"), bnb.text("b"), bnb.text("c"));
   expect(abc.parse("a")).toMatchSnapshot();
@@ -107,54 +125,48 @@ test("choice", () => {
 });
 
 test("many1", () => {
-  const isA = bnb.text("a");
-  const isAAA = isA.many1();
-  expect(isAAA.parse("a")).toMatchSnapshot();
-  expect(isAAA.parse("aa")).toMatchSnapshot();
-  expect(isAAA.parse("aaa")).toMatchSnapshot();
-  expect(isAAA.parse("aaaa")).toMatchSnapshot();
-  expect(isAAA.parse("")).toMatchSnapshot();
-  expect(isAAA.parse("b")).toMatchSnapshot();
+  const a = bnb.text("a");
+  const aaa = a.many1();
+  expect(aaa.parse("a")).toMatchSnapshot();
+  expect(aaa.parse("aa")).toMatchSnapshot();
+  expect(aaa.parse("aaa")).toMatchSnapshot();
+  expect(aaa.parse("aaaa")).toMatchSnapshot();
+  expect(aaa.parse("")).toMatchSnapshot();
+  expect(aaa.parse("b")).toMatchSnapshot();
 });
 
 test("or", () => {
-  const isA = bnb.text("a");
-  const isB = bnb.text("b");
-  const isAorB = isA.or(isB);
-  expect(isAorB.parse("a")).toMatchSnapshot();
-  expect(isAorB.parse("b")).toMatchSnapshot();
-  expect(isAorB.parse("c")).toMatchSnapshot();
-  expect(isAorB.parse("ab")).toMatchSnapshot();
-  expect(isAorB.parse("")).toMatchSnapshot();
+  const a = bnb.text("a");
+  const b = bnb.text("b");
+  const ab = a.or(b);
+  expect(ab.parse("a")).toMatchSnapshot();
+  expect(ab.parse("b")).toMatchSnapshot();
+  expect(ab.parse("c")).toMatchSnapshot();
+  expect(ab.parse("ab")).toMatchSnapshot();
+  expect(ab.parse("")).toMatchSnapshot();
 });
 
 test("matchEOF", () => {
-  const isEOF = bnb.eof;
-  expect(isEOF.parse("")).toMatchSnapshot();
-  expect(isEOF.parse("x")).toMatchSnapshot();
+  const eof = bnb.eof;
+  expect(eof.parse("")).toMatchSnapshot();
+  expect(eof.parse("x")).toMatchSnapshot();
 });
 
 test("match", () => {
-  const isNumber = bnb.match(/\d+/);
-  expect(isNumber.parse("12")).toMatchSnapshot();
-  expect(isNumber.parse("abc")).toMatchSnapshot();
+  const num = bnb.match(/\d+/);
+  expect(num.parse("12")).toMatchSnapshot();
+  expect(num.parse("abc")).toMatchSnapshot();
   expect(() => bnb.match(/./g)).toThrow();
   expect(() => bnb.match(/./y)).toThrow();
 });
 
 test("lisp lists", () => {
-  const isSymbol = bnb.match(/[a-zA-Z_-]+/);
-  const isLP = bnb.text("(");
-  const isRP = bnb.text(")");
-  const isWS = bnb.match(/\s+/);
-  const isList = isLP.chain(() => {
-    return isSymbol.sepBy0(isWS).chain((values) => {
-      return isRP.map(() => {
-        return values;
-      });
-    });
-  });
-  expect(isList.parse("(a b c)")).toMatchSnapshot();
+  const symbol = bnb.match(/[a-zA-Z_-]+/);
+  const lp = bnb.text("(");
+  const rp = bnb.text(")");
+  const ws = bnb.match(/\s+/);
+  const list = lp.next(symbol.sepBy0(ws)).skip(rp);
+  expect(list.parse("(a b c)")).toMatchSnapshot();
 });
 
 test("node", () => {

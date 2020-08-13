@@ -774,6 +774,132 @@ Object {
 }
 `;
 
+exports[`skip 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": "a",
+}
+`;
+
+exports[`skip 2`] = `
+Object {
+  "expected": Array [
+    "b",
+  ],
+  "location": Object {
+    "column": 2,
+    "index": 1,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`skip 3`] = `
+Object {
+  "expected": Array [
+    "a",
+  ],
+  "location": Object {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`skip 4`] = `
+Object {
+  "expected": Array [
+    "a",
+  ],
+  "location": Object {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`skip 5`] = `
+Object {
+  "expected": Array [
+    "<EOF>",
+  ],
+  "location": Object {
+    "column": 3,
+    "index": 2,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`next 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": "b",
+}
+`;
+
+exports[`next 2`] = `
+Object {
+  "expected": Array [
+    "b",
+  ],
+  "location": Object {
+    "column": 2,
+    "index": 1,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`next 3`] = `
+Object {
+  "expected": Array [
+    "a",
+  ],
+  "location": Object {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`next 4`] = `
+Object {
+  "expected": Array [
+    "a",
+  ],
+  "location": Object {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`next 5`] = `
+Object {
+  "expected": Array [
+    "<EOF>",
+  ],
+  "location": Object {
+    "column": 3,
+    "index": 2,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
 exports[`test a test 1`] = `
 Object {
   "type": "ParseOK",
