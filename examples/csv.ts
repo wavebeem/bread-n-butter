@@ -15,8 +15,10 @@ const csvFieldQuoted = bnb.text('"').chain(() => {
 });
 const csvField = csvFieldQuoted.or(csvFieldSimple);
 const csvRow = csvField.sepBy1(bnb.text(","));
-const csvFile = csvRow.sepBy1(csvEnd).chain((rows) => {
-  return csvEnd.or(bnb.ok("")).map(() => {
+const csvFile = csvRow
+  .sepBy1(csvEnd)
+  .skip(csvEnd.or(bnb.ok("")))
+  .map((rows) => {
     return rows.filter((row, index) => {
       // Given that CSV files don't require line endings strictly, and empty
       // string is a valid CSV row, we need to make sure and trim off the final
@@ -26,7 +28,6 @@ const csvFile = csvRow.sepBy1(csvEnd).chain((rows) => {
       return !(index === rows.length - 1 && row.length === 1 && row[0] === "");
     });
   });
-});
 
 const text = `\
 a,,c,"a ""complex"" field, i think"\r\n\
