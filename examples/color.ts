@@ -26,7 +26,6 @@ const num = bnb.match(/[0-9.]+/);
 // parsers
 const hexColor1 = sharp
   .next(bnb.all(hexval, hexval, hexval))
-  .skip(bnb.eof)
   .map(
     ([r, g, b]) =>
       new Color(parseInt(r + r, 16), parseInt(g + g, 16), parseInt(b + b, 16))
@@ -58,7 +57,8 @@ const rgbaColor = bnb
       new Color(parseInt(r), parseInt(g), parseInt(b), parseFloat(a))
   );
 
-const parsers = bnb.choice(hexColor1, hexColor2, rgbColor, rgbaColor);
+// Note that hexColor2 must be placed before hexColor1
+const parsers = bnb.choice(hexColor2, hexColor1, rgbColor, rgbaColor);
 
 const examples = [
   "#fff",
