@@ -84,16 +84,32 @@ threeChars.tryParse("abc");
 
 Parse using the parsers given, returning the first one that succeeds.
 
+**Note:** Be careful with this function if multiple parsers overlap in what they
+parse. See the code snippet below for more details.
+
 **Note:** The parsers do not all have to return the same type.
 
 See also [parser.or](#parser.or).
 
 ```ts
-const abc = bnb.choice(bnb.text("a"), bnb.text("b"), bnb.text("c"));
+const parser1 = bnb.choice(bnb.text("a"), bnb.text("b"), bnb.text("c"));
+parser1.tryParse("a"); // => "a"
+parser1.tryParse("b"); // => "b"
+parser1.tryParse("c"); // => "c"
 
-abc.tryParse("a"); // => "a"
-abc.tryParse("b"); // => "b"
-abc.tryParse("c"); // => "c"
+const parser2 = bnb.choice(bnb.text("abc"), bnb.text("abc-123"));
+parser2.tryParse("abc-123");
+// => Error
+//
+// This fails because the first parser `abc` succeeds, but then there is still
+// the additional text `-123` afterward that is left unparsed. It is an error to
+// leave unparsed text after calling `.parse` or `.tryParse`.
+
+const parser3 = bnb.choice(bnb.text("abc-123"), bnb.text("abc"));
+parser3.tryParse("abc-123");
+// => "abc123"
+//
+// Since both parsers start with `abc`, we have to put the longer one first.
 ```
 
 ### `bnb.lazy(callback)`
@@ -234,6 +250,8 @@ Try to parse using `parser`. If that fails, parse using `otherParser`.
 This is good for parsing things like _expressions_ or _statements_ in
 programming languages, where many different types of things are applicable.
 
+See [bnb.choice](#bnb.choice) for additional information.
+
 ```ts
 const a = bnb.text("a");
 const b = bnb.text("b");
@@ -282,16 +300,13 @@ This is good for parsing things like _expressions_ or _statements_ in
 programming languages, where many different types of things are applicable.
 
 ```ts
-const balance = bnb
-  .str("(")
-  .or(bnb.text("["))
-  .chain((first) => {
-    if (first === "(") {
-      return bnb.text(")").map((last) => [first, last]);
-    } else {
-      return bnb.text("]").map((last) => [first, last]);
-    }
-  });
+const balance = bnb.choice(bnb.text("("), bnb.text("[")).chain((first) => {
+  if (first === "(") {
+    return bnb.text(")").map((last) => [first, last]);
+  } else {
+    return bnb.text("]").map((last) => [first, last]);
+  }
+});
 balance.tryParse("()"); // => ["(", ")"]
 balance.tryParse("[]"); // => ["[", "]"]
 ```
@@ -413,17 +428,16 @@ Useful for things parsing non-empty lists, such as a list of interfaces
 implemented by a class.
 
 ```ts
-const identifier = bnb.match(/[a-z]+/i);
-const classDecl = bnb
-  .all(
-    bnb.text("class ").next(identifier),
-    bnb.text(" implements ").next(identifier.sepBy1(bnb.text(", ")))
-  )
-  .map(([name, interfaces]) => {
-    return { type: "Class", name, interfaces };
+const num = bnb.match(/[0-9]+/).map(Number);
+const color = bnb
+  .text("rgb(")
+  .next(num.sepBy1(bnb.text(",")))
+  .skip(bnb.text(")"))
+  .map(([red, green, blue]) => {
+    return { red, green, blue };
   });
-classDecl.tryParse("class A implements I, J, K");
-// => { type: "Class", name: "A", interfaces: ["I", "J", "K"] }
+color.tryParse("rgb(0,127,36)");
+// => { red: 0, green: 127, blue: 36 }
 ```
 
 ### `parser.node(name)`
