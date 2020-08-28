@@ -87,7 +87,9 @@ Parse using the parsers given, returning the first one that succeeds.
 **Note:** Be careful with this function if multiple parsers overlap in what they
 parse. See the code snippet below for more details.
 
-**Note:** The parsers do not all have to return the same type.
+**Note:** The parsers do not all have to return the same type, but TypeScript
+does not always infer the correct type. You can switch to
+[parser.or](#parser.or) or supply a type parameter to this function to fix it.
 
 See also [parser.or](#parser.or).
 
