@@ -63,7 +63,7 @@ Parses all parsers in order, returning the values in the same order.
 
 **Note:** The parsers do not all have to return the same type.
 
-See also [parser.and](#parser.and).
+See also [parser.and](#parser-and).
 
 ```ts
 const abc = bnb
@@ -89,9 +89,9 @@ parse. See the code snippet below for more details.
 
 **Note:** The parsers do not all have to return the same type, but TypeScript
 does not always infer the correct type. You can switch to
-[parser.or](#parser.or) or supply a type parameter to this function to fix it.
+[parser.or](#parser-or) or supply a type parameter to this function to fix it.
 
-See also [parser.or](#parser.or).
+See also [parser.or](#parser-or).
 
 ```ts
 const parser1 = bnb.choice(bnb.text("a"), bnb.text("b"), bnb.text("c"));
@@ -109,7 +109,7 @@ parser2.tryParse("abc-123");
 
 const parser3 = bnb.choice(bnb.text("abc-123"), bnb.text("abc"));
 parser3.tryParse("abc-123");
-// => "abc123"
+// => "abc-123"
 //
 // Since both parsers start with `abc`, we have to put the longer one first.
 ```
@@ -252,7 +252,7 @@ Try to parse using `parser`. If that fails, parse using `otherParser`.
 This is good for parsing things like _expressions_ or _statements_ in
 programming languages, where many different types of things are applicable.
 
-See [bnb.choice](#bnb.choice) for additional information.
+See [bnb.choice](#bnb-choice) for additional information.
 
 ```ts
 const a = bnb.text("a");
@@ -408,7 +408,7 @@ block.tryParse("{apple();banana();coconut();}");
 ### `parser.many1()`
 
 Parsers the current parser **one** or more times. See
-[parser.many0](#parser.many0) for more details.
+[parser.many0](#parser-many0) for more details.
 
 ### `parser.sepBy0(sepParser)`
 
@@ -503,7 +503,7 @@ Creates a new custom parser that performs the given parsing `action`.
 **Note:** That use of this constructor is an advanced feature and not needed for
 most parsers.
 
-See [parser.action](#parser.action) and [Context](#context) for more
+See [parser.action](#parser-action) and [Context](#context) for more
 information.
 
 ```ts
@@ -529,7 +529,7 @@ representing success or failure.
 This should only be called directly when writing custom parsers using
 [new bnb.Parser](#new-bnb.parser).
 
-Make sure to use [context.merge](#context.merge) when combining
+Make sure to use [context.merge](#context-merge) when combining
 multiple `ActionResult`s or else you will lose important parsing information.
 
 ## Built-in Parsers
@@ -557,7 +557,7 @@ file.tryParse("A\nB\nC"); // => ["A", "B", "C"]
 Parser that yields the current [SourceLocation](#sourcelocation), containing
 properties `index`, `line` and `column`. Useful when used before and after a
 given parser, so you can know the source range for highlighting errors. Used
-internally by [parser.node](#parser.node).
+internally by [parser.node](#parser-node).
 
 ```ts
 const identifier = bnb.location.chain((start) => {
@@ -678,7 +678,7 @@ This should be returned inside custom parsers.
 
 Returns a new context using the provided source location.
 
-See [context.merge](#context.merge) for an example.
+See [context.merge](#context-merge) for an example.
 
 ### `context.merge(result1, result2)`
 

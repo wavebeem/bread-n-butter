@@ -26,6 +26,9 @@
     <main>
       {{ content | safe }}
     </main>
-    <footer>&copy; <a href="https://www.mockbrian.com">Brian Mock</a></footer>
+    <footer>
+      &copy; {{ "now" | date("yyyy") }}
+      <a href="https://www.mockbrian.com">Brian Mock</a>
+    </footer>
   </body>
 </html>

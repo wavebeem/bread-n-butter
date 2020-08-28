@@ -1,14 +1,17 @@
 const syntaxHighlight = require("@11ty/eleventy-plugin-syntaxhighlight");
-// https://github.com/markdown-it/markdown-it
 const markdownIt = require("markdown-it");
-// https://github.com/medfreeman/markdown-it-toc-and-anchor
 const markdownItTocAndAnchor = require("markdown-it-toc-and-anchor").default;
+const slugify = require("slugify");
+const dateFormat = require("dateformat");
 
-function slugify(text) {
-  return text
-    .toLowerCase()
-    .replace(/ /g, () => "-")
-    .replace(/\(.*\)/, "");
+function customSlugify(text) {
+  // The table of contents has headings like `parser.or(other)`, and we want to
+  // omit the `(other)` part showing the arguments, since it makes the slug too
+  // long, and bnb doesn't have multi-arity functions to worry about anyway.
+  // Also, slugify removes `.` instead of replacing it with `-`, which looks
+  // really bad for the docs.
+  text = text.replace(".", "-").replace(/\(.*\)/, "");
+  return slugify(text, { lower: true, strict: true });
 }
 
 module.exports = (config) => {
@@ -20,9 +23,15 @@ module.exports = (config) => {
       typographer: true,
     }).use(markdownItTocAndAnchor, {
       tocFirstLevel: 2,
-      slugify,
+      slugify: customSlugify,
     })
   );
+  config.addFilter("date", (date, format) => {
+    if (date === "now") {
+      date = new Date();
+    }
+    return dateFormat(date, format);
+  });
   config.addPlugin(syntaxHighlight);
   config.addPassthroughCopy("docs/css");
   config.addPassthroughCopy("docs/img");

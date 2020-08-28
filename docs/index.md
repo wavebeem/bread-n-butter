@@ -54,7 +54,7 @@ bnb is a [parser combinator](https://en.wikipedia.org/wiki/Parser_combinator)
 library. You can build up complex parsers using combinators (functions that take
 parsers and return parsers).
 
-bnb is heavily inspired by [parsimmon](https://github.com/jneen/parsimmon), but
+bnb is heavily inspired by [Parsimmon](https://github.com/jneen/parsimmon), but
 written in TypeScript and targeting modern JavaScript engines only.
 
 ## Tutorial

@@ -67,8 +67,8 @@ scales to larger parsers and for complicated languages.
 
 ## Choosing Between Different Parsers
 
-When you want to choose between multiple options, [.or](/api#parser.or) and
-[.chain](#/api#parser.chain) are useful. You can chain `.or` calls as many times
+When you want to choose between multiple options, [.or](/api#parser-or) and
+[.chain](#/api#parser-chain) are useful. You can chain `.or` calls as many times
 as you want, and only the first one to succeed parsing is returned.
 
 ```ts
@@ -91,7 +91,7 @@ language, a string, number, boolean, array, or object are all valid as
 using `.or`.
 
 If you have a lot of parsers combined with `.or`, you can use
-[bnb.choice](/api#bnb.choice) instead, which takes as many parsers as you want,
+[bnb.choice](/api#bnb-choice) instead, which takes as many parsers as you want,
 yielding the result from the first one that succeeds.
 
 ```ts
@@ -124,8 +124,8 @@ lowerUpperAlphaPair.tryParse("bb"); // => Error
 lowerUpperAlphaPair.tryParse("Aa"); // => Error
 ```
 
-You can combine `.chain` with [bnb.ok](/api#bnb.ok) and
-[bnb.fail](/api#bnb.fail) to do assertions about the data you just parsed:
+You can combine `.chain` with [bnb.ok](/api#bnb-ok) and
+[bnb.fail](/api#bnb-fail) to do assertions about the data you just parsed:
 
 ```ts
 const number = bnb
@@ -162,7 +162,7 @@ Notice that `.map` is used on the final nested call. `.chain` must always return
 a parser, not just a plain value. So you could use `.chain` for the final call,
 but then you'd have to use `bnb.ok(value)` instead of just the value itself.
 
-As a shortcut, you can use [bnb.all](/api#bnb.all) when you want to match
+As a shortcut, you can use [bnb.all](/api#bnb-all) when you want to match
 multiple parsers in a row and use all their values.
 
 ```ts
@@ -234,7 +234,7 @@ store the file/line/column where it was defined, so that developer tools can
 show you the source code.
 
 The quickest way to add this information to your parse result is using
-[.node](#/api#parser.node).
+[.node](#/api#parser-node).
 
 ```ts
 const number = bnb
@@ -260,7 +260,7 @@ It's a good idea to add many `.node` calls throughout your parser so you can use
 that information later.
 
 `.node` is not a special parser, though. You can use
-[bnb.location](/api#bnb.location) to get the current location (index, line,
+[bnb.location](/api#bnb-location) to get the current location (index, line,
 column) at any point while parsing. `.node` uses `bnb.location` before and after
 your parser. If you don't like the structure of this `ParseNode` object, you can
 create your own without too much fuss.
