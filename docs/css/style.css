@@ -59,7 +59,8 @@ html {
 
 body {
   padding: 0 1rem;
-  max-width: 800px;
+  /* Just enough for 80-column code samples */
+  max-width: 52rem;
   margin: 0 auto;
   overflow-y: scroll;
   display: flex;
