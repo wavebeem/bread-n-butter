@@ -7,16 +7,16 @@ const csvFieldQuoted = bnb.text('"').chain(() => {
   return bnb
     .match(/[^"]+/)
     .or(bnb.text('""').map(() => '"'))
-    .many0()
+    .repeat(0)
     .map((chunks) => chunks.join(""))
     .chain((text) => {
       return bnb.text('"').map(() => text);
     });
 });
 const csvField = csvFieldQuoted.or(csvFieldSimple);
-const csvRow = csvField.sepBy1(bnb.text(","));
+const csvRow = csvField.sepBy(bnb.text(","), 1);
 const csvFile = csvRow
-  .sepBy1(csvEnd)
+  .sepBy(csvEnd, 1)
   .skip(csvEnd.or(bnb.ok("")))
   .map((rows) => {
     return rows.filter((row, index) => {

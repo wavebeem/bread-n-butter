@@ -79,7 +79,7 @@ function py(indent: number): Py {
       pyIndentMore.chain((n) => {
         return pyStatement.chain((first) => {
           return py(n)
-            .pyRestStatement.many0()
+            .pyRestStatement.repeat(0)
             .map<PyStatement>((rest) => {
               return {
                 type: "Block",

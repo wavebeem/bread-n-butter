@@ -25,11 +25,11 @@ const lispWS = bnb.match(/\s*/);
 
 const lispList = lispExpr
   .trim(lispWS)
-  .many0()
+  .repeat(0)
   .wrap(bnb.text("("), bnb.text(")"))
   .node("LispList");
 
-const lispFile = lispExpr.trim(lispWS).many0().node("LispFile");
+const lispFile = lispExpr.trim(lispWS).repeat(0).node("LispFile");
 
 const text = `\
 (list 1 2 (cons 1 (list)))

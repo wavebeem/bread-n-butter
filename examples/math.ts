@@ -126,7 +126,7 @@ const mathMulDiv: bnb.Parser<MathExpr> = mathPow.chain((expr) => {
   return operator("*")
     .or(operator("/"))
     .and(mathPow)
-    .many0()
+    .repeat(0)
     .map((pairs) => {
       return pairs.reduce((accum, [operator, expr]) => {
         return new MathOperator2(operator, accum, expr);
@@ -139,7 +139,7 @@ const mathAddSub: bnb.Parser<MathExpr> = mathMulDiv.chain((expr) => {
   return operator("+")
     .or(operator("-"))
     .and(mathMulDiv)
-    .many0()
+    .repeat(0)
     .map((pairs) => {
       return pairs.reduce((accum, [operator, expr]) => {
         return new MathOperator2(operator, accum, expr);

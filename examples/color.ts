@@ -29,13 +29,13 @@ const hexColorLong = sharp
 
 const rgbColor = bnb
   .text("rgb(")
-  .next(number.trim(ws).sepBy1(bnb.text(",")).trim(ws))
+  .next(number.trim(ws).sepBy(bnb.text(","), 1).trim(ws))
   .skip(bnb.text(")"))
   .map(([r, g, b]) => new Color(r, g, b));
 
 const rgbaColor = bnb
   .text("rgba(")
-  .next(number.trim(ws).sepBy1(bnb.text(",")).trim(ws))
+  .next(number.trim(ws).sepBy(bnb.text(","), 1).trim(ws))
   .skip(bnb.text(")"))
   .map(([r, g, b, a]) => new Color(r, g, b, a));
 
