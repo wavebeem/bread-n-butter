@@ -45,7 +45,7 @@ test("and failure", () => {
 test("sepBy 0+", () => {
   const a = bnb.text("a");
   const sep = bnb.text(",");
-  const list = a.sepBy(sep, 0);
+  const list = a.sepBy(sep);
   expect(list.parse("")).toMatchSnapshot();
   expect(list.parse("a")).toMatchSnapshot();
   expect(list.parse("a,a")).toMatchSnapshot();
@@ -68,7 +68,7 @@ test("sepBy 1+", () => {
 
 test("repeat 0+", () => {
   const a = bnb.text("a");
-  const aaa = a.repeat(0);
+  const aaa = a.repeat();
   expect(aaa.parse("")).toMatchSnapshot();
   expect(aaa.parse("a")).toMatchSnapshot();
   expect(aaa.parse("aa")).toMatchSnapshot();

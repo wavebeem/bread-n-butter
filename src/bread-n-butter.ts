@@ -160,7 +160,7 @@ export class Parser<A> {
    * Repeats the current parser between min and max times, yielding the results in an
    * array.
    */
-  repeat(min: number, max = Infinity): Parser<A[]> {
+  repeat(min = 0, max = Infinity): Parser<A[]> {
     if (max < min) {
       throw new Error("max must be greater than or equal to min");
     }
@@ -196,7 +196,7 @@ export class Parser<A> {
    * Returns a parser that parses between min and max times, separated by the separator
    * parser supplied.
    */
-  sepBy<B>(separator: Parser<B>, min: number, max = Infinity): Parser<A[]> {
+  sepBy<B>(separator: Parser<B>, min = 0, max = Infinity): Parser<A[]> {
     if (min == 0) {
       return this.sepBy(separator, 1, max).or(ok([]));
     }
