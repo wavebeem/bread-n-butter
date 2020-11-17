@@ -157,7 +157,7 @@ export class Parser<A> {
   }
 
   /**
-   * Parsers the current parser between min and max times yielding the results in an
+   * Repeats the current parser between min and max times, yielding the results in an
    * array.
    */
   repeat(min: number, max = Infinity): Parser<A[]> {
