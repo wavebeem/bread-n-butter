@@ -42,10 +42,10 @@ test("and failure", () => {
   expect(xy.parse("")).toMatchSnapshot();
 });
 
-test("sepBy0", () => {
+test("sepBy 0+", () => {
   const a = bnb.text("a");
   const sep = bnb.text(",");
-  const list = a.sepBy0(sep);
+  const list = a.sepBy(sep, 0);
   expect(list.parse("")).toMatchSnapshot();
   expect(list.parse("a")).toMatchSnapshot();
   expect(list.parse("a,a")).toMatchSnapshot();
@@ -54,10 +54,10 @@ test("sepBy0", () => {
   expect(list.parse("b")).toMatchSnapshot();
 });
 
-test("sepBy1", () => {
+test("sepBy 1+", () => {
   const a = bnb.text("a");
   const sep = bnb.text(",");
-  const list = a.sepBy1(sep);
+  const list = a.sepBy(sep, 1);
   expect(list.parse("")).toMatchSnapshot();
   expect(list.parse("a")).toMatchSnapshot();
   expect(list.parse("a,a")).toMatchSnapshot();
@@ -66,9 +66,9 @@ test("sepBy1", () => {
   expect(list.parse("b")).toMatchSnapshot();
 });
 
-test("many0", () => {
+test("repeat 0+", () => {
   const a = bnb.text("a");
-  const aaa = a.many0();
+  const aaa = a.repeat(0);
   expect(aaa.parse("")).toMatchSnapshot();
   expect(aaa.parse("a")).toMatchSnapshot();
   expect(aaa.parse("aa")).toMatchSnapshot();
@@ -77,10 +77,10 @@ test("many0", () => {
   expect(aaa.parse("b")).toMatchSnapshot();
 });
 
-test("many0/many1 infinite loop detection", () => {
+test("repeat infinite loop detection", () => {
   const p = bnb.text("");
-  const p0 = p.many0();
-  const p1 = p.many1();
+  const p0 = p.repeat(0);
+  const p1 = p.repeat(1);
   expect(() => p0.parse("abc")).toThrow(/infinite loop/i);
   expect(() => p1.parse("abc")).toThrow(/infinite loop/i);
 });
@@ -124,9 +124,9 @@ test("choice", () => {
   expect(abc.parse("")).toMatchSnapshot();
 });
 
-test("many1", () => {
+test("repeat 1+", () => {
   const a = bnb.text("a");
-  const aaa = a.many1();
+  const aaa = a.repeat(1);
   expect(aaa.parse("a")).toMatchSnapshot();
   expect(aaa.parse("aa")).toMatchSnapshot();
   expect(aaa.parse("aaa")).toMatchSnapshot();
@@ -135,9 +135,9 @@ test("many1", () => {
   expect(aaa.parse("b")).toMatchSnapshot();
 });
 
-test("many with min/max", () => {
+test("repeat with min/max", () => {
   const a = bnb.text("a");
-  const aaa = a.many(2, 3);
+  const aaa = a.repeat(2, 3);
   expect(aaa.parse("a")).toMatchSnapshot();
   expect(aaa.parse("aa")).toMatchSnapshot();
   expect(aaa.parse("aaa")).toMatchSnapshot();
@@ -148,7 +148,7 @@ test("many with min/max", () => {
 
 test("many with wrong min/max", () => {
   const a = bnb.text("a");
-  expect(() => a.many(5, 3)).toThrow(/greater than or equal to/);
+  expect(() => a.repeat(5, 3)).toThrow(/greater than or equal to/);
 });
 
 test("or", () => {
@@ -181,7 +181,7 @@ test("lisp lists", () => {
   const lp = bnb.text("(");
   const rp = bnb.text(")");
   const ws = bnb.match(/\s+/);
-  const list = lp.next(symbol.sepBy0(ws)).skip(rp);
+  const list = lp.next(symbol.sepBy(ws, 0)).skip(rp);
   expect(list.parse("(a b c)")).toMatchSnapshot();
 });
 
@@ -251,7 +251,7 @@ test("lazy", () => {
     return item.or(list);
   });
   const item = bnb.text("x");
-  const list = expr.sepBy0(bnb.text(" ")).wrap(bnb.text("("), bnb.text(")"));
+  const list = expr.sepBy(bnb.text(" "), 0).wrap(bnb.text("("), bnb.text(")"));
   expect(expr.parse("(x x (x () (x) ((x)) x) x)")).toMatchSnapshot();
 });
 

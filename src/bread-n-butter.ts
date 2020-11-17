@@ -157,32 +157,16 @@ export class Parser<A> {
   }
 
   /**
-   * Repeats the current parser zero or more times, yielding the results in an
-   * array.
-   */
-  many0(): Parser<A[]> {
-    return this.many(0);
-  }
-
-  /**
-   * Parsers the current parser **one** or more times. See `many0` for more
-   * details.
-   */
-  many1(): Parser<A[]> {
-    return this.many(1);
-  }
-
-  /**
    * Parsers the current parser between min and max times yielding the results in an
    * array.
    */
-  many(min: number, max = Infinity): Parser<A[]> {
+  repeat(min: number, max = Infinity): Parser<A[]> {
     if (max < min) {
       throw new Error("max must be greater than or equal to min");
     }
 
     if (min == 0) {
-      return this.many(1, max).or(ok([]));
+      return this.repeat(1, max).or(ok([]));
     }
 
     return new Parser((context) => {
@@ -209,22 +193,6 @@ export class Parser<A> {
   }
 
   /**
-   * Returns a parser that parses zero or more times, separated by the separator
-   * parser supplied.
-   */
-  sepBy0<B>(separator: Parser<B>): Parser<A[]> {
-    return this.sepBy(separator, 0);
-  }
-
-  /**
-   * Returns a parser that parses one or more times, separated by the separator
-   * parser supplied.
-   */
-  sepBy1<B>(separator: Parser<B>): Parser<A[]> {
-    return this.sepBy(separator, 1);
-  }
-
-  /**
    * Returns a parser that parses between min and max times, separated by the separator
    * parser supplied.
    */
@@ -236,7 +204,7 @@ export class Parser<A> {
     return this.chain((first) => {
       return separator
         .next(this)
-        .many(0, max - 1)
+        .repeat(0, max - 1)
         .map((rest) => {
           return [first, ...rest];
         });
