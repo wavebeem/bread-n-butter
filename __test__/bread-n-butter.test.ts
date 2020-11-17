@@ -135,6 +135,22 @@ test("many1", () => {
   expect(aaa.parse("b")).toMatchSnapshot();
 });
 
+test("many with min/max", () => {
+  const a = bnb.text("a");
+  const aaa = a.many(2, 3);
+  expect(aaa.parse("a")).toMatchSnapshot();
+  expect(aaa.parse("aa")).toMatchSnapshot();
+  expect(aaa.parse("aaa")).toMatchSnapshot();
+  expect(aaa.parse("aaaa")).toMatchSnapshot();
+  expect(aaa.parse("")).toMatchSnapshot();
+  expect(aaa.parse("b")).toMatchSnapshot();
+});
+
+test("many with wrong min/max", () => {
+  const a = bnb.text("a");
+  expect(() => a.many(5, 3)).toThrow(/greater than or equal to/);
+});
+
 test("or", () => {
   const a = bnb.text("a");
   const b = bnb.text("b");

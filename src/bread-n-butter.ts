@@ -161,7 +161,7 @@ export class Parser<A> {
    * array.
    */
   many0(): Parser<A[]> {
-    return this.many1().or(ok([]));
+    return this.many(0);
   }
 
   /**
@@ -169,13 +169,29 @@ export class Parser<A> {
    * details.
    */
   many1(): Parser<A[]> {
+    return this.many(1);
+  }
+
+  /**
+   * Parsers the current parser between min and max times yielding the results in an
+   * array.
+   */
+  many(min: number, max = Infinity): Parser<A[]> {
+    if (max < min) {
+      throw new Error("max must be greater than or equal to min");
+    }
+
+    if (min == 0) {
+      return this.many(1, max).or(ok([]));
+    }
+
     return new Parser((context) => {
       const items: A[] = [];
       let result = this.action(context);
       if (result.type === "ActionFail") {
         return result;
       }
-      while (result.type === "ActionOK") {
+      while (result.type === "ActionOK" && items.length < max) {
         items.push(result.value);
         if (result.location.index === context.location.index) {
           throw new Error(
@@ -184,6 +200,9 @@ export class Parser<A> {
         }
         context = context.moveTo(result.location);
         result = context.merge(result, this.action(context));
+      }
+      if (result.type === "ActionFail" && items.length < min) {
+        return result;
       }
       return context.merge(result, context.ok(context.location.index, items));
     });
@@ -194,7 +213,7 @@ export class Parser<A> {
    * parser supplied.
    */
   sepBy0<B>(separator: Parser<B>): Parser<A[]> {
-    return this.sepBy1(separator).or(ok([]));
+    return this.sepBy(separator, 0);
   }
 
   /**
@@ -202,10 +221,22 @@ export class Parser<A> {
    * parser supplied.
    */
   sepBy1<B>(separator: Parser<B>): Parser<A[]> {
+    return this.sepBy(separator, 1);
+  }
+
+  /**
+   * Returns a parser that parses between min and max times, separated by the separator
+   * parser supplied.
+   */
+  sepBy<B>(separator: Parser<B>, min: number, max = Infinity): Parser<A[]> {
+    if (min == 0) {
+      return this.sepBy(separator, 1, max).or(ok([]));
+    }
+
     return this.chain((first) => {
       return separator
         .next(this)
-        .many0()
+        .many(0, max - 1)
         .map((rest) => {
           return [first, ...rest];
         });

@@ -358,6 +358,83 @@ Object {
 }
 `;
 
+exports[`many with min/max 1`] = `
+Object {
+  "expected": Array [
+    "a",
+  ],
+  "location": Object {
+    "column": 2,
+    "index": 1,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`many with min/max 2`] = `
+Object {
+  "type": "ParseOK",
+  "value": Array [
+    "a",
+    "a",
+  ],
+}
+`;
+
+exports[`many with min/max 3`] = `
+Object {
+  "type": "ParseOK",
+  "value": Array [
+    "a",
+    "a",
+    "a",
+  ],
+}
+`;
+
+exports[`many with min/max 4`] = `
+Object {
+  "expected": Array [
+    "<EOF>",
+  ],
+  "location": Object {
+    "column": 4,
+    "index": 3,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`many with min/max 5`] = `
+Object {
+  "expected": Array [
+    "a",
+  ],
+  "location": Object {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`many with min/max 6`] = `
+Object {
+  "expected": Array [
+    "a",
+  ],
+  "location": Object {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
 exports[`many0 1`] = `
 Object {
   "type": "ParseOK",
@@ -528,6 +605,69 @@ Object {
   "location": Object {
     "column": 1,
     "index": 0,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`next 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": "b",
+}
+`;
+
+exports[`next 2`] = `
+Object {
+  "expected": Array [
+    "b",
+  ],
+  "location": Object {
+    "column": 2,
+    "index": 1,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`next 3`] = `
+Object {
+  "expected": Array [
+    "a",
+  ],
+  "location": Object {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`next 4`] = `
+Object {
+  "expected": Array [
+    "a",
+  ],
+  "location": Object {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`next 5`] = `
+Object {
+  "expected": Array [
+    "<EOF>",
+  ],
+  "location": Object {
+    "column": 3,
+    "index": 2,
     "line": 1,
   },
   "type": "ParseFail",
@@ -824,69 +964,6 @@ Object {
 `;
 
 exports[`skip 5`] = `
-Object {
-  "expected": Array [
-    "<EOF>",
-  ],
-  "location": Object {
-    "column": 3,
-    "index": 2,
-    "line": 1,
-  },
-  "type": "ParseFail",
-}
-`;
-
-exports[`next 1`] = `
-Object {
-  "type": "ParseOK",
-  "value": "b",
-}
-`;
-
-exports[`next 2`] = `
-Object {
-  "expected": Array [
-    "b",
-  ],
-  "location": Object {
-    "column": 2,
-    "index": 1,
-    "line": 1,
-  },
-  "type": "ParseFail",
-}
-`;
-
-exports[`next 3`] = `
-Object {
-  "expected": Array [
-    "a",
-  ],
-  "location": Object {
-    "column": 1,
-    "index": 0,
-    "line": 1,
-  },
-  "type": "ParseFail",
-}
-`;
-
-exports[`next 4`] = `
-Object {
-  "expected": Array [
-    "a",
-  ],
-  "location": Object {
-    "column": 1,
-    "index": 0,
-    "line": 1,
-  },
-  "type": "ParseFail",
-}
-`;
-
-exports[`next 5`] = `
 Object {
   "expected": Array [
     "<EOF>",
