@@ -71,7 +71,7 @@ const strChunk = bnb.match(/[^"\\]+/);
 const strPart = strEscape.or(strChunk);
 
 const jsonString = strPart
-  .many0()
+  .repeat(0)
   .map((parts) => parts.join(""))
   .trim(bnb.text('"'))
   .thru(token)
@@ -103,7 +103,7 @@ const jsonNumber = bnb
 // documents as possible. Notice that we're using the parser `jsonValue` we just
 // defined above. Arrays and objects in the JSON grammar are recursive because
 // they can contain any other JSON document within them.
-const jsonArray = jsonValue.sepBy0(jsonComma).wrap(jsonLCurly, jsonRCurly);
+const jsonArray = jsonValue.sepBy(jsonComma, 0).wrap(jsonLCurly, jsonRCurly);
 
 // Object parsing is a little trickier because we have to collect all the key-
 // value pairs in order as length-2 arrays, then manually copy them into an
@@ -111,7 +111,7 @@ const jsonArray = jsonValue.sepBy0(jsonComma).wrap(jsonLCurly, jsonRCurly);
 const objPair = jsonString.and(jsonColon.chain(() => jsonValue));
 
 const jsonObject = objPair
-  .sepBy0(jsonComma)
+  .sepBy(jsonComma, 0)
   .wrap(jsonLBrace, jsonRBrace)
   .map((pairs) => {
     const obj: { [key: string]: JSONValue } = {};

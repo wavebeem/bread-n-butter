@@ -157,25 +157,25 @@ export class Parser<A> {
   }
 
   /**
-   * Repeats the current parser zero or more times, yielding the results in an
+   * Repeats the current parser between min and max times, yielding the results in an
    * array.
    */
-  many0(): Parser<A[]> {
-    return this.many1().or(ok([]));
-  }
+  repeat(min = 0, max = Infinity): Parser<A[]> {
+    if (max < min) {
+      throw new Error("max must be greater than or equal to min");
+    }
 
-  /**
-   * Parsers the current parser **one** or more times. See `many0` for more
-   * details.
-   */
-  many1(): Parser<A[]> {
+    if (min == 0) {
+      return this.repeat(1, max).or(ok([]));
+    }
+
     return new Parser((context) => {
       const items: A[] = [];
       let result = this.action(context);
       if (result.type === "ActionFail") {
         return result;
       }
-      while (result.type === "ActionOK") {
+      while (result.type === "ActionOK" && items.length < max) {
         items.push(result.value);
         if (result.location.index === context.location.index) {
           throw new Error(
@@ -185,27 +185,26 @@ export class Parser<A> {
         context = context.moveTo(result.location);
         result = context.merge(result, this.action(context));
       }
+      if (result.type === "ActionFail" && items.length < min) {
+        return result;
+      }
       return context.merge(result, context.ok(context.location.index, items));
     });
   }
 
   /**
-   * Returns a parser that parses zero or more times, separated by the separator
+   * Returns a parser that parses between min and max times, separated by the separator
    * parser supplied.
    */
-  sepBy0<B>(separator: Parser<B>): Parser<A[]> {
-    return this.sepBy1(separator).or(ok([]));
-  }
+  sepBy<B>(separator: Parser<B>, min = 0, max = Infinity): Parser<A[]> {
+    if (min == 0) {
+      return this.sepBy(separator, 1, max).or(ok([]));
+    }
 
-  /**
-   * Returns a parser that parses one or more times, separated by the separator
-   * parser supplied.
-   */
-  sepBy1<B>(separator: Parser<B>): Parser<A[]> {
     return this.chain((first) => {
       return separator
         .next(this)
-        .many0()
+        .repeat(0, max - 1)
         .map((rest) => {
           return [first, ...rest];
         });
