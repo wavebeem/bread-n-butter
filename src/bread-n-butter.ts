@@ -157,18 +157,25 @@ export class Parser<A> {
   }
 
   /**
-   * Repeats the current parser between min and max times, yielding the results in an
-   * array.
+   * Repeats the current parser between min and max times, yielding the results
+   * in an array.
    */
   repeat(min = 0, max = Infinity): Parser<A[]> {
-    if (max < min) {
-      throw new Error("max must be greater than or equal to min");
+    if (
+      !(
+        min <= max &&
+        min >= 0 &&
+        max >= 0 &&
+        Number.isInteger(min) &&
+        min !== Infinity &&
+        (Number.isInteger(max) || max === Infinity)
+      )
+    ) {
+      throw new Error(`repeat: bad range (${min} to ${max})`);
     }
-
-    if (min == 0) {
+    if (min === 0) {
       return this.repeat(1, max).or(ok([]));
     }
-
     return new Parser((context) => {
       const items: A[] = [];
       let result = this.action(context);
@@ -179,7 +186,7 @@ export class Parser<A> {
         items.push(result.value);
         if (result.location.index === context.location.index) {
           throw new Error(
-            "infinite loop detected; don't call many0 or many1 with parsers that can accept zero characters"
+            "infinite loop detected; don't call .repeat() with parsers that can accept zero characters"
           );
         }
         context = context.moveTo(result.location);
@@ -197,14 +204,13 @@ export class Parser<A> {
    * parser supplied.
    */
   sepBy<B>(separator: Parser<B>, min = 0, max = Infinity): Parser<A[]> {
-    if (min == 0) {
+    if (min === 0) {
       return this.sepBy(separator, 1, max).or(ok([]));
     }
-
     return this.chain((first) => {
       return separator
         .next(this)
-        .repeat(0, max - 1)
+        .repeat(min - 1, max - 1)
         .map((rest) => {
           return [first, ...rest];
         });

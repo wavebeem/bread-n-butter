@@ -1,45 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`all 1`] = `
+exports[`all: "" 1`] = `
 Object {
   "expected": Array [
-    "b",
-  ],
-  "location": Object {
-    "column": 2,
-    "index": 1,
-    "line": 1,
-  },
-  "type": "ParseFail",
-}
-`;
-
-exports[`all 2`] = `
-Object {
-  "expected": Array [
-    "b",
-  ],
-  "location": Object {
-    "column": 2,
-    "index": 1,
-    "line": 1,
-  },
-  "type": "ParseFail",
-}
-`;
-
-exports[`all 3`] = `
-Object {
-  "type": "ParseOK",
-  "value": Array [
     "a",
-    "b",
-    "c",
   ],
+  "location": Object {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+  "type": "ParseFail",
 }
 `;
 
-exports[`all 4`] = `
+exports[`all: "a" 1`] = `
 Object {
   "expected": Array [
     "b",
@@ -53,7 +28,35 @@ Object {
 }
 `;
 
-exports[`all 5`] = `
+exports[`all: "aa" 1`] = `
+Object {
+  "expected": Array [
+    "b",
+  ],
+  "location": Object {
+    "column": 2,
+    "index": 1,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`all: "aaaa" 1`] = `
+Object {
+  "expected": Array [
+    "b",
+  ],
+  "location": Object {
+    "column": 2,
+    "index": 1,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`all: "abb" 1`] = `
 Object {
   "expected": Array [
     "c",
@@ -67,45 +70,46 @@ Object {
 }
 `;
 
-exports[`all 6`] = `
-Object {
-  "expected": Array [
-    "a",
-  ],
-  "location": Object {
-    "column": 1,
-    "index": 0,
-    "line": 1,
-  },
-  "type": "ParseFail",
-}
-`;
-
-exports[`all 7`] = `
-Object {
-  "expected": Array [
-    "a",
-  ],
-  "location": Object {
-    "column": 1,
-    "index": 0,
-    "line": 1,
-  },
-  "type": "ParseFail",
-}
-`;
-
-exports[`and 1`] = `
+exports[`all: "abc" 1`] = `
 Object {
   "type": "ParseOK",
   "value": Array [
-    "x",
-    "y",
+    "a",
+    "b",
+    "c",
   ],
 }
 `;
 
-exports[`and failure 1`] = `
+exports[`all: "b" 1`] = `
+Object {
+  "expected": Array [
+    "a",
+  ],
+  "location": Object {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`and failure: "" 1`] = `
+Object {
+  "expected": Array [
+    "x",
+  ],
+  "location": Object {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`and failure: "x" 1`] = `
 Object {
   "expected": Array [
     "y",
@@ -119,7 +123,7 @@ Object {
 }
 `;
 
-exports[`and failure 2`] = `
+exports[`and failure: "y" 1`] = `
 Object {
   "expected": Array [
     "x",
@@ -133,7 +137,7 @@ Object {
 }
 `;
 
-exports[`and failure 3`] = `
+exports[`and failure: "yx" 1`] = `
 Object {
   "expected": Array [
     "x",
@@ -147,21 +151,7 @@ Object {
 }
 `;
 
-exports[`and failure 4`] = `
-Object {
-  "expected": Array [
-    "x",
-  ],
-  "location": Object {
-    "column": 1,
-    "index": 0,
-    "line": 1,
-  },
-  "type": "ParseFail",
-}
-`;
-
-exports[`and success triple 2 1`] = `
+exports[`and success triple 2: "xyz" 1`] = `
 Object {
   "type": "ParseOK",
   "value": Array [
@@ -172,7 +162,7 @@ Object {
 }
 `;
 
-exports[`and triple 1`] = `
+exports[`and triple: "xyz" 1`] = `
 Object {
   "type": "ParseOK",
   "value": Array [
@@ -185,56 +175,17 @@ Object {
 }
 `;
 
-exports[`choice 1`] = `
+exports[`and: "xy" 1`] = `
 Object {
   "type": "ParseOK",
-  "value": "a",
-}
-`;
-
-exports[`choice 2`] = `
-Object {
-  "type": "ParseOK",
-  "value": "b",
-}
-`;
-
-exports[`choice 3`] = `
-Object {
-  "type": "ParseOK",
-  "value": "c",
-}
-`;
-
-exports[`choice 4`] = `
-Object {
-  "expected": Array [
-    "<EOF>",
+  "value": Array [
+    "x",
+    "y",
   ],
-  "location": Object {
-    "column": 2,
-    "index": 1,
-    "line": 1,
-  },
-  "type": "ParseFail",
 }
 `;
 
-exports[`choice 5`] = `
-Object {
-  "expected": Array [
-    "<EOF>",
-  ],
-  "location": Object {
-    "column": 2,
-    "index": 1,
-    "line": 1,
-  },
-  "type": "ParseFail",
-}
-`;
-
-exports[`choice 6`] = `
+exports[`choice: "" 1`] = `
 Object {
   "expected": Array [
     "a",
@@ -250,14 +201,63 @@ Object {
 }
 `;
 
-exports[`desc 1`] = `
+exports[`choice: "a" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": "a",
+}
+`;
+
+exports[`choice: "aaaa" 1`] = `
+Object {
+  "expected": Array [
+    "<EOF>",
+  ],
+  "location": Object {
+    "column": 2,
+    "index": 1,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`choice: "abb" 1`] = `
+Object {
+  "expected": Array [
+    "<EOF>",
+  ],
+  "location": Object {
+    "column": 2,
+    "index": 1,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`choice: "b" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": "b",
+}
+`;
+
+exports[`choice: "c" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": "c",
+}
+`;
+
+exports[`desc: "9" 1`] = `
 Object {
   "type": "ParseOK",
   "value": 9,
 }
 `;
 
-exports[`desc 2`] = `
+exports[`desc: "x" 1`] = `
 Object {
   "expected": Array [
     "number",
@@ -271,7 +271,7 @@ Object {
 }
 `;
 
-exports[`emoji length 1`] = `
+exports[`emoji length: "🙂🙂🙂" 1`] = `
 Object {
   "type": "ParseOK",
   "value": Object {
@@ -292,7 +292,7 @@ Object {
 }
 `;
 
-exports[`fail 1`] = `
+exports[`fail: "bad" 1`] = `
 Object {
   "expected": Array [
     "apple",
@@ -307,7 +307,7 @@ Object {
 }
 `;
 
-exports[`fail 2`] = `
+exports[`fail: "bad" 2`] = `
 Object {
   "expected": Array [
     "other",
@@ -323,7 +323,7 @@ Object {
 }
 `;
 
-exports[`lazy 1`] = `
+exports[`lazy: "(x x (x () (x) ((x)) x) x)" 1`] = `
 Object {
   "type": "ParseOK",
   "value": Array [
@@ -347,7 +347,7 @@ Object {
 }
 `;
 
-exports[`lisp lists 1`] = `
+exports[`lisp lists: "(a b c)" 1`] = `
 Object {
   "type": "ParseOK",
   "value": Array [
@@ -358,14 +358,14 @@ Object {
 }
 `;
 
-exports[`match 1`] = `
+exports[`match: "12" 1`] = `
 Object {
   "type": "ParseOK",
   "value": "12",
 }
 `;
 
-exports[`match 2`] = `
+exports[`match: "abc" 1`] = `
 Object {
   "expected": Array [
     "/\\\\d+/",
@@ -379,14 +379,14 @@ Object {
 }
 `;
 
-exports[`matchEOF 1`] = `
+exports[`matchEOF: "" 1`] = `
 Object {
   "type": "ParseOK",
   "value": "<EOF>",
 }
 `;
 
-exports[`matchEOF 2`] = `
+exports[`matchEOF: "x" 1`] = `
 Object {
   "expected": Array [
     "<EOF>",
@@ -400,14 +400,21 @@ Object {
 }
 `;
 
-exports[`next 1`] = `
+exports[`next: "" 1`] = `
 Object {
-  "type": "ParseOK",
-  "value": "b",
+  "expected": Array [
+    "a",
+  ],
+  "location": Object {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+  "type": "ParseFail",
 }
 `;
 
-exports[`next 2`] = `
+exports[`next: "a" 1`] = `
 Object {
   "expected": Array [
     "b",
@@ -421,35 +428,14 @@ Object {
 }
 `;
 
-exports[`next 3`] = `
+exports[`next: "ab" 1`] = `
 Object {
-  "expected": Array [
-    "a",
-  ],
-  "location": Object {
-    "column": 1,
-    "index": 0,
-    "line": 1,
-  },
-  "type": "ParseFail",
+  "type": "ParseOK",
+  "value": "b",
 }
 `;
 
-exports[`next 4`] = `
-Object {
-  "expected": Array [
-    "a",
-  ],
-  "location": Object {
-    "column": 1,
-    "index": 0,
-    "line": 1,
-  },
-  "type": "ParseFail",
-}
-`;
-
-exports[`next 5`] = `
+exports[`next: "aba" 1`] = `
 Object {
   "expected": Array [
     "<EOF>",
@@ -463,28 +449,21 @@ Object {
 }
 `;
 
-exports[`node 1`] = `
+exports[`next: "b" 1`] = `
 Object {
-  "type": "ParseOK",
-  "value": Object {
-    "end": Object {
-      "column": 4,
-      "index": 3,
-      "line": 1,
-    },
-    "name": "Identifier",
-    "start": Object {
-      "column": 1,
-      "index": 0,
-      "line": 1,
-    },
-    "type": "ParseNode",
-    "value": "abc",
+  "expected": Array [
+    "a",
+  ],
+  "location": Object {
+    "column": 1,
+    "index": 0,
+    "line": 1,
   },
+  "type": "ParseFail",
 }
 `;
 
-exports[`node 2`] = `
+exports[`node: "A\\nB\\nC" 1`] = `
 Object {
   "type": "ParseOK",
   "value": Object {
@@ -507,21 +486,71 @@ C",
 }
 `;
 
-exports[`or 1`] = `
+exports[`node: "abc" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "end": Object {
+      "column": 4,
+      "index": 3,
+      "line": 1,
+    },
+    "name": "Identifier",
+    "start": Object {
+      "column": 1,
+      "index": 0,
+      "line": 1,
+    },
+    "type": "ParseNode",
+    "value": "abc",
+  },
+}
+`;
+
+exports[`or: "" 1`] = `
+Object {
+  "expected": Array [
+    "a",
+    "b",
+  ],
+  "location": Object {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`or: "a" 1`] = `
 Object {
   "type": "ParseOK",
   "value": "a",
 }
 `;
 
-exports[`or 2`] = `
+exports[`or: "ab" 1`] = `
+Object {
+  "expected": Array [
+    "<EOF>",
+  ],
+  "location": Object {
+    "column": 2,
+    "index": 1,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`or: "b" 1`] = `
 Object {
   "type": "ParseOK",
   "value": "b",
 }
 `;
 
-exports[`or 3`] = `
+exports[`or: "c" 1`] = `
 Object {
   "expected": Array [
     "a",
@@ -536,43 +565,14 @@ Object {
 }
 `;
 
-exports[`or 4`] = `
-Object {
-  "expected": Array [
-    "<EOF>",
-  ],
-  "location": Object {
-    "column": 2,
-    "index": 1,
-    "line": 1,
-  },
-  "type": "ParseFail",
-}
-`;
-
-exports[`or 5`] = `
-Object {
-  "expected": Array [
-    "a",
-    "b",
-  ],
-  "location": Object {
-    "column": 1,
-    "index": 0,
-    "line": 1,
-  },
-  "type": "ParseFail",
-}
-`;
-
-exports[`repeat 0+ 1`] = `
+exports[`repeat 0+: "" 1`] = `
 Object {
   "type": "ParseOK",
   "value": Array [],
 }
 `;
 
-exports[`repeat 0+ 2`] = `
+exports[`repeat 0+: "a" 1`] = `
 Object {
   "type": "ParseOK",
   "value": Array [
@@ -581,7 +581,7 @@ Object {
 }
 `;
 
-exports[`repeat 0+ 3`] = `
+exports[`repeat 0+: "aa" 1`] = `
 Object {
   "type": "ParseOK",
   "value": Array [
@@ -591,7 +591,7 @@ Object {
 }
 `;
 
-exports[`repeat 0+ 4`] = `
+exports[`repeat 0+: "aaa" 1`] = `
 Object {
   "type": "ParseOK",
   "value": Array [
@@ -602,7 +602,7 @@ Object {
 }
 `;
 
-exports[`repeat 0+ 5`] = `
+exports[`repeat 0+: "aaaa" 1`] = `
 Object {
   "type": "ParseOK",
   "value": Array [
@@ -614,7 +614,7 @@ Object {
 }
 `;
 
-exports[`repeat 0+ 6`] = `
+exports[`repeat 0+: "b" 1`] = `
 Object {
   "expected": Array [
     "a",
@@ -629,49 +629,7 @@ Object {
 }
 `;
 
-exports[`repeat 1+ 1`] = `
-Object {
-  "type": "ParseOK",
-  "value": Array [
-    "a",
-  ],
-}
-`;
-
-exports[`repeat 1+ 2`] = `
-Object {
-  "type": "ParseOK",
-  "value": Array [
-    "a",
-    "a",
-  ],
-}
-`;
-
-exports[`repeat 1+ 3`] = `
-Object {
-  "type": "ParseOK",
-  "value": Array [
-    "a",
-    "a",
-    "a",
-  ],
-}
-`;
-
-exports[`repeat 1+ 4`] = `
-Object {
-  "type": "ParseOK",
-  "value": Array [
-    "a",
-    "a",
-    "a",
-    "a",
-  ],
-}
-`;
-
-exports[`repeat 1+ 5`] = `
+exports[`repeat 1+: "" 1`] = `
 Object {
   "expected": Array [
     "a",
@@ -685,7 +643,49 @@ Object {
 }
 `;
 
-exports[`repeat 1+ 6`] = `
+exports[`repeat 1+: "a" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Array [
+    "a",
+  ],
+}
+`;
+
+exports[`repeat 1+: "aa" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Array [
+    "a",
+    "a",
+  ],
+}
+`;
+
+exports[`repeat 1+: "aaa" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Array [
+    "a",
+    "a",
+    "a",
+  ],
+}
+`;
+
+exports[`repeat 1+: "aaaa" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Array [
+    "a",
+    "a",
+    "a",
+    "a",
+  ],
+}
+`;
+
+exports[`repeat 1+: "b" 1`] = `
 Object {
   "expected": Array [
     "a",
@@ -699,7 +699,21 @@ Object {
 }
 `;
 
-exports[`repeat with min/max 1`] = `
+exports[`repeat 2-3: "" 1`] = `
+Object {
+  "expected": Array [
+    "a",
+  ],
+  "location": Object {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`repeat 2-3: "a" 1`] = `
 Object {
   "expected": Array [
     "a",
@@ -713,7 +727,7 @@ Object {
 }
 `;
 
-exports[`repeat with min/max 2`] = `
+exports[`repeat 2-3: "aa" 1`] = `
 Object {
   "type": "ParseOK",
   "value": Array [
@@ -723,7 +737,7 @@ Object {
 }
 `;
 
-exports[`repeat with min/max 3`] = `
+exports[`repeat 2-3: "aaa" 1`] = `
 Object {
   "type": "ParseOK",
   "value": Array [
@@ -734,7 +748,7 @@ Object {
 }
 `;
 
-exports[`repeat with min/max 4`] = `
+exports[`repeat 2-3: "aaaa" 1`] = `
 Object {
   "expected": Array [
     "<EOF>",
@@ -748,7 +762,7 @@ Object {
 }
 `;
 
-exports[`repeat with min/max 5`] = `
+exports[`repeat 2-3: "b" 1`] = `
 Object {
   "expected": Array [
     "a",
@@ -762,28 +776,14 @@ Object {
 }
 `;
 
-exports[`repeat with min/max 6`] = `
-Object {
-  "expected": Array [
-    "a",
-  ],
-  "location": Object {
-    "column": 1,
-    "index": 0,
-    "line": 1,
-  },
-  "type": "ParseFail",
-}
-`;
-
-exports[`sepBy 0+ 1`] = `
+exports[`sepBy 0+: "" 1`] = `
 Object {
   "type": "ParseOK",
   "value": Array [],
 }
 `;
 
-exports[`sepBy 0+ 2`] = `
+exports[`sepBy 0+: "a" 1`] = `
 Object {
   "type": "ParseOK",
   "value": Array [
@@ -792,7 +792,7 @@ Object {
 }
 `;
 
-exports[`sepBy 0+ 3`] = `
+exports[`sepBy 0+: "a,a" 1`] = `
 Object {
   "type": "ParseOK",
   "value": Array [
@@ -802,7 +802,7 @@ Object {
 }
 `;
 
-exports[`sepBy 0+ 4`] = `
+exports[`sepBy 0+: "a,a,a" 1`] = `
 Object {
   "type": "ParseOK",
   "value": Array [
@@ -813,7 +813,7 @@ Object {
 }
 `;
 
-exports[`sepBy 0+ 5`] = `
+exports[`sepBy 0+: "a,a,b" 1`] = `
 Object {
   "expected": Array [
     "a",
@@ -827,7 +827,7 @@ Object {
 }
 `;
 
-exports[`sepBy 0+ 6`] = `
+exports[`sepBy 0+: "b" 1`] = `
 Object {
   "expected": Array [
     "a",
@@ -842,7 +842,7 @@ Object {
 }
 `;
 
-exports[`sepBy 1+ 1`] = `
+exports[`sepBy 1+: "" 1`] = `
 Object {
   "expected": Array [
     "a",
@@ -856,7 +856,7 @@ Object {
 }
 `;
 
-exports[`sepBy 1+ 2`] = `
+exports[`sepBy 1+: "a" 1`] = `
 Object {
   "type": "ParseOK",
   "value": Array [
@@ -865,7 +865,7 @@ Object {
 }
 `;
 
-exports[`sepBy 1+ 3`] = `
+exports[`sepBy 1+: "a,a" 1`] = `
 Object {
   "type": "ParseOK",
   "value": Array [
@@ -875,7 +875,7 @@ Object {
 }
 `;
 
-exports[`sepBy 1+ 4`] = `
+exports[`sepBy 1+: "a,a,a" 1`] = `
 Object {
   "type": "ParseOK",
   "value": Array [
@@ -886,7 +886,7 @@ Object {
 }
 `;
 
-exports[`sepBy 1+ 5`] = `
+exports[`sepBy 1+: "a,a,b" 1`] = `
 Object {
   "expected": Array [
     "a",
@@ -900,7 +900,7 @@ Object {
 }
 `;
 
-exports[`sepBy 1+ 6`] = `
+exports[`sepBy 1+: "b" 1`] = `
 Object {
   "expected": Array [
     "a",
@@ -914,14 +914,126 @@ Object {
 }
 `;
 
-exports[`skip 1`] = `
+exports[`sepBy 1-1: "" 1`] = `
 Object {
-  "type": "ParseOK",
-  "value": "a",
+  "expected": Array [
+    "a",
+  ],
+  "location": Object {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+  "type": "ParseFail",
 }
 `;
 
-exports[`skip 2`] = `
+exports[`sepBy 2-3: "" 1`] = `
+Object {
+  "expected": Array [
+    "a",
+  ],
+  "location": Object {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`sepBy 2-3: "a" 1`] = `
+Object {
+  "expected": Array [
+    ",",
+  ],
+  "location": Object {
+    "column": 2,
+    "index": 1,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`sepBy 2-3: "a,a" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Array [
+    "a",
+    "a",
+  ],
+}
+`;
+
+exports[`sepBy 2-3: "a,a,a" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Array [
+    "a",
+    "a",
+    "a",
+  ],
+}
+`;
+
+exports[`sepBy 2-3: "a,a,a,a" 1`] = `
+Object {
+  "expected": Array [
+    "<EOF>",
+  ],
+  "location": Object {
+    "column": 6,
+    "index": 5,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`sepBy 2-3: "a,a,b" 1`] = `
+Object {
+  "expected": Array [
+    "a",
+  ],
+  "location": Object {
+    "column": 5,
+    "index": 4,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`sepBy 2-3: "b" 1`] = `
+Object {
+  "expected": Array [
+    "a",
+  ],
+  "location": Object {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`skip: "" 1`] = `
+Object {
+  "expected": Array [
+    "a",
+  ],
+  "location": Object {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`skip: "a" 1`] = `
 Object {
   "expected": Array [
     "b",
@@ -935,35 +1047,14 @@ Object {
 }
 `;
 
-exports[`skip 3`] = `
+exports[`skip: "ab" 1`] = `
 Object {
-  "expected": Array [
-    "a",
-  ],
-  "location": Object {
-    "column": 1,
-    "index": 0,
-    "line": 1,
-  },
-  "type": "ParseFail",
+  "type": "ParseOK",
+  "value": "a",
 }
 `;
 
-exports[`skip 4`] = `
-Object {
-  "expected": Array [
-    "a",
-  ],
-  "location": Object {
-    "column": 1,
-    "index": 0,
-    "line": 1,
-  },
-  "type": "ParseFail",
-}
-`;
-
-exports[`skip 5`] = `
+exports[`skip: "aba" 1`] = `
 Object {
   "expected": Array [
     "<EOF>",
@@ -977,35 +1068,28 @@ Object {
 }
 `;
 
-exports[`test a test 1`] = `
-Object {
-  "type": "ParseOK",
-  "value": "x",
-}
-`;
-
-exports[`trim 1`] = `
-Object {
-  "type": "ParseOK",
-  "value": "x",
-}
-`;
-
-exports[`trim 2`] = `
+exports[`skip: "b" 1`] = `
 Object {
   "expected": Array [
-    "~",
+    "a",
   ],
   "location": Object {
-    "column": 3,
-    "index": 2,
+    "column": 1,
+    "index": 0,
     "line": 1,
   },
   "type": "ParseFail",
 }
 `;
 
-exports[`trim 3`] = `
+exports[`test a test: "x" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": "x",
+}
+`;
+
+exports[`trim: "~" 1`] = `
 Object {
   "expected": Array [
     "x",
@@ -1019,7 +1103,28 @@ Object {
 }
 `;
 
-exports[`trim 4`] = `
+exports[`trim: "~x" 1`] = `
+Object {
+  "expected": Array [
+    "~",
+  ],
+  "location": Object {
+    "column": 3,
+    "index": 2,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`trim: "~x~" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": "x",
+}
+`;
+
+exports[`trim: "x>" 1`] = `
 Object {
   "expected": Array [
     "~",
@@ -1033,28 +1138,7 @@ Object {
 }
 `;
 
-exports[`wrap 1`] = `
-Object {
-  "type": "ParseOK",
-  "value": "x",
-}
-`;
-
-exports[`wrap 2`] = `
-Object {
-  "expected": Array [
-    ">",
-  ],
-  "location": Object {
-    "column": 3,
-    "index": 2,
-    "line": 1,
-  },
-  "type": "ParseFail",
-}
-`;
-
-exports[`wrap 3`] = `
+exports[`wrap: "<" 1`] = `
 Object {
   "expected": Array [
     "x",
@@ -1068,7 +1152,28 @@ Object {
 }
 `;
 
-exports[`wrap 4`] = `
+exports[`wrap: "<x" 1`] = `
+Object {
+  "expected": Array [
+    ">",
+  ],
+  "location": Object {
+    "column": 3,
+    "index": 2,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`wrap: "<x>" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": "x",
+}
+`;
+
+exports[`wrap: "x>" 1`] = `
 Object {
   "expected": Array [
     "<",
