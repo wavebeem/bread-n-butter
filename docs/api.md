@@ -142,7 +142,7 @@ const expr: bnb.Parser<XExpr> = bnb.lazy(() => {
 });
 const item: bnb.Parser<XItem> = bnb.match(/[a-z]+/i);
 const list: bnb.Parser<XList> = expr
-  .sepBy0(bnb.text(","))
+  .sepBy(bnb.text(","))
   .wrap(bnb.text("["), bnb.text("]"));
 expr.tryParse("[a,b,[c,d,[]],[[e]]]");
 // => ["a", "b", ["c", "d", []], [["e"]]]
@@ -366,7 +366,7 @@ const item = bnb.text("a");
 const comma = bnb.text(",");
 const lbrack = bnb.text("[");
 const rbrack = bnb.text("]");
-const list = item.sepBy0(comma).wrap(lbrack, rbrack);
+const list = item.sepBy(comma).wrap(lbrack, rbrack);
 list.tryParse("[a,a,a]"); // => ["a", "a", "a"]
 ```
 
@@ -387,9 +387,9 @@ const item = bnb.text("a").trim(optWhitespace);
 item.tryParse("     a "); // => "a"
 ```
 
-### `parser.many0()`
+### `parser.repeat(min = 0, max = Infinity)`
 
-Repeats the current parser zero or more times, yielding the results in an array.
+Repeats the current parser `min` to `max` times (defaults to `0` and `Infinity`), yielding the results in an array.
 
 Given that this can match **zero** times, take care not to parse this
 accidentally. Usually this parser should come up in the context of some other
@@ -400,46 +400,52 @@ zero or more statements inside.
 const identifier = bnb.match(/[a-z]+/i);
 const expression = identifier.and(bnb.text("()")).map(([first]) => first);
 const statement = expression.and(bnb.text(";")).map(([first]) => first);
-const block = statement.many0().wrap(bnb.text("{"), bnb.text("}"));
+const block = statement.repeat().wrap(bnb.text("{"), bnb.text("}"));
 block.tryParse("{apple();banana();coconut();}");
 // => ["apple", "banana", "coconut"];
+
+const aaa = bnb.text("a").repeat(1, 3);
+aaa.tryParse(""); // => Error
+aaa.tryParse("a"); // => "a"
+aaa.tryParse("aa"); // => "aa"
+aaa.tryParse("aaa"); // => "aaa"
+aaa.tryParse("aaaa"); // => Error
+
+const xs = bnb.text("x").repeat(1);
+xs.tryParse(""); // => Error
+xs.tryParse("x"); // => "x"
+xs.tryParse("xx"); // => "xx"
 ```
 
-### `parser.many1()`
+### `parser.sepBy(sepParser, min = 0, max = Infinity)`
 
-Parsers the current parser **one** or more times. See
-[parser.many0](#parser-many0) for more details.
-
-### `parser.sepBy0(sepParser)`
-
-Returns a parser that parses zero or more times, separated by `sepParser`.
-Useful for things like arrays, objects, argument lists, etc.
-
-```ts
-const item = bnb.text("a");
-const comma = bnb.text(",");
-const list = item.sepBy0(comma);
-list.tryParse("a,a,a"); // => ["a", "a", "a"]
-```
-
-### `parser.sepBy1(sepParser)`
-
-Returns a parser that parses one or more times, separated by `sepParser`.
-
-Useful for things parsing non-empty lists, such as a list of interfaces
-implemented by a class.
+Returns a parser that parses `min` to `max` times (defaults to `0` and `Infinity`), separated by `sepParser`, yielding the results in an array.
 
 ```ts
 const num = bnb.match(/[0-9]+/).map(Number);
 const color = bnb
   .text("rgb(")
-  .next(num.sepBy1(bnb.text(",")))
+  .next(num.sepBy(bnb.text(","), 1))
   .skip(bnb.text(")"))
   .map(([red, green, blue]) => {
     return { red, green, blue };
   });
 color.tryParse("rgb(0,127,36)");
 // => { red: 0, green: 127, blue: 36 }
+
+const classNames = bnb.match(/\S+/).sepBy(bnb.match(/\s+/));
+classNames.tryParse(""); // => []
+classNames.tryParse("btn"); // => ["btn"]
+classNames.tryParse("btn btn-primary"); // => ["btn", "btn-primary"]
+
+const dimensions = bnb
+  .match(/\d+/)
+  .map((str) => Number(str))
+  .sepBy(bnb.match(/\s*x\s*/), 2, 3);
+classNames.tryParse(""); // => Error
+classNames.tryParse("3 x 4"); // => [3, 4]
+classNames.tryParse("10x20x30"); // => [10, 20, 30]
+classNames.tryParse("1x2x3x4"); // => Error
 ```
 
 ### `parser.node(name)`
@@ -548,7 +554,7 @@ const statement = bnb
   .match(/[a-z]+/i)
   .and(endline)
   .map(([first]) => first);
-const file = statement.many0();
+const file = statement.repeat();
 file.tryParse("A\nB\nC"); // => ["A", "B", "C"]
 ```
 

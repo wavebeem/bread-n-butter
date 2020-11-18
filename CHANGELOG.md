@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2020-11-17
+
+### Changed
+
+- Method `parser.many0()` is now `parser.repeat()`
+- Method `parser.many1()` is now `parser.repeat(1)`
+- Method `parser.sepBy0(separator)` is now `parser.sepBy(separator)`
+- Method `parser.sepBy1(separator)` is now `parser.sepBy(separator, 1)`
+
+### Added
+
+- Method `parser.repeat(min = 0, max = Infinity)` (thanks [@seanchas116])
+- Method `parser.sepBy(separator, min = 0, max = Infinity)` (thanks [@seanchas116])
+
 ## [0.4.1] - 2020-09-26
 
 ### Changed
@@ -53,5 +67,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial release
 
 [@sveyret]: https://github.com/sveyret
-
-## Unreleased
+[@seanchas116]: https://github.com/seanchas116

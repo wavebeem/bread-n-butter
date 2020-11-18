@@ -51,7 +51,7 @@ const integer = bnb
   .desc(["integer"]);
 
 const version = integer
-  .sepBy1(bnb.text("."))
+  .sepBy(bnb.text("."), 1)
   .map(([major, minor, patch]) => {
     return { major, minor, patch };
   })
@@ -214,7 +214,7 @@ const number = bnb.match(/[0-9]+/).map(Number);
 // `array` is indirectly recursive because it uses `expression` which
 // internally uses `array`
 const array = expression
-  .sepBy0(bnb.text(" "))
+  .sepBy(bnb.text(" "))
   .wrap(bnb.text("("), bnb.text(")"));
 
 expression.tryParse("12"); // => 12

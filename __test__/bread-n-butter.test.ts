@@ -1,15 +1,19 @@
 import * as bnb from "../src/bread-n-butter";
 
+function snapTest<A>(parser: bnb.Parser<A>, input: string): void {
+  expect(parser.parse(input)).toMatchSnapshot(JSON.stringify(input));
+}
+
 test("test a test", () => {
   const x = bnb.text("x");
-  expect(x.parse("x")).toMatchSnapshot();
+  snapTest(x, "x");
 });
 
 test("and", () => {
   const x = bnb.text("x");
   const y = bnb.text("y");
   const xy = x.and(y);
-  expect(xy.parse("xy")).toMatchSnapshot();
+  snapTest(xy, "xy");
 });
 
 test("and triple", () => {
@@ -17,7 +21,7 @@ test("and triple", () => {
   const y = bnb.text("y");
   const z = bnb.text("z");
   const xyz = x.and(y).and(z);
-  expect(xyz.parse("xyz")).toMatchSnapshot();
+  snapTest(xyz, "xyz");
 });
 
 test("and success triple 2", () => {
@@ -29,52 +33,112 @@ test("and success triple 2", () => {
       return [x, y, z] as const;
     });
   });
-  expect(xyz.parse("xyz")).toMatchSnapshot();
+  snapTest(xyz, "xyz");
 });
 
 test("and failure", () => {
   const x = bnb.text("x");
   const y = bnb.text("y");
   const xy = x.and(y);
-  expect(xy.parse("x")).toMatchSnapshot();
-  expect(xy.parse("y")).toMatchSnapshot();
-  expect(xy.parse("yx")).toMatchSnapshot();
-  expect(xy.parse("")).toMatchSnapshot();
+  snapTest(xy, "x");
+  snapTest(xy, "y");
+  snapTest(xy, "yx");
+  snapTest(xy, "");
 });
 
 test("sepBy 0+", () => {
   const a = bnb.text("a");
   const sep = bnb.text(",");
   const list = a.sepBy(sep);
-  expect(list.parse("")).toMatchSnapshot();
-  expect(list.parse("a")).toMatchSnapshot();
-  expect(list.parse("a,a")).toMatchSnapshot();
-  expect(list.parse("a,a,a")).toMatchSnapshot();
-  expect(list.parse("a,a,b")).toMatchSnapshot();
-  expect(list.parse("b")).toMatchSnapshot();
+  snapTest(list, "");
+  snapTest(list, "a");
+  snapTest(list, "a,a");
+  snapTest(list, "a,a,a");
+  snapTest(list, "a,a,b");
+  snapTest(list, "b");
 });
 
 test("sepBy 1+", () => {
   const a = bnb.text("a");
   const sep = bnb.text(",");
   const list = a.sepBy(sep, 1);
-  expect(list.parse("")).toMatchSnapshot();
-  expect(list.parse("a")).toMatchSnapshot();
-  expect(list.parse("a,a")).toMatchSnapshot();
-  expect(list.parse("a,a,a")).toMatchSnapshot();
-  expect(list.parse("a,a,b")).toMatchSnapshot();
-  expect(list.parse("b")).toMatchSnapshot();
+  snapTest(list, "");
+  snapTest(list, "a");
+  snapTest(list, "a,a");
+  snapTest(list, "a,a,a");
+  snapTest(list, "a,a,b");
+  snapTest(list, "b");
+});
+
+test("sepBy 2-3", () => {
+  const a = bnb.text("a");
+  const sep = bnb.text(",");
+  const list = a.sepBy(sep, 2, 3);
+  snapTest(list, "");
+  snapTest(list, "a");
+  snapTest(list, "a,a");
+  snapTest(list, "a,a,a");
+  snapTest(list, "a,a,a,a");
+  snapTest(list, "a,a,b");
+  snapTest(list, "b");
+});
+
+test("sepBy 1-1", () => {
+  const a = bnb.text("a");
+  const sep = bnb.text(",");
+  const list = a.sepBy(sep, 1, 1);
+  snapTest(list, "");
+  snapTest(list, "a");
+  snapTest(list, "a,a");
+  snapTest(list, "b");
+});
+
+test("repeat with bad range", () => {
+  const a = bnb.text("a");
+  const sep = bnb.text(" ");
+  expect(() => a.sepBy(sep, 5, 3)).toThrow(/bad range/i);
+  expect(() => a.sepBy(sep, -2, 0)).toThrow(/bad range/i);
+  expect(() => a.sepBy(sep, 1.2, 3.4)).toThrow(/bad range/i);
 });
 
 test("repeat 0+", () => {
   const a = bnb.text("a");
   const aaa = a.repeat();
-  expect(aaa.parse("")).toMatchSnapshot();
-  expect(aaa.parse("a")).toMatchSnapshot();
-  expect(aaa.parse("aa")).toMatchSnapshot();
-  expect(aaa.parse("aaa")).toMatchSnapshot();
-  expect(aaa.parse("aaaa")).toMatchSnapshot();
-  expect(aaa.parse("b")).toMatchSnapshot();
+  snapTest(aaa, "");
+  snapTest(aaa, "a");
+  snapTest(aaa, "aa");
+  snapTest(aaa, "aaa");
+  snapTest(aaa, "aaaa");
+  snapTest(aaa, "b");
+});
+
+test("repeat 1+", () => {
+  const a = bnb.text("a");
+  const aaa = a.repeat(1);
+  snapTest(aaa, "a");
+  snapTest(aaa, "aa");
+  snapTest(aaa, "aaa");
+  snapTest(aaa, "aaaa");
+  snapTest(aaa, "");
+  snapTest(aaa, "b");
+});
+
+test("repeat 2-3", () => {
+  const a = bnb.text("a");
+  const aaa = a.repeat(2, 3);
+  snapTest(aaa, "a");
+  snapTest(aaa, "aa");
+  snapTest(aaa, "aaa");
+  snapTest(aaa, "aaaa");
+  snapTest(aaa, "");
+  snapTest(aaa, "b");
+});
+
+test("repeat with bad range", () => {
+  const a = bnb.text("a");
+  expect(() => a.repeat(5, 3)).toThrow(/bad range/i);
+  expect(() => a.repeat(-2, 0)).toThrow(/bad range/i);
+  expect(() => a.repeat(1.2, 3.4)).toThrow(/bad range/i);
 });
 
 test("repeat infinite loop detection", () => {
@@ -87,91 +151,64 @@ test("repeat infinite loop detection", () => {
 
 test("all", () => {
   const abc = bnb.all(bnb.text("a"), bnb.text("b"), bnb.text("c"));
-  expect(abc.parse("a")).toMatchSnapshot();
-  expect(abc.parse("aa")).toMatchSnapshot();
-  expect(abc.parse("abc")).toMatchSnapshot();
-  expect(abc.parse("aaaa")).toMatchSnapshot();
-  expect(abc.parse("abb")).toMatchSnapshot();
-  expect(abc.parse("")).toMatchSnapshot();
-  expect(abc.parse("b")).toMatchSnapshot();
+  snapTest(abc, "a");
+  snapTest(abc, "aa");
+  snapTest(abc, "abc");
+  snapTest(abc, "aaaa");
+  snapTest(abc, "abb");
+  snapTest(abc, "");
+  snapTest(abc, "b");
 });
 
 test("next", () => {
   const ab = bnb.text("a").next(bnb.text("b"));
-  expect(ab.parse("ab")).toMatchSnapshot();
-  expect(ab.parse("a")).toMatchSnapshot();
-  expect(ab.parse("b")).toMatchSnapshot();
-  expect(ab.parse("")).toMatchSnapshot();
-  expect(ab.parse("aba")).toMatchSnapshot();
+  snapTest(ab, "ab");
+  snapTest(ab, "a");
+  snapTest(ab, "b");
+  snapTest(ab, "");
+  snapTest(ab, "aba");
 });
 
 test("skip", () => {
   const ab = bnb.text("a").skip(bnb.text("b"));
-  expect(ab.parse("ab")).toMatchSnapshot();
-  expect(ab.parse("a")).toMatchSnapshot();
-  expect(ab.parse("b")).toMatchSnapshot();
-  expect(ab.parse("")).toMatchSnapshot();
-  expect(ab.parse("aba")).toMatchSnapshot();
+  snapTest(ab, "ab");
+  snapTest(ab, "a");
+  snapTest(ab, "b");
+  snapTest(ab, "");
+  snapTest(ab, "aba");
 });
 
 test("choice", () => {
   const abc = bnb.choice(bnb.text("a"), bnb.text("b"), bnb.text("c"));
-  expect(abc.parse("a")).toMatchSnapshot();
-  expect(abc.parse("b")).toMatchSnapshot();
-  expect(abc.parse("c")).toMatchSnapshot();
-  expect(abc.parse("aaaa")).toMatchSnapshot();
-  expect(abc.parse("abb")).toMatchSnapshot();
-  expect(abc.parse("")).toMatchSnapshot();
-});
-
-test("repeat 1+", () => {
-  const a = bnb.text("a");
-  const aaa = a.repeat(1);
-  expect(aaa.parse("a")).toMatchSnapshot();
-  expect(aaa.parse("aa")).toMatchSnapshot();
-  expect(aaa.parse("aaa")).toMatchSnapshot();
-  expect(aaa.parse("aaaa")).toMatchSnapshot();
-  expect(aaa.parse("")).toMatchSnapshot();
-  expect(aaa.parse("b")).toMatchSnapshot();
-});
-
-test("repeat with min/max", () => {
-  const a = bnb.text("a");
-  const aaa = a.repeat(2, 3);
-  expect(aaa.parse("a")).toMatchSnapshot();
-  expect(aaa.parse("aa")).toMatchSnapshot();
-  expect(aaa.parse("aaa")).toMatchSnapshot();
-  expect(aaa.parse("aaaa")).toMatchSnapshot();
-  expect(aaa.parse("")).toMatchSnapshot();
-  expect(aaa.parse("b")).toMatchSnapshot();
-});
-
-test("many with wrong min/max", () => {
-  const a = bnb.text("a");
-  expect(() => a.repeat(5, 3)).toThrow(/greater than or equal to/);
+  snapTest(abc, "a");
+  snapTest(abc, "b");
+  snapTest(abc, "c");
+  snapTest(abc, "aaaa");
+  snapTest(abc, "abb");
+  snapTest(abc, "");
 });
 
 test("or", () => {
   const a = bnb.text("a");
   const b = bnb.text("b");
   const ab = a.or(b);
-  expect(ab.parse("a")).toMatchSnapshot();
-  expect(ab.parse("b")).toMatchSnapshot();
-  expect(ab.parse("c")).toMatchSnapshot();
-  expect(ab.parse("ab")).toMatchSnapshot();
-  expect(ab.parse("")).toMatchSnapshot();
+  snapTest(ab, "a");
+  snapTest(ab, "b");
+  snapTest(ab, "c");
+  snapTest(ab, "ab");
+  snapTest(ab, "");
 });
 
 test("matchEOF", () => {
   const eof = bnb.eof;
-  expect(eof.parse("")).toMatchSnapshot();
-  expect(eof.parse("x")).toMatchSnapshot();
+  snapTest(eof, "");
+  snapTest(eof, "x");
 });
 
 test("match", () => {
   const num = bnb.match(/\d+/);
-  expect(num.parse("12")).toMatchSnapshot();
-  expect(num.parse("abc")).toMatchSnapshot();
+  snapTest(num, "12");
+  snapTest(num, "abc");
   expect(() => bnb.match(/./g)).toThrow();
   expect(() => bnb.match(/./y)).toThrow();
 });
@@ -182,7 +219,7 @@ test("lisp lists", () => {
   const rp = bnb.text(")");
   const ws = bnb.match(/\s+/);
   const list = lp.next(symbol.sepBy(ws, 0)).skip(rp);
-  expect(list.parse("(a b c)")).toMatchSnapshot();
+  snapTest(list, "(a b c)");
 });
 
 test("node", () => {
@@ -191,8 +228,8 @@ test("node", () => {
     .node("Identifier")
     .desc(["identifier"]);
   const multiline = bnb.text("A\nB\nC").node("ABC");
-  expect(identifier.parse("abc")).toMatchSnapshot();
-  expect(multiline.parse("A\nB\nC")).toMatchSnapshot();
+  snapTest(identifier, "abc");
+  snapTest(multiline, "A\nB\nC");
 });
 
 test("tryParse", () => {
@@ -206,8 +243,8 @@ test("desc", () => {
     .match(/[0-9]+/)
     .map(Number)
     .desc(["number"]);
-  expect(num.parse("9")).toMatchSnapshot();
-  expect(num.parse("x")).toMatchSnapshot();
+  snapTest(num, "9");
+  snapTest(num, "x");
 });
 
 test("thru", () => {
@@ -222,25 +259,25 @@ test("thru", () => {
 
 test("wrap", () => {
   const p = bnb.text("x").wrap(bnb.text("<"), bnb.text(">"));
-  expect(p.parse("<x>")).toMatchSnapshot();
-  expect(p.parse("<x")).toMatchSnapshot();
-  expect(p.parse("<")).toMatchSnapshot();
-  expect(p.parse("x>")).toMatchSnapshot();
+  snapTest(p, "<x>");
+  snapTest(p, "<x");
+  snapTest(p, "<");
+  snapTest(p, "x>");
 });
 
 test("trim", () => {
   const p = bnb.text("x").trim(bnb.text("~"));
-  expect(p.parse("~x~")).toMatchSnapshot();
-  expect(p.parse("~x")).toMatchSnapshot();
-  expect(p.parse("~")).toMatchSnapshot();
-  expect(p.parse("x>")).toMatchSnapshot();
+  snapTest(p, "~x~");
+  snapTest(p, "~x");
+  snapTest(p, "~");
+  snapTest(p, "x>");
 });
 
 test("fail", () => {
   const p = bnb.fail(["apple", "banana"]);
   const q = bnb.text("other").or(p);
-  expect(p.parse("")).toMatchSnapshot();
-  expect(q.parse("")).toMatchSnapshot();
+  snapTest(p, "bad");
+  snapTest(q, "bad");
 });
 
 test("lazy", () => {
@@ -252,7 +289,7 @@ test("lazy", () => {
   });
   const item = bnb.text("x");
   const list = expr.sepBy(bnb.text(" "), 0).wrap(bnb.text("("), bnb.text(")"));
-  expect(expr.parse("(x x (x () (x) ((x)) x) x)")).toMatchSnapshot();
+  snapTest(expr, "(x x (x () (x) ((x)) x) x)");
 });
 
 test("text", () => {
@@ -263,6 +300,7 @@ test("text", () => {
 });
 
 test("emoji length", () => {
-  const result = bnb.text("🙂🙂🙂").node("Emoji").parse("🙂🙂🙂");
-  expect(result).toMatchSnapshot();
+  const smiles = "🙂🙂🙂";
+  const result = bnb.text(smiles).node("Emoji");
+  snapTest(result, smiles);
 });
