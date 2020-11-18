@@ -66,6 +66,23 @@ test("sepBy 1+", () => {
   expect(list.parse("b")).toMatchSnapshot();
 });
 
+test("sepBy 0...1", () => {
+  const a = bnb.text("a");
+  const sep = bnb.text(",");
+  const list = a.sepBy(sep, 0, 1);
+  expect(list.parse("")).toMatchSnapshot();
+  expect(list.parse("a")).toMatchSnapshot();
+  expect(list.parse("a,a")).toMatchSnapshot();
+  expect(list.parse("a,a,a")).toMatchSnapshot();
+  expect(list.parse("a,a,b")).toMatchSnapshot();
+  expect(list.parse("b")).toMatchSnapshot();
+});
+
+test("sepBy with wrong min/max", () => {
+  const a = bnb.text("a");
+  expect(() => a.sepBy(bnb.text(','), 5, 3)).toThrow(/greater than or equal to/);
+});
+
 test("repeat 0+", () => {
   const a = bnb.text("a");
   const aaa = a.repeat();

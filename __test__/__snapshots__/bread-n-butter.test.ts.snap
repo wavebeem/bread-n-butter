@@ -842,6 +842,79 @@ Object {
 }
 `;
 
+exports[`sepBy 0...1 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Array [],
+}
+`;
+
+exports[`sepBy 0...1 2`] = `
+Object {
+  "type": "ParseOK",
+  "value": Array [
+    "a",
+  ],
+}
+`;
+
+exports[`sepBy 0...1 3`] = `
+Object {
+  "expected": Array [
+    "<EOF>",
+  ],
+  "location": Object {
+    "column": 2,
+    "index": 1,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`sepBy 0...1 4`] = `
+Object {
+  "expected": Array [
+    "<EOF>",
+  ],
+  "location": Object {
+    "column": 2,
+    "index": 1,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`sepBy 0...1 5`] = `
+Object {
+  "expected": Array [
+    "<EOF>",
+  ],
+  "location": Object {
+    "column": 2,
+    "index": 1,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`sepBy 0...1 6`] = `
+Object {
+  "expected": Array [
+    "a",
+    "<EOF>",
+  ],
+  "location": Object {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
 exports[`sepBy 1+ 1`] = `
 Object {
   "expected": Array [

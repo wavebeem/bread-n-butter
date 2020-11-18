@@ -197,8 +197,14 @@ export class Parser<A> {
    * parser supplied.
    */
   sepBy<B>(separator: Parser<B>, min = 0, max = Infinity): Parser<A[]> {
+    if (max < min) {
+      throw new Error("max must be greater than or equal to min");
+    }
     if (min == 0) {
       return this.sepBy(separator, 1, max).or(ok([]));
+    }
+    if (max == 1) {
+      return this.map(value => [value]);
     }
 
     return this.chain((first) => {
