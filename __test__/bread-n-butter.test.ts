@@ -179,7 +179,11 @@ test("skip", () => {
 });
 
 test("choice", () => {
-  const abc = bnb.choice(bnb.text("a"), bnb.text("b"), bnb.text("c"));
+  const abc: bnb.Parser<"a" | "b" | "c"> = bnb.choice(
+    bnb.text("a"),
+    bnb.text("b"),
+    bnb.text("c")
+  );
   snapTest(abc, "a");
   snapTest(abc, "b");
   snapTest(abc, "c");
