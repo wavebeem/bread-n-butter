@@ -93,6 +93,14 @@ test("sepBy 1-1", () => {
   snapTest(list, "b");
 });
 
+test("repeat with bad range", () => {
+  const a = bnb.text("a");
+  const sep = bnb.text(" ");
+  expect(() => a.sepBy(sep, 5, 3)).toThrow(/bad range/i);
+  expect(() => a.sepBy(sep, -2, 0)).toThrow(/bad range/i);
+  expect(() => a.sepBy(sep, 1.2, 3.4)).toThrow(/bad range/i);
+});
+
 test("repeat 0+", () => {
   const a = bnb.text("a");
   const aaa = a.repeat();

@@ -928,6 +928,43 @@ Object {
 }
 `;
 
+exports[`sepBy 1-1: "a" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Array [
+    "a",
+  ],
+}
+`;
+
+exports[`sepBy 1-1: "a,a" 1`] = `
+Object {
+  "expected": Array [
+    "<EOF>",
+  ],
+  "location": Object {
+    "column": 2,
+    "index": 1,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`sepBy 1-1: "b" 1`] = `
+Object {
+  "expected": Array [
+    "a",
+  ],
+  "location": Object {
+    "column": 1,
+    "index": 0,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
 exports[`sepBy 2-3: "" 1`] = `
 Object {
   "expected": Array [

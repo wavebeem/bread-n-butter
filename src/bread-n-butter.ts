@@ -161,16 +161,7 @@ export class Parser<A> {
    * in an array.
    */
   repeat(min = 0, max = Infinity): Parser<A[]> {
-    if (
-      !(
-        min <= max &&
-        min >= 0 &&
-        max >= 0 &&
-        Number.isInteger(min) &&
-        min !== Infinity &&
-        (Number.isInteger(max) || max === Infinity)
-      )
-    ) {
+    if (!isRangeValid(min, max)) {
       throw new Error(`repeat: bad range (${min} to ${max})`);
     }
     if (min === 0) {
@@ -204,8 +195,14 @@ export class Parser<A> {
    * parser supplied.
    */
   sepBy<B>(separator: Parser<B>, min = 0, max = Infinity): Parser<A[]> {
+    if (!isRangeValid(min, max)) {
+      throw new Error(`sepBy: bad range (${min} to ${max})`);
+    }
     if (min === 0) {
       return this.sepBy(separator, 1, max).or(ok([]));
+    }
+    if (max === 1) {
+      return this.map((x) => [x]);
     }
     return this.chain((first) => {
       return separator
@@ -226,6 +223,17 @@ export class Parser<A> {
       return { type, name, value, start, end } as const;
     });
   }
+}
+
+function isRangeValid(min: number, max: number): boolean {
+  return (
+    min <= max &&
+    min >= 0 &&
+    max >= 0 &&
+    Number.isInteger(min) &&
+    min !== Infinity &&
+    (Number.isInteger(max) || max === Infinity)
+  );
 }
 
 /**
