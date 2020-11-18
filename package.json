@@ -1,6 +1,6 @@
 {
   "name": "bread-n-butter",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Parser combinators for JavaScript and TypeScript",
   "main": "dist/cjs/bread-n-butter.js",
   "module": "dist/esm/bread-n-butter.js",
