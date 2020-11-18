@@ -1,3 +1,6 @@
+branches:
+  only:
+    - main
 language: node_js
 node_js:
   - "node"
