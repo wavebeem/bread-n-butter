@@ -201,6 +201,8 @@ export class Parser<A> {
     if (min === 0) {
       return this.sepBy(separator, 1, max).or(ok([]));
     }
+    // We also know that min=1 due to previous checks, so we can skip the call
+    // to `repeat` here
     if (max === 1) {
       return this.map((x) => [x]);
     }
