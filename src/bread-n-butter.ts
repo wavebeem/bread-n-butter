@@ -348,7 +348,9 @@ export function all<A extends any[]>(...parsers: ManyParsers<A>): Parser<A> {
 }
 
 /** Parse using the parsers given, returning the first one that succeeds. */
-export function choice<A>(...parsers: Parser<A>[]): Parser<A> {
+export function choice<Parsers extends Parser<any>[]>(
+  ...parsers: Parsers
+): Parser<ReturnType<Parsers[number]["tryParse"]>> {
   // TODO: This could be optimized with a custom parser, but I should probably add
   // benchmarking first to see if it really matters enough to rewrite it
   return parsers.reduce((acc, p) => {

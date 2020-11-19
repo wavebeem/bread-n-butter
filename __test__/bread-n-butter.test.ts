@@ -179,13 +179,23 @@ test("skip", () => {
 });
 
 test("choice", () => {
-  const abc = bnb.choice(bnb.text("a"), bnb.text("b"), bnb.text("c"));
-  snapTest(abc, "a");
-  snapTest(abc, "b");
-  snapTest(abc, "c");
-  snapTest(abc, "aaaa");
-  snapTest(abc, "abb");
-  snapTest(abc, "");
+  const abc123 = bnb.choice(
+    bnb.text("a"),
+    bnb.text("b"),
+    bnb.text("c"),
+    bnb.text("1").map(() => 1 as const),
+    bnb.text("2").map(() => 2 as const),
+    bnb.text("3").map(() => 3 as const)
+  );
+  snapTest(abc123, "a");
+  snapTest(abc123, "b");
+  snapTest(abc123, "c");
+  snapTest(abc123, "1");
+  snapTest(abc123, "2");
+  snapTest(abc123, "3");
+  snapTest(abc123, "aaaa");
+  snapTest(abc123, "abb");
+  snapTest(abc123, "");
 });
 
 test("or", () => {
