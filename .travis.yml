@@ -1,6 +1,7 @@
 branches:
   only:
     - main
+    - /^v\d+.*/
 language: node_js
 node_js:
   - "node"
