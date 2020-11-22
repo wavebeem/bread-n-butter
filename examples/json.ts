@@ -29,7 +29,7 @@ type JSONValue =
 // This is the main entry point of the parser: a full JSON value.
 const jsonValue: bnb.Parser<JSONValue> = bnb.lazy(() => {
   return bnb
-    .choice<JSONValue>(
+    .choice(
       jsonObject,
       jsonArray,
       jsonString,

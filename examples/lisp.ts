@@ -7,7 +7,7 @@ type LispList = bnb.ParseNode<"LispList", LispExpr[]>;
 type LispExpr = LispSymbol | LispNumber | LispList;
 
 const lispExpr: bnb.Parser<LispExpr> = bnb.lazy(() => {
-  return bnb.choice<LispExpr>(lispSymbol, lispNumber, lispList);
+  return bnb.choice(lispSymbol, lispNumber, lispList);
 });
 
 const lispSymbol = bnb
