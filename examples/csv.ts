@@ -1,5 +1,4 @@
 import * as bnb from "../src/bread-n-butter";
-import { prettyPrint } from "./util";
 
 // CSVs should end with `\r\n` but `\n` is fine too.
 const csvEnd = bnb.text("\r\n").or(bnb.text("\n"));
@@ -26,7 +25,7 @@ const csvField = csvFieldQuoted.or(csvFieldSimple);
 const csvRow = csvField.sepBy(bnb.text(","), 1);
 // A CSV file is _basically_ just 1 or more rows, but our parser accidentally
 // reads the final empty line incorrectly and we have to hack around that.
-const csvFile = csvRow
+const CSV = csvRow
   .sepBy(csvEnd, 1)
   .skip(csvEnd.or(bnb.ok("")))
   .map((rows) => {
@@ -40,11 +39,4 @@ const csvFile = csvRow
     });
   });
 
-const text = `\
-a,,c,"a ""complex"" field, i think"\r\n\
-d,eeeeee,FFFF,cool\r\n\
-nice,nice,nice3,nice4\
-`;
-
-const ast = csvFile.tryParse(text);
-prettyPrint(ast);
+export default CSV;
