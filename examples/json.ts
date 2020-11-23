@@ -27,7 +27,7 @@ type JSONValue =
   | false;
 
 // This is the main entry point of the parser: a full JSON value.
-const jsonValue: bnb.Parser<JSONValue> = bnb.lazy(() => {
+const JSON: bnb.Parser<JSONValue> = bnb.lazy(() => {
   return bnb
     .choice(
       jsonObject,
@@ -100,15 +100,15 @@ const jsonNumber = bnb
   .desc(["number"]);
 
 // Array parsing is ignoring brackets and commas and parsing as many nested JSON
-// documents as possible. Notice that we're using the parser `jsonValue` we just
+// documents as possible. Notice that we're using the parser `JSON` we just
 // defined above. Arrays and objects in the JSON grammar are recursive because
 // they can contain any other JSON document within them.
-const jsonArray = jsonValue.sepBy(jsonComma, 0).wrap(jsonLCurly, jsonRCurly);
+const jsonArray = JSON.sepBy(jsonComma, 0).wrap(jsonLCurly, jsonRCurly);
 
 // Object parsing is a little trickier because we have to collect all the key-
 // value pairs in order as length-2 arrays, then manually copy them into an
 // object.
-const objPair = jsonString.and(jsonColon.chain(() => jsonValue));
+const objPair = jsonString.and(jsonColon.chain(() => JSON));
 
 const jsonObject = objPair
   .sepBy(jsonComma, 0)
@@ -123,26 +123,4 @@ const jsonObject = objPair
 
 ///////////////////////////////////////////////////////////////////////
 
-const text = `\
-{
-  "id": "a thing\\nice\tab",
-  "another property!"
-    : "also cool"
-  , "weird formatting is ok too........😂": 123.45e1,
-  "": [
-    true, false, null,
-    "",
-    " ",
-    {},
-    {"": {}}
-  ]
-}
-`;
-
-export function parse(json: string): JSONValue {
-  return jsonValue.tryParse(json);
-}
-
-if (require.main === module) {
-  prettyPrint(parse(text));
-}
+export default JSON;
