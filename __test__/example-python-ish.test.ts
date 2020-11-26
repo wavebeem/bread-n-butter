@@ -33,3 +33,15 @@ block:
 test("py even simpler", () => {
   snapTest(Python, `alpha`);
 });
+
+test("py bad indent", () => {
+  snapTest(
+    Python,
+    `\
+block:
+    block:
+        alpha
+      beta
+`
+  );
+});

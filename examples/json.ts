@@ -1,5 +1,4 @@
 import * as bnb from "../src/bread-n-butter";
-import { prettyPrint } from "./util";
 
 ///////////////////////////////////////////////////////////////////////
 

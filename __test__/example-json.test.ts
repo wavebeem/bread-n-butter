@@ -31,7 +31,7 @@ test("json multiline", () => {
     JSON,
     `
 {
-  "array": [1, "two", null, true, false],
+  "array": [1, "two", null, true, false]
   "obj": {}
 }
 `
@@ -54,4 +54,16 @@ test("json multiline extra weird", () => {
 }
 `
   );
+});
+
+test("json unicode escape", () => {
+  snapTest(JSON, `{ "space": "\\u0020" }`);
+});
+
+test("json named escape", () => {
+  snapTest(JSON, `{ "bnfrt": "\\b\\n\\f\\r\\t" }`);
+});
+
+test("json useless escape", () => {
+  snapTest(JSON, `{ "xyz": "\\x\\y\\z" }`);
 });

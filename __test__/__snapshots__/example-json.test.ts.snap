@@ -41,36 +41,28 @@ Object {
 }
 `;
 
-exports[`json multiline: "\\n{\\n  \\"array\\" : [ 1 , \\"two\\", null , true , false ] ,\\n  \\"obj\\" : {\\n\\n\\n        \\"key\\"       : \\"value\\"\\n\\n\\n  }\\n}\\n" 1`] = `
+exports[`json multiline: "\\n{\\n  \\"array\\": [1, \\"two\\", null, true, false]\\n  \\"obj\\": {}\\n}\\n" 1`] = `
 Object {
-  "type": "ParseOK",
-  "value": Object {
-    "array": Array [
-      1,
-      "two",
-      null,
-      true,
-      false,
-    ],
-    "obj": Object {
-      "key": "value",
-    },
+  "expected": Array [
+    ",",
+    "}",
+  ],
+  "location": Object {
+    "column": 3,
+    "index": 46,
+    "line": 4,
   },
+  "type": "ParseFail",
 }
 `;
 
-exports[`json multiline: "\\n{\\n  \\"array\\": [1, \\"two\\", null, true, false],\\n  \\"obj\\": {}\\n}\\n" 1`] = `
+exports[`json named escape: "{ \\"bnfrt\\": \\"\\\\b\\\\n\\\\f\\\\r\\\\t\\" }" 1`] = `
 Object {
   "type": "ParseOK",
   "value": Object {
-    "array": Array [
-      1,
-      "two",
-      null,
-      true,
-      false,
-    ],
-    "obj": Object {},
+    "bnfrt": "
+
+	",
   },
 }
 `;
@@ -87,6 +79,33 @@ Object {
       false,
     ],
     "obj": Object {},
+  },
+}
+`;
+
+exports[`json unicode escape: "{ \\"space\\": \\" \\" }" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "space": " ",
+  },
+}
+`;
+
+exports[`json unicode escape: "{ \\"space\\": \\"\\\\u0020\\" }" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "space": " ",
+  },
+}
+`;
+
+exports[`json useless escape: "{ \\"xyz\\": \\"\\\\x\\\\y\\\\z\\" }" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "xyz": "xyz",
   },
 }
 `;
