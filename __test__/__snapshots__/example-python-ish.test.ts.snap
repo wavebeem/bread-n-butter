@@ -1,13 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`py bad indent: "block:\\n    block:\\n        alpha\\n      beta\\n" 1`] = `
+exports[`py bad indent: "block:\\n        alpha\\n        block:\\n    beta\\n" 1`] = `
 Object {
   "expected": Array [
-    "6 spaces",
+    "more than 4 spaces",
   ],
   "location": Object {
-    "column": 7,
-    "index": 38,
+    "column": 5,
+    "index": 40,
     "line": 4,
   },
   "type": "ParseFail",

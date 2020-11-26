@@ -39,9 +39,9 @@ test("py bad indent", () => {
     Python,
     `\
 block:
-    block:
         alpha
-      beta
+        block:
+    beta
 `
   );
 });
