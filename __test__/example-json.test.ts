@@ -38,7 +38,7 @@ test("json multiline", () => {
   );
 });
 
-test("json multiline", () => {
+test("json multiline extra weird", () => {
   snapTest(
     JSON,
     `
