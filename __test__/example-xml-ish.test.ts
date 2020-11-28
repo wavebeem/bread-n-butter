@@ -3,9 +3,26 @@ import XML from "../examples/xml-ish";
 
 // TODO: Better tests
 test("xml", () => {
-  expect(XML.tryParse("<a />")).toEqual({
+  expect(XML.tryParse(`<a />`)).toEqual({
     name: "a",
     attributes: {},
+    children: [],
+  });
+  expect(XML.tryParse(`<a key="val" />`)).toEqual({
+    name: "a",
+    attributes: { key: "val" },
+    children: [],
+  });
+  expect(
+    XML.tryParse(`\
+<div>\
+  i'm the &quot;bad guy&quot;\
+  who&apos;s with me? &lt;3\
+</div>\
+`)
+  ).toEqual({
+    name: "a",
+    attributes: { key: "val" },
     children: [],
   });
 });

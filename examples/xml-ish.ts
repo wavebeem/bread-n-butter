@@ -18,9 +18,11 @@ interface XMLElement {
 const ws0 = bnb.match(/\s*/m); // whitespace, 0+
 const ws1 = bnb.match(/\s+/m); // whitespace, 1+
 
-const XML: bnb.Parser<XMLElement> = bnb.lazy(() => {
-  return bnb.choice(elementWithChildren, elementWithoutChildren);
-});
+const XML: bnb.Parser<XMLElement> = bnb
+  .lazy(() => {
+    return bnb.choice(elementWithChildren, elementWithoutChildren);
+  })
+  .trim(ws0);
 
 // Tag or attribute name
 const symbol = bnb.match(/[a-zA-Z_][a-zA-Z0-9_-]*/);
@@ -38,7 +40,7 @@ const strEscape = bnb.choice(
 const strChunk = bnb.match(/[^"&]+/);
 
 const attrString = bnb
-  .choice(strChunk, strEscape)
+  .choice(strEscape, strChunk)
   .repeat()
   .map((parts) => parts.join(""))
   .trim(bnb.text('"'));
@@ -62,7 +64,7 @@ const xmlChildEscape = bnb.choice(
 const xmlChildChunk = bnb.match(/[^"&<]+/);
 
 const xmlChildString = bnb
-  .choice(xmlChildChunk, xmlChildEscape)
+  .choice(xmlChildEscape, xmlChildChunk)
   .repeat()
   .map((parts) => parts.join(""));
 
