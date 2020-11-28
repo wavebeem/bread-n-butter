@@ -1,0 +1,298 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`hex color: "#000000" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "a": 1,
+    "b": 0,
+    "g": 0,
+    "r": 0,
+  },
+}
+`;
+
+exports[`hex color: "#00aa" 1`] = `
+Object {
+  "expected": Array [
+    "a hex digit",
+  ],
+  "location": Object {
+    "column": 6,
+    "index": 5,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`hex color: "#00aa0" 1`] = `
+Object {
+  "expected": Array [
+    "a hex digit",
+  ],
+  "location": Object {
+    "column": 7,
+    "index": 6,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`hex color: "#729fcf" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "a": 1,
+    "b": 207,
+    "g": 159,
+    "r": 114,
+  },
+}
+`;
+
+exports[`hex color: "#888888" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "a": 1,
+    "b": 136,
+    "g": 136,
+    "r": 136,
+  },
+}
+`;
+
+exports[`hex color: "#FfFfFf" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "a": 1,
+    "b": 255,
+    "g": 255,
+    "r": 255,
+  },
+}
+`;
+
+exports[`hex color: "#abcXYZ" 1`] = `
+Object {
+  "expected": Array [
+    "a hex digit",
+    "<EOF>",
+  ],
+  "location": Object {
+    "column": 5,
+    "index": 4,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`hex color: "#fff" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "a": 1,
+    "b": 255,
+    "g": 255,
+    "r": 255,
+  },
+}
+`;
+
+exports[`rgb color: "rgb( )" 1`] = `
+Object {
+  "expected": Array [
+    "a number",
+  ],
+  "location": Object {
+    "column": 6,
+    "index": 5,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`rgb color: "rgb( 1 )" 1`] = `
+Object {
+  "expected": Array [
+    ",",
+  ],
+  "location": Object {
+    "column": 8,
+    "index": 7,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`rgb color: "rgb( 47 , 9 , 99 )" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "a": 1,
+    "b": 99,
+    "g": 9,
+    "r": 47,
+  },
+}
+`;
+
+exports[`rgb color: "rgb( 47 , 9 , 99, 1 )" 1`] = `
+Object {
+  "expected": Array [
+    ")",
+  ],
+  "location": Object {
+    "column": 17,
+    "index": 16,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`rgb color: "rgb( 128,1,10 )" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "a": 1,
+    "b": 10,
+    "g": 1,
+    "r": 128,
+  },
+}
+`;
+
+exports[`rgb color: "rgb(47, 0, 0)" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "a": 1,
+    "b": 0,
+    "g": 0,
+    "r": 47,
+  },
+}
+`;
+
+exports[`rgb color: "rgb(255,0,0)" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "a": 1,
+    "b": 0,
+    "g": 0,
+    "r": 255,
+  },
+}
+`;
+
+exports[`rgba color: "rgba( )" 1`] = `
+Object {
+  "expected": Array [
+    "a number",
+  ],
+  "location": Object {
+    "column": 7,
+    "index": 6,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`rgba color: "rgba( 0 )" 1`] = `
+Object {
+  "expected": Array [
+    ",",
+  ],
+  "location": Object {
+    "column": 9,
+    "index": 8,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`rgba color: "rgba( 1 2 3 )" 1`] = `
+Object {
+  "expected": Array [
+    ",",
+  ],
+  "location": Object {
+    "column": 9,
+    "index": 8,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`rgba color: "rgba( 1, 2, 3 )" 1`] = `
+Object {
+  "expected": Array [
+    ",",
+  ],
+  "location": Object {
+    "column": 15,
+    "index": 14,
+    "line": 1,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`rgba color: "rgba( 47 , 9 , 99, 0.05 )" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "a": 0.05,
+    "b": 99,
+    "g": 9,
+    "r": 47,
+  },
+}
+`;
+
+exports[`rgba color: "rgba( 128,1,10, 0 )" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "a": 0,
+    "b": 10,
+    "g": 1,
+    "r": 128,
+  },
+}
+`;
+
+exports[`rgba color: "rgba(47, 0, 0, 1)" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "a": 1,
+    "b": 0,
+    "g": 0,
+    "r": 47,
+  },
+}
+`;
+
+exports[`rgba color: "rgba(255,0,0, 0.5)" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "a": 0.5,
+    "b": 0,
+    "g": 0,
+    "r": 255,
+  },
+}
+`;

@@ -1,8 +1,14 @@
 import * as bnb from "../src/bread-n-butter";
-import { prettyPrint } from "./util";
 
+// CSVs should end with `\r\n` but `\n` is fine too.
 const csvEnd = bnb.text("\r\n").or(bnb.text("\n"));
+// If the string doesn't have any newlines, commas, or `"`, parse it with a
+// single regular expression for speed.
 const csvFieldSimple = bnb.match(/[^\r\n,"]*/);
+// - Starts with a double quote `"`.
+// - The contains 0+ quoted characters.
+// - Quoted characters are either `""` which evaluates to a single `"`.
+// - OR they are any other character, including newlines.
 const csvFieldQuoted = bnb.text('"').chain(() => {
   return bnb
     .match(/[^"]+/)
@@ -13,9 +19,13 @@ const csvFieldQuoted = bnb.text('"').chain(() => {
       return bnb.text('"').map(() => text);
     });
 });
+// A field is a single value
 const csvField = csvFieldQuoted.or(csvFieldSimple);
+// Each row (line) is 1 or more values separated by commas
 const csvRow = csvField.sepBy(bnb.text(","), 1);
-const csvFile = csvRow
+// A CSV file is _basically_ just 1 or more rows, but our parser accidentally
+// reads the final empty line incorrectly and we have to hack around that.
+const CSV = csvRow
   .sepBy(csvEnd, 1)
   .skip(csvEnd.or(bnb.ok("")))
   .map((rows) => {
@@ -29,11 +39,4 @@ const csvFile = csvRow
     });
   });
 
-const text = `\
-a,,c,"a ""complex"" field, i think"\r\n\
-d,eeeeee,FFFF,cool\r\n\
-nice,nice,nice3,nice4\
-`;
-
-const ast = csvFile.tryParse(text);
-prettyPrint(ast);
+export default CSV;

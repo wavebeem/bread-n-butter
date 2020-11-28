@@ -1,0 +1,895 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`lisp list: "( list 1 2 )" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "end": Object {
+      "column": 13,
+      "index": 12,
+      "line": 1,
+    },
+    "name": "LispFile",
+    "start": Object {
+      "column": 1,
+      "index": 0,
+      "line": 1,
+    },
+    "type": "ParseNode",
+    "value": Array [
+      Object {
+        "end": Object {
+          "column": 13,
+          "index": 12,
+          "line": 1,
+        },
+        "name": "LispList",
+        "start": Object {
+          "column": 1,
+          "index": 0,
+          "line": 1,
+        },
+        "type": "ParseNode",
+        "value": Array [
+          Object {
+            "end": Object {
+              "column": 7,
+              "index": 6,
+              "line": 1,
+            },
+            "name": "LispSymbol",
+            "start": Object {
+              "column": 3,
+              "index": 2,
+              "line": 1,
+            },
+            "type": "ParseNode",
+            "value": "list",
+          },
+          Object {
+            "end": Object {
+              "column": 9,
+              "index": 8,
+              "line": 1,
+            },
+            "name": "LispNumber",
+            "start": Object {
+              "column": 8,
+              "index": 7,
+              "line": 1,
+            },
+            "type": "ParseNode",
+            "value": 1,
+          },
+          Object {
+            "end": Object {
+              "column": 11,
+              "index": 10,
+              "line": 1,
+            },
+            "name": "LispNumber",
+            "start": Object {
+              "column": 10,
+              "index": 9,
+              "line": 1,
+            },
+            "type": "ParseNode",
+            "value": 2,
+          },
+        ],
+      },
+    ],
+  },
+}
+`;
+
+exports[`lisp list: "()" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "end": Object {
+      "column": 3,
+      "index": 2,
+      "line": 1,
+    },
+    "name": "LispFile",
+    "start": Object {
+      "column": 1,
+      "index": 0,
+      "line": 1,
+    },
+    "type": "ParseNode",
+    "value": Array [
+      Object {
+        "end": Object {
+          "column": 3,
+          "index": 2,
+          "line": 1,
+        },
+        "name": "LispList",
+        "start": Object {
+          "column": 1,
+          "index": 0,
+          "line": 1,
+        },
+        "type": "ParseNode",
+        "value": Array [],
+      },
+    ],
+  },
+}
+`;
+
+exports[`lisp list: "(1 2)" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "end": Object {
+      "column": 6,
+      "index": 5,
+      "line": 1,
+    },
+    "name": "LispFile",
+    "start": Object {
+      "column": 1,
+      "index": 0,
+      "line": 1,
+    },
+    "type": "ParseNode",
+    "value": Array [
+      Object {
+        "end": Object {
+          "column": 6,
+          "index": 5,
+          "line": 1,
+        },
+        "name": "LispList",
+        "start": Object {
+          "column": 1,
+          "index": 0,
+          "line": 1,
+        },
+        "type": "ParseNode",
+        "value": Array [
+          Object {
+            "end": Object {
+              "column": 3,
+              "index": 2,
+              "line": 1,
+            },
+            "name": "LispNumber",
+            "start": Object {
+              "column": 2,
+              "index": 1,
+              "line": 1,
+            },
+            "type": "ParseNode",
+            "value": 1,
+          },
+          Object {
+            "end": Object {
+              "column": 5,
+              "index": 4,
+              "line": 1,
+            },
+            "name": "LispNumber",
+            "start": Object {
+              "column": 4,
+              "index": 3,
+              "line": 1,
+            },
+            "type": "ParseNode",
+            "value": 2,
+          },
+        ],
+      },
+    ],
+  },
+}
+`;
+
+exports[`lisp list: "(1)" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "end": Object {
+      "column": 4,
+      "index": 3,
+      "line": 1,
+    },
+    "name": "LispFile",
+    "start": Object {
+      "column": 1,
+      "index": 0,
+      "line": 1,
+    },
+    "type": "ParseNode",
+    "value": Array [
+      Object {
+        "end": Object {
+          "column": 4,
+          "index": 3,
+          "line": 1,
+        },
+        "name": "LispList",
+        "start": Object {
+          "column": 1,
+          "index": 0,
+          "line": 1,
+        },
+        "type": "ParseNode",
+        "value": Array [
+          Object {
+            "end": Object {
+              "column": 3,
+              "index": 2,
+              "line": 1,
+            },
+            "name": "LispNumber",
+            "start": Object {
+              "column": 2,
+              "index": 1,
+              "line": 1,
+            },
+            "type": "ParseNode",
+            "value": 1,
+          },
+        ],
+      },
+    ],
+  },
+}
+`;
+
+exports[`lisp list: "(list 1 2)" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "end": Object {
+      "column": 11,
+      "index": 10,
+      "line": 1,
+    },
+    "name": "LispFile",
+    "start": Object {
+      "column": 1,
+      "index": 0,
+      "line": 1,
+    },
+    "type": "ParseNode",
+    "value": Array [
+      Object {
+        "end": Object {
+          "column": 11,
+          "index": 10,
+          "line": 1,
+        },
+        "name": "LispList",
+        "start": Object {
+          "column": 1,
+          "index": 0,
+          "line": 1,
+        },
+        "type": "ParseNode",
+        "value": Array [
+          Object {
+            "end": Object {
+              "column": 6,
+              "index": 5,
+              "line": 1,
+            },
+            "name": "LispSymbol",
+            "start": Object {
+              "column": 2,
+              "index": 1,
+              "line": 1,
+            },
+            "type": "ParseNode",
+            "value": "list",
+          },
+          Object {
+            "end": Object {
+              "column": 8,
+              "index": 7,
+              "line": 1,
+            },
+            "name": "LispNumber",
+            "start": Object {
+              "column": 7,
+              "index": 6,
+              "line": 1,
+            },
+            "type": "ParseNode",
+            "value": 1,
+          },
+          Object {
+            "end": Object {
+              "column": 10,
+              "index": 9,
+              "line": 1,
+            },
+            "name": "LispNumber",
+            "start": Object {
+              "column": 9,
+              "index": 8,
+              "line": 1,
+            },
+            "type": "ParseNode",
+            "value": 2,
+          },
+        ],
+      },
+    ],
+  },
+}
+`;
+
+exports[`lisp list: "\\n(def inc (x)\\n  (add x 1))\\n\\n(print (inc 3))\\n" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "end": Object {
+      "column": 1,
+      "index": 44,
+      "line": 6,
+    },
+    "name": "LispFile",
+    "start": Object {
+      "column": 1,
+      "index": 0,
+      "line": 1,
+    },
+    "type": "ParseNode",
+    "value": Array [
+      Object {
+        "end": Object {
+          "column": 13,
+          "index": 26,
+          "line": 3,
+        },
+        "name": "LispList",
+        "start": Object {
+          "column": 1,
+          "index": 1,
+          "line": 2,
+        },
+        "type": "ParseNode",
+        "value": Array [
+          Object {
+            "end": Object {
+              "column": 5,
+              "index": 5,
+              "line": 2,
+            },
+            "name": "LispSymbol",
+            "start": Object {
+              "column": 2,
+              "index": 2,
+              "line": 2,
+            },
+            "type": "ParseNode",
+            "value": "def",
+          },
+          Object {
+            "end": Object {
+              "column": 9,
+              "index": 9,
+              "line": 2,
+            },
+            "name": "LispSymbol",
+            "start": Object {
+              "column": 6,
+              "index": 6,
+              "line": 2,
+            },
+            "type": "ParseNode",
+            "value": "inc",
+          },
+          Object {
+            "end": Object {
+              "column": 13,
+              "index": 13,
+              "line": 2,
+            },
+            "name": "LispList",
+            "start": Object {
+              "column": 10,
+              "index": 10,
+              "line": 2,
+            },
+            "type": "ParseNode",
+            "value": Array [
+              Object {
+                "end": Object {
+                  "column": 12,
+                  "index": 12,
+                  "line": 2,
+                },
+                "name": "LispSymbol",
+                "start": Object {
+                  "column": 11,
+                  "index": 11,
+                  "line": 2,
+                },
+                "type": "ParseNode",
+                "value": "x",
+              },
+            ],
+          },
+          Object {
+            "end": Object {
+              "column": 12,
+              "index": 25,
+              "line": 3,
+            },
+            "name": "LispList",
+            "start": Object {
+              "column": 3,
+              "index": 16,
+              "line": 3,
+            },
+            "type": "ParseNode",
+            "value": Array [
+              Object {
+                "end": Object {
+                  "column": 7,
+                  "index": 20,
+                  "line": 3,
+                },
+                "name": "LispSymbol",
+                "start": Object {
+                  "column": 4,
+                  "index": 17,
+                  "line": 3,
+                },
+                "type": "ParseNode",
+                "value": "add",
+              },
+              Object {
+                "end": Object {
+                  "column": 9,
+                  "index": 22,
+                  "line": 3,
+                },
+                "name": "LispSymbol",
+                "start": Object {
+                  "column": 8,
+                  "index": 21,
+                  "line": 3,
+                },
+                "type": "ParseNode",
+                "value": "x",
+              },
+              Object {
+                "end": Object {
+                  "column": 11,
+                  "index": 24,
+                  "line": 3,
+                },
+                "name": "LispNumber",
+                "start": Object {
+                  "column": 10,
+                  "index": 23,
+                  "line": 3,
+                },
+                "type": "ParseNode",
+                "value": 1,
+              },
+            ],
+          },
+        ],
+      },
+      Object {
+        "end": Object {
+          "column": 16,
+          "index": 43,
+          "line": 5,
+        },
+        "name": "LispList",
+        "start": Object {
+          "column": 1,
+          "index": 28,
+          "line": 5,
+        },
+        "type": "ParseNode",
+        "value": Array [
+          Object {
+            "end": Object {
+              "column": 7,
+              "index": 34,
+              "line": 5,
+            },
+            "name": "LispSymbol",
+            "start": Object {
+              "column": 2,
+              "index": 29,
+              "line": 5,
+            },
+            "type": "ParseNode",
+            "value": "print",
+          },
+          Object {
+            "end": Object {
+              "column": 15,
+              "index": 42,
+              "line": 5,
+            },
+            "name": "LispList",
+            "start": Object {
+              "column": 8,
+              "index": 35,
+              "line": 5,
+            },
+            "type": "ParseNode",
+            "value": Array [
+              Object {
+                "end": Object {
+                  "column": 12,
+                  "index": 39,
+                  "line": 5,
+                },
+                "name": "LispSymbol",
+                "start": Object {
+                  "column": 9,
+                  "index": 36,
+                  "line": 5,
+                },
+                "type": "ParseNode",
+                "value": "inc",
+              },
+              Object {
+                "end": Object {
+                  "column": 14,
+                  "index": 41,
+                  "line": 5,
+                },
+                "name": "LispNumber",
+                "start": Object {
+                  "column": 13,
+                  "index": 40,
+                  "line": 5,
+                },
+                "type": "ParseNode",
+                "value": 3,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+}
+`;
+
+exports[`lisp number: "1" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "end": Object {
+      "column": 2,
+      "index": 1,
+      "line": 1,
+    },
+    "name": "LispFile",
+    "start": Object {
+      "column": 1,
+      "index": 0,
+      "line": 1,
+    },
+    "type": "ParseNode",
+    "value": Array [
+      Object {
+        "end": Object {
+          "column": 2,
+          "index": 1,
+          "line": 1,
+        },
+        "name": "LispNumber",
+        "start": Object {
+          "column": 1,
+          "index": 0,
+          "line": 1,
+        },
+        "type": "ParseNode",
+        "value": 1,
+      },
+    ],
+  },
+}
+`;
+
+exports[`lisp number: "12" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "end": Object {
+      "column": 3,
+      "index": 2,
+      "line": 1,
+    },
+    "name": "LispFile",
+    "start": Object {
+      "column": 1,
+      "index": 0,
+      "line": 1,
+    },
+    "type": "ParseNode",
+    "value": Array [
+      Object {
+        "end": Object {
+          "column": 3,
+          "index": 2,
+          "line": 1,
+        },
+        "name": "LispNumber",
+        "start": Object {
+          "column": 1,
+          "index": 0,
+          "line": 1,
+        },
+        "type": "ParseNode",
+        "value": 12,
+      },
+    ],
+  },
+}
+`;
+
+exports[`lisp number: "345" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "end": Object {
+      "column": 4,
+      "index": 3,
+      "line": 1,
+    },
+    "name": "LispFile",
+    "start": Object {
+      "column": 1,
+      "index": 0,
+      "line": 1,
+    },
+    "type": "ParseNode",
+    "value": Array [
+      Object {
+        "end": Object {
+          "column": 4,
+          "index": 3,
+          "line": 1,
+        },
+        "name": "LispNumber",
+        "start": Object {
+          "column": 1,
+          "index": 0,
+          "line": 1,
+        },
+        "type": "ParseNode",
+        "value": 345,
+      },
+    ],
+  },
+}
+`;
+
+exports[`lisp number: "1234567890" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "end": Object {
+      "column": 11,
+      "index": 10,
+      "line": 1,
+    },
+    "name": "LispFile",
+    "start": Object {
+      "column": 1,
+      "index": 0,
+      "line": 1,
+    },
+    "type": "ParseNode",
+    "value": Array [
+      Object {
+        "end": Object {
+          "column": 11,
+          "index": 10,
+          "line": 1,
+        },
+        "name": "LispNumber",
+        "start": Object {
+          "column": 1,
+          "index": 0,
+          "line": 1,
+        },
+        "type": "ParseNode",
+        "value": 1234567890,
+      },
+    ],
+  },
+}
+`;
+
+exports[`lisp symbol: "a" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "end": Object {
+      "column": 2,
+      "index": 1,
+      "line": 1,
+    },
+    "name": "LispFile",
+    "start": Object {
+      "column": 1,
+      "index": 0,
+      "line": 1,
+    },
+    "type": "ParseNode",
+    "value": Array [
+      Object {
+        "end": Object {
+          "column": 2,
+          "index": 1,
+          "line": 1,
+        },
+        "name": "LispSymbol",
+        "start": Object {
+          "column": 1,
+          "index": 0,
+          "line": 1,
+        },
+        "type": "ParseNode",
+        "value": "a",
+      },
+    ],
+  },
+}
+`;
+
+exports[`lisp symbol: "a0" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "end": Object {
+      "column": 3,
+      "index": 2,
+      "line": 1,
+    },
+    "name": "LispFile",
+    "start": Object {
+      "column": 1,
+      "index": 0,
+      "line": 1,
+    },
+    "type": "ParseNode",
+    "value": Array [
+      Object {
+        "end": Object {
+          "column": 3,
+          "index": 2,
+          "line": 1,
+        },
+        "name": "LispSymbol",
+        "start": Object {
+          "column": 1,
+          "index": 0,
+          "line": 1,
+        },
+        "type": "ParseNode",
+        "value": "a0",
+      },
+    ],
+  },
+}
+`;
+
+exports[`lisp symbol: "camelCaseSymbol" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "end": Object {
+      "column": 16,
+      "index": 15,
+      "line": 1,
+    },
+    "name": "LispFile",
+    "start": Object {
+      "column": 1,
+      "index": 0,
+      "line": 1,
+    },
+    "type": "ParseNode",
+    "value": Array [
+      Object {
+        "end": Object {
+          "column": 16,
+          "index": 15,
+          "line": 1,
+        },
+        "name": "LispSymbol",
+        "start": Object {
+          "column": 1,
+          "index": 0,
+          "line": 1,
+        },
+        "type": "ParseNode",
+        "value": "camelCaseSymbol",
+      },
+    ],
+  },
+}
+`;
+
+exports[`lisp symbol: "kebab-case-symbol" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "end": Object {
+      "column": 18,
+      "index": 17,
+      "line": 1,
+    },
+    "name": "LispFile",
+    "start": Object {
+      "column": 1,
+      "index": 0,
+      "line": 1,
+    },
+    "type": "ParseNode",
+    "value": Array [
+      Object {
+        "end": Object {
+          "column": 18,
+          "index": 17,
+          "line": 1,
+        },
+        "name": "LispSymbol",
+        "start": Object {
+          "column": 1,
+          "index": 0,
+          "line": 1,
+        },
+        "type": "ParseNode",
+        "value": "kebab-case-symbol",
+      },
+    ],
+  },
+}
+`;
+
+exports[`lisp symbol: "snake_case_symbol" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "end": Object {
+      "column": 18,
+      "index": 17,
+      "line": 1,
+    },
+    "name": "LispFile",
+    "start": Object {
+      "column": 1,
+      "index": 0,
+      "line": 1,
+    },
+    "type": "ParseNode",
+    "value": Array [
+      Object {
+        "end": Object {
+          "column": 18,
+          "index": 17,
+          "line": 1,
+        },
+        "name": "LispSymbol",
+        "start": Object {
+          "column": 1,
+          "index": 0,
+          "line": 1,
+        },
+        "type": "ParseNode",
+        "value": "snake_case_symbol",
+      },
+    ],
+  },
+}
+`;

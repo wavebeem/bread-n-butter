@@ -1,14 +1,13 @@
 import * as bnb from "../src/bread-n-butter";
-import { prettyPrint } from "./util";
 
 // ---[ Abstract Syntax Tree and Evaluator Combined ]---
 
-interface MathExpr {
+export interface MathExpr {
   calculate(): number;
   toString(): string;
 }
 
-class MathOperator2 implements MathExpr {
+export class MathOperator2 implements MathExpr {
   constructor(
     public operator: string,
     public left: MathExpr,
@@ -34,12 +33,12 @@ class MathOperator2 implements MathExpr {
     }
   }
 
-  toString() {
+  toString(): string {
     return `(${this.left} ${this.operator} ${this.right})`;
   }
 }
 
-class MathOperator1 implements MathExpr {
+export class MathOperator1 implements MathExpr {
   constructor(public operator: string, public expression: MathExpr) {}
 
   calculate(): number {
@@ -52,7 +51,7 @@ class MathOperator1 implements MathExpr {
     }
   }
 
-  toString() {
+  toString(): string {
     return `(${this.operator} ${this.expression})`;
   }
 }
@@ -93,8 +92,7 @@ const mathNum = bnb
 
 // Next level
 const mathBasic: bnb.Parser<MathExpr> = bnb.lazy(() => {
-  return mathExpr
-    .thru(token)
+  return SimpleMath.thru(token)
     .wrap(bnb.text("("), bnb.text(")"))
     .or(mathNum)
     .trim(mathWS);
@@ -148,19 +146,6 @@ const mathAddSub: bnb.Parser<MathExpr> = mathMulDiv.chain((expr) => {
 });
 
 // Lowest level
-const mathExpr = mathAddSub;
+const SimpleMath = mathAddSub;
 
-const text = "-2 + 3 * 4 - 5 / 7 ** 6";
-
-const ast = mathExpr.tryParse(text);
-// Show the AST
-prettyPrint(ast);
-console.log();
-// Show the text that was parsed
-console.log(text);
-console.log();
-// Show the math expression with parentheses added
-console.log(`= ${ast}`);
-console.log();
-// Show the result of calculating the math expression
-console.log(`= ${ast.calculate()}`);
+export default SimpleMath;

@@ -1,0 +1,93 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`py bad indent: "block:\\n        alpha\\n        block:\\n    beta\\n" 1`] = `
+Object {
+  "expected": Array [
+    "more than 4 spaces",
+  ],
+  "location": Object {
+    "column": 5,
+    "index": 40,
+    "line": 4,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`py complex: "block:\\n  alpha\\n  bravo\\n  block:\\r\\n          charlie\\n          delta\\r\\n          echo\\n          block:\\n           foxtrot\\n  golf" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "statements": Array [
+      Object {
+        "type": "Ident",
+        "value": "alpha",
+      },
+      Object {
+        "type": "Ident",
+        "value": "bravo",
+      },
+      Object {
+        "statements": Array [
+          Object {
+            "type": "Ident",
+            "value": "charlie",
+          },
+          Object {
+            "type": "Ident",
+            "value": "delta",
+          },
+          Object {
+            "type": "Ident",
+            "value": "echo",
+          },
+          Object {
+            "statements": Array [
+              Object {
+                "type": "Ident",
+                "value": "foxtrot",
+              },
+            ],
+            "type": "Block",
+          },
+        ],
+        "type": "Block",
+      },
+      Object {
+        "type": "Ident",
+        "value": "golf",
+      },
+    ],
+    "type": "Block",
+  },
+}
+`;
+
+exports[`py even simpler: "alpha" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "type": "Ident",
+    "value": "alpha",
+  },
+}
+`;
+
+exports[`py simple: "block:\\n  alpha\\n  bravo\\n" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "statements": Array [
+      Object {
+        "type": "Ident",
+        "value": "alpha",
+      },
+      Object {
+        "type": "Ident",
+        "value": "bravo",
+      },
+    ],
+    "type": "Block",
+  },
+}
+`;

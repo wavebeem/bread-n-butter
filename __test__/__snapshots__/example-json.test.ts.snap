@@ -1,0 +1,102 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`json complex: "{\\n  \\"id\\": \\"a thing\\\\nice\\tab\\",\\n  \\"another property!\\"\\n    : \\"also cool\\"\\n  , \\"weird formatting is ok too........😂\\": 123.45e1,\\n  \\"\\": [\\n    true, false, null,\\n    \\"\\",\\n    \\" \\",\\n    {},\\n    {\\"\\": {}}\\n  ]\\n}\\n" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "": Array [
+      true,
+      false,
+      null,
+      "",
+      " ",
+      Object {},
+      Object {
+        "": Object {},
+      },
+    ],
+    "another property!": "also cool",
+    "id": "a thing
+ice	ab",
+    "weird formatting is ok too........😂": 1234.5,
+  },
+}
+`;
+
+exports[`json multiline extra weird: "\\n{\\n  \\"array\\" : [ 1 , \\"two\\", null , true , false ] ,\\n  \\"obj\\" : {\\n\\n\\n        \\"key\\"       : \\"value\\"\\n\\n\\n  }\\n}\\n" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "array": Array [
+      1,
+      "two",
+      null,
+      true,
+      false,
+    ],
+    "obj": Object {
+      "key": "value",
+    },
+  },
+}
+`;
+
+exports[`json multiline: "\\n{\\n  \\"array\\": [1, \\"two\\", null, true, false]\\n  \\"obj\\": {}\\n}\\n" 1`] = `
+Object {
+  "expected": Array [
+    ",",
+    "}",
+  ],
+  "location": Object {
+    "column": 3,
+    "index": 46,
+    "line": 4,
+  },
+  "type": "ParseFail",
+}
+`;
+
+exports[`json named escape: "{ \\"bnfrt\\": \\"\\\\b\\\\n\\\\f\\\\r\\\\t\\" }" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "bnfrt": "
+
+	",
+  },
+}
+`;
+
+exports[`json simple: "{\\"array\\":[1,\\"two\\",null,true,false],\\"obj\\":{}}" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "array": Array [
+      1,
+      "two",
+      null,
+      true,
+      false,
+    ],
+    "obj": Object {},
+  },
+}
+`;
+
+exports[`json unicode escape: "{ \\"space\\": \\"\\\\u0020\\" }" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "space": " ",
+  },
+}
+`;
+
+exports[`json useless escape: "{ \\"xyz\\": \\"\\\\x\\\\y\\\\z\\" }" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "xyz": "xyz",
+  },
+}
+`;

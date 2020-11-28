@@ -1,5 +1,4 @@
 import * as bnb from "../src/bread-n-butter";
-import { prettyPrint } from "./util";
 
 ///////////////////////////////////////////////////////////////////////
 
@@ -102,22 +101,6 @@ function py(indent: number): Py {
 }
 
 // Start parsing at zero indentation
-const pythonish = py(0);
+const Python = py(0).pyStatement;
 
-///////////////////////////////////////////////////////////////////////
-
-const text = `\
-block:
-  alpha
-  bravo
-  block:\r
-         charlie
-         delta\r
-         echo
-         block:
-          foxtrot
-  golf\
-`;
-
-const ast = pythonish.pyStatement.parse(text);
-prettyPrint(ast);
+export default Python;

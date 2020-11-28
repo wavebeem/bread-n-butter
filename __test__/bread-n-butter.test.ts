@@ -1,8 +1,5 @@
 import * as bnb from "../src/bread-n-butter";
-
-function snapTest<A>(parser: bnb.Parser<A>, input: string): void {
-  expect(parser.parse(input)).toMatchSnapshot(JSON.stringify(input));
-}
+import { snapTest } from "./util";
 
 test("test a test", () => {
   const x = bnb.text("x");

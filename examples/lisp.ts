@@ -1,5 +1,4 @@
 import * as bnb from "../src/bread-n-butter";
-import { prettyPrint } from "./util";
 
 type LispSymbol = bnb.ParseNode<"LispSymbol", string>;
 type LispNumber = bnb.ParseNode<"LispNumber", number>;
@@ -7,7 +6,7 @@ type LispList = bnb.ParseNode<"LispList", LispExpr[]>;
 type LispExpr = LispSymbol | LispNumber | LispList;
 
 const lispExpr: bnb.Parser<LispExpr> = bnb.lazy(() => {
-  return bnb.choice<LispExpr>(lispSymbol, lispNumber, lispList);
+  return bnb.choice(lispSymbol, lispNumber, lispList);
 });
 
 const lispSymbol = bnb
@@ -25,16 +24,10 @@ const lispWS = bnb.match(/\s*/);
 
 const lispList = lispExpr
   .trim(lispWS)
-  .repeat(0)
+  .repeat()
   .wrap(bnb.text("("), bnb.text(")"))
   .node("LispList");
 
-const lispFile = lispExpr.trim(lispWS).repeat(0).node("LispFile");
+const Lisp = lispExpr.trim(lispWS).repeat().node("LispFile");
 
-const text = `\
-(list 1 2 (cons 1 (list)))
-(print 5 golden rings)
-`;
-
-const ast = lispFile.parse(text);
-prettyPrint(ast);
+export default Lisp;

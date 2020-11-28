@@ -348,6 +348,7 @@ export function all<A extends any[]>(...parsers: ManyParsers<A>): Parser<A> {
 }
 
 /** Parse using the parsers given, returning the first one that succeeds. */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function choice<Parsers extends Parser<any>[]>(
   ...parsers: Parsers
 ): Parser<ReturnType<Parsers[number]["tryParse"]>> {

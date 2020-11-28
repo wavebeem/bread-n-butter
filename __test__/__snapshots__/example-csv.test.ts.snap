@@ -1,0 +1,152 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`csv CRLF: "a,b,c\\r\\na,b,c\\r\\na,b,c" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Array [
+    Array [
+      "a",
+      "b",
+      "c",
+    ],
+    Array [
+      "a",
+      "b",
+      "c",
+    ],
+    Array [
+      "a",
+      "b",
+      "c",
+    ],
+  ],
+}
+`;
+
+exports[`csv LF: "a,b,c\\na,b,c\\na,b,c" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Array [
+    Array [
+      "a",
+      "b",
+      "c",
+    ],
+    Array [
+      "a",
+      "b",
+      "c",
+    ],
+    Array [
+      "a",
+      "b",
+      "c",
+    ],
+  ],
+}
+`;
+
+exports[`csv complex: "a,,c,\\"a \\"\\"complex\\"\\" field, i think\\"\\nd,eeeeee,FFFF,cool\\nnice,nice,nice3,nice4\\n" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Array [
+    Array [
+      "a",
+      "",
+      "c",
+      "a \\"complex\\" field, i think",
+    ],
+    Array [
+      "d",
+      "eeeeee",
+      "FFFF",
+      "cool",
+    ],
+    Array [
+      "nice",
+      "nice",
+      "nice3",
+      "nice4",
+    ],
+  ],
+}
+`;
+
+exports[`csv simple: "apple,1.23,1312\\nbanana,0.99,67\\ncherry,0.54,987\\ndragonfruit,2.87,4\\nelderberry,9.99,22\\n" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Array [
+    Array [
+      "apple",
+      "1.23",
+      "1312",
+    ],
+    Array [
+      "banana",
+      "0.99",
+      "67",
+    ],
+    Array [
+      "cherry",
+      "0.54",
+      "987",
+    ],
+    Array [
+      "dragonfruit",
+      "2.87",
+      "4",
+    ],
+    Array [
+      "elderberry",
+      "9.99",
+      "22",
+    ],
+  ],
+}
+`;
+
+exports[`csv trailing newline: "a,b,c\\na,b,c\\na,b,c\\n" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Array [
+    Array [
+      "a",
+      "b",
+      "c",
+    ],
+    Array [
+      "a",
+      "b",
+      "c",
+    ],
+    Array [
+      "a",
+      "b",
+      "c",
+    ],
+  ],
+}
+`;
+
+exports[`csv trailing newline: "a,b,c\\r\\na,b,c\\r\\na,b,c\\r\\n" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Array [
+    Array [
+      "a",
+      "b",
+      "c",
+    ],
+    Array [
+      "a",
+      "b",
+      "c",
+    ],
+    Array [
+      "a",
+      "b",
+      "c",
+    ],
+  ],
+}
+`;

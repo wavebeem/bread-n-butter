@@ -1,0 +1,106 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`2 part expression with parentheses: "2 * (3 + 4)" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": MathOperator2 {
+    "left": MathNumber {
+      "value": 2,
+    },
+    "operator": "*",
+    "right": MathOperator2 {
+      "left": MathNumber {
+        "value": 3,
+      },
+      "operator": "+",
+      "right": MathNumber {
+        "value": 4,
+      },
+    },
+  },
+}
+`;
+
+exports[`2 part expression: "2 * 3 + 4" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": MathOperator2 {
+    "left": MathOperator2 {
+      "left": MathNumber {
+        "value": 2,
+      },
+      "operator": "*",
+      "right": MathNumber {
+        "value": 3,
+      },
+    },
+    "operator": "+",
+    "right": MathNumber {
+      "value": 4,
+    },
+  },
+}
+`;
+
+exports[`large expression: "-2 + 3 * 4 - 5 / 7 ** 6" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": MathOperator2 {
+    "left": MathOperator2 {
+      "left": MathOperator1 {
+        "expression": MathNumber {
+          "value": 2,
+        },
+        "operator": "-",
+      },
+      "operator": "+",
+      "right": MathOperator2 {
+        "left": MathNumber {
+          "value": 3,
+        },
+        "operator": "*",
+        "right": MathNumber {
+          "value": 4,
+        },
+      },
+    },
+    "operator": "-",
+    "right": MathOperator2 {
+      "left": MathNumber {
+        "value": 5,
+      },
+      "operator": "/",
+      "right": MathOperator2 {
+        "left": MathNumber {
+          "value": 7,
+        },
+        "operator": "**",
+        "right": MathNumber {
+          "value": 6,
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`unary and binary minus: "-1 - -1" 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": MathOperator2 {
+    "left": MathOperator1 {
+      "expression": MathNumber {
+        "value": 1,
+      },
+      "operator": "-",
+    },
+    "operator": "-",
+    "right": MathOperator1 {
+      "expression": MathNumber {
+        "value": 1,
+      },
+      "operator": "-",
+    },
+  },
+}
+`;
