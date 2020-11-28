@@ -83,15 +83,6 @@ Object {
 }
 `;
 
-exports[`json unicode escape: "{ \\"space\\": \\" \\" }" 1`] = `
-Object {
-  "type": "ParseOK",
-  "value": Object {
-    "space": " ",
-  },
-}
-`;
-
 exports[`json unicode escape: "{ \\"space\\": \\"\\\\u0020\\" }" 1`] = `
 Object {
   "type": "ParseOK",

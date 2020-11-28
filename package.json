@@ -15,7 +15,7 @@
     "build": "rimraf dist && npm run -s build:esm && npm run -s build:cjs",
     "docs": "rimraf dist && npm run -s build:esm && eleventy",
     "docs-serve": "eleventy --serve",
-    "check": "prettier --check src examples __test__ && eslint --ext .js,.ts src examples __test__",
+    "check": "prettier --check src examples __test__ && eslint --ext .js,.ts src examples __test__ -f unix",
     "test": "jest",
     "start": "jest --watch",
     "postversion": "git push --tags && git push"
