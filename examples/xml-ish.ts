@@ -18,11 +18,9 @@ interface XMLElement {
 const ws0 = bnb.match(/\s*/m); // whitespace, 0+
 const ws1 = bnb.match(/\s+/m); // whitespace, 1+
 
-const XML: bnb.Parser<XMLElement> = bnb
-  .lazy(() => {
-    return bnb.choice(elementWithChildren, elementWithoutChildren);
-  })
-  .trim(ws0);
+const XML: bnb.Parser<XMLElement> = bnb.lazy(() => {
+  return bnb.choice(elementWithoutChildren);
+});
 
 // Tag or attribute name
 const symbol = bnb.match(/[a-zA-Z_][a-zA-Z0-9_-]*/);
@@ -45,9 +43,12 @@ const attrString = bnb
   .map((parts) => parts.join(""))
   .trim(bnb.text('"'));
 
-const oneAttr = bnb.all(symbol.skip(bnb.text("=").trim(ws0)), attrString);
+const oneAttr = bnb.all(
+  ws1.next(symbol).skip(bnb.text("=").trim(ws0)),
+  attrString
+);
 
-const attributes = oneAttr.sepBy(ws1).map((attrs) => {
+export const attributes = oneAttr.repeat().map((attrs) => {
   return fromEntries(attrs);
 });
 
@@ -63,34 +64,30 @@ const xmlChildEscape = bnb.choice(
 // One or more characters that aren't `"` or `&`
 const xmlChildChunk = bnb.match(/[^"&<]+/);
 
-const xmlChildString = bnb
+export const xmlChildString = bnb
   .choice(xmlChildEscape, xmlChildChunk)
-  .repeat()
+  .repeat(1)
   .map((parts) => parts.join(""));
 
-const xmlChild = bnb.lazy(() => bnb.choice(xmlChildString, XML));
+export const xmlChild = bnb.lazy(() => bnb.choice(xmlChildString));
 
 const elementWithChildren = bnb
-  .all(bnb.text("<").next(symbol).skip(ws1), attributes.skip(bnb.text(">")))
-  .chain(([tagName, attrs]) => {
+  .all(bnb.text("<"), symbol, attributes, ws0, bnb.text(">"))
+  .chain(([, tagName, attrs]) => {
     return xmlChild.repeat().chain((children) => {
-      return bnb
-        .text("<")
-        .next(bnb.text(tagName))
-        .skip(bnb.text("/>"))
-        .map<XMLElement>(() => {
-          return {
-            name: tagName,
-            attributes: attrs,
-            children: children,
-          };
-        });
+      return bnb.text(`<${tagName}/>`).map<XMLElement>(() => {
+        return {
+          name: tagName,
+          attributes: attrs,
+          children: children,
+        };
+      });
     });
   });
 
 const elementWithoutChildren = bnb
-  .all(bnb.text("<").next(symbol).skip(ws1), attributes.skip(bnb.text("/>")))
-  .map<XMLElement>(([tagName, attrs]) => {
+  .all(bnb.text("<"), symbol, ws1, attributes, ws0, bnb.text("/>"))
+  .map<XMLElement>(([, tagName, , attrs]) => {
     return {
       name: tagName,
       attributes: attrs,
