@@ -1,0 +1,119 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`xml large example: "\\n    <Map>\\n      <Entry key=\\"string-a\\"><String>alpha</String></Entry>\\n      <Entry key=\\"string-b\\"><String>bravo</String></Entry>\\n      <Entry key=\\"string-c\\"><String>charlie</String></Entry>\\n      <Entry key=\\"list\\">\\n        <List>\\n          <String>a</String>\\n          <String>b</String>\\n          <String>c</String>\\n        </List>\\n      </Entry>\\n      <Entry key=\\"null\\"><Null /></Entry>\\n      <Entry key=\\"empty\\" />\\n    </Map>\\n    " 1`] = `
+Object {
+  "type": "ParseOK",
+  "value": Object {
+    "attributes": Object {},
+    "children": Array [
+      "
+      ",
+      Object {
+        "attributes": Object {
+          "key": "string-a",
+        },
+        "children": Array [
+          Object {
+            "attributes": Object {},
+            "children": Array [
+              "alpha",
+            ],
+            "name": "String",
+          },
+        ],
+        "name": "Entry",
+      },
+      Object {
+        "attributes": Object {
+          "key": "string-b",
+        },
+        "children": Array [
+          Object {
+            "attributes": Object {},
+            "children": Array [
+              "bravo",
+            ],
+            "name": "String",
+          },
+        ],
+        "name": "Entry",
+      },
+      Object {
+        "attributes": Object {
+          "key": "string-c",
+        },
+        "children": Array [
+          Object {
+            "attributes": Object {},
+            "children": Array [
+              "charlie",
+            ],
+            "name": "String",
+          },
+        ],
+        "name": "Entry",
+      },
+      Object {
+        "attributes": Object {
+          "key": "list",
+        },
+        "children": Array [
+          "
+        ",
+          Object {
+            "attributes": Object {},
+            "children": Array [
+              "
+          ",
+              Object {
+                "attributes": Object {},
+                "children": Array [
+                  "a",
+                ],
+                "name": "String",
+              },
+              Object {
+                "attributes": Object {},
+                "children": Array [
+                  "b",
+                ],
+                "name": "String",
+              },
+              Object {
+                "attributes": Object {},
+                "children": Array [
+                  "c",
+                ],
+                "name": "String",
+              },
+            ],
+            "name": "List",
+          },
+        ],
+        "name": "Entry",
+      },
+      Object {
+        "attributes": Object {
+          "key": "null",
+        },
+        "children": Array [
+          Object {
+            "attributes": Object {},
+            "children": Array [],
+            "name": "Null",
+          },
+        ],
+        "name": "Entry",
+      },
+      Object {
+        "attributes": Object {
+          "key": "empty",
+        },
+        "children": Array [],
+        "name": "Entry",
+      },
+    ],
+    "name": "Map",
+  },
+}
+`;
