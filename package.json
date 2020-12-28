@@ -6,6 +6,10 @@
   "module": "dist/esm/bread-n-butter.js",
   "browser": "dist/esm/bread-n-butter.js",
   "types": "dist/esm/bread-n-butter.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wavebeem/bread-n-butter.git"
+  },
   "files": [
     "dist"
   ],
