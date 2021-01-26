@@ -156,7 +156,7 @@ Usually used as a fallback parser in case you want the option of parsing nothing
 at all.
 
 ```ts
-const sign = bnb.text("+").or(bnb.text("-")).or(bnb.of(""));
+const sign = bnb.text("+").or(bnb.text("-")).or(bnb.ok(""));
 sign.tryParse("+"); // => "+"
 sign.tryParse("-"); // => "-"
 sign.tryParse(""); // => ""
