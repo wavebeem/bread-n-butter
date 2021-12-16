@@ -463,7 +463,7 @@ class Context {
     for (const ch of chunk) {
       if (ch === "\n") {
         line++;
-        column = 1;
+        column = 0;
       } else {
         column++;
       }

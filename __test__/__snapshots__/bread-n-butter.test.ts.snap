@@ -492,7 +492,7 @@ Object {
   "type": "ParseOK",
   "value": Object {
     "end": Object {
-      "column": 2,
+      "column": 1,
       "index": 5,
       "line": 3,
     },

@@ -329,7 +329,7 @@ Object {
   "type": "ParseOK",
   "value": Object {
     "end": Object {
-      "column": 1,
+      "column": 0,
       "index": 44,
       "line": 6,
     },
@@ -343,13 +343,13 @@ Object {
     "value": Array [
       Object {
         "end": Object {
-          "column": 13,
+          "column": 12,
           "index": 26,
           "line": 3,
         },
         "name": "LispList",
         "start": Object {
-          "column": 1,
+          "column": 0,
           "index": 1,
           "line": 2,
         },
@@ -357,13 +357,13 @@ Object {
         "value": Array [
           Object {
             "end": Object {
-              "column": 5,
+              "column": 4,
               "index": 5,
               "line": 2,
             },
             "name": "LispSymbol",
             "start": Object {
-              "column": 2,
+              "column": 1,
               "index": 2,
               "line": 2,
             },
@@ -372,13 +372,13 @@ Object {
           },
           Object {
             "end": Object {
-              "column": 9,
+              "column": 8,
               "index": 9,
               "line": 2,
             },
             "name": "LispSymbol",
             "start": Object {
-              "column": 6,
+              "column": 5,
               "index": 6,
               "line": 2,
             },
@@ -387,13 +387,13 @@ Object {
           },
           Object {
             "end": Object {
-              "column": 13,
+              "column": 12,
               "index": 13,
               "line": 2,
             },
             "name": "LispList",
             "start": Object {
-              "column": 10,
+              "column": 9,
               "index": 10,
               "line": 2,
             },
@@ -401,13 +401,13 @@ Object {
             "value": Array [
               Object {
                 "end": Object {
-                  "column": 12,
+                  "column": 11,
                   "index": 12,
                   "line": 2,
                 },
                 "name": "LispSymbol",
                 "start": Object {
-                  "column": 11,
+                  "column": 10,
                   "index": 11,
                   "line": 2,
                 },
@@ -418,13 +418,13 @@ Object {
           },
           Object {
             "end": Object {
-              "column": 12,
+              "column": 11,
               "index": 25,
               "line": 3,
             },
             "name": "LispList",
             "start": Object {
-              "column": 3,
+              "column": 2,
               "index": 16,
               "line": 3,
             },
@@ -432,13 +432,13 @@ Object {
             "value": Array [
               Object {
                 "end": Object {
-                  "column": 7,
+                  "column": 6,
                   "index": 20,
                   "line": 3,
                 },
                 "name": "LispSymbol",
                 "start": Object {
-                  "column": 4,
+                  "column": 3,
                   "index": 17,
                   "line": 3,
                 },
@@ -447,13 +447,13 @@ Object {
               },
               Object {
                 "end": Object {
-                  "column": 9,
+                  "column": 8,
                   "index": 22,
                   "line": 3,
                 },
                 "name": "LispSymbol",
                 "start": Object {
-                  "column": 8,
+                  "column": 7,
                   "index": 21,
                   "line": 3,
                 },
@@ -462,13 +462,13 @@ Object {
               },
               Object {
                 "end": Object {
-                  "column": 11,
+                  "column": 10,
                   "index": 24,
                   "line": 3,
                 },
                 "name": "LispNumber",
                 "start": Object {
-                  "column": 10,
+                  "column": 9,
                   "index": 23,
                   "line": 3,
                 },
@@ -481,13 +481,13 @@ Object {
       },
       Object {
         "end": Object {
-          "column": 16,
+          "column": 15,
           "index": 43,
           "line": 5,
         },
         "name": "LispList",
         "start": Object {
-          "column": 1,
+          "column": 0,
           "index": 28,
           "line": 5,
         },
@@ -495,13 +495,13 @@ Object {
         "value": Array [
           Object {
             "end": Object {
-              "column": 7,
+              "column": 6,
               "index": 34,
               "line": 5,
             },
             "name": "LispSymbol",
             "start": Object {
-              "column": 2,
+              "column": 1,
               "index": 29,
               "line": 5,
             },
@@ -510,13 +510,13 @@ Object {
           },
           Object {
             "end": Object {
-              "column": 15,
+              "column": 14,
               "index": 42,
               "line": 5,
             },
             "name": "LispList",
             "start": Object {
-              "column": 8,
+              "column": 7,
               "index": 35,
               "line": 5,
             },
@@ -524,13 +524,13 @@ Object {
             "value": Array [
               Object {
                 "end": Object {
-                  "column": 12,
+                  "column": 11,
                   "index": 39,
                   "line": 5,
                 },
                 "name": "LispSymbol",
                 "start": Object {
-                  "column": 9,
+                  "column": 8,
                   "index": 36,
                   "line": 5,
                 },
@@ -539,13 +539,13 @@ Object {
               },
               Object {
                 "end": Object {
-                  "column": 14,
+                  "column": 13,
                   "index": 41,
                   "line": 5,
                 },
                 "name": "LispNumber",
                 "start": Object {
-                  "column": 13,
+                  "column": 12,
                   "index": 40,
                   "line": 5,
                 },

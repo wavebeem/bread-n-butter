@@ -6,7 +6,7 @@ Object {
     "more than 4 spaces",
   ],
   "location": Object {
-    "column": 5,
+    "column": 4,
     "index": 40,
     "line": 4,
   },
