@@ -6,7 +6,7 @@ description: "bread-n-butter (bnb) is a parser combinator library for TypeScript
 
 # bread-n-butter
 
-**EXPERIMENTAL: Do not use in production**
+**bnb is semver v0, but unlikely to change much. It should be a stable platform for development.**
 
 bread-n-butter (bnb) is a parser combinator library for TypeScript and
 JavaScript.
@@ -24,7 +24,7 @@ support Node.js release).
 
 ## Installation
 
-```shell
+```sh
 npm i bread-n-butter
 ```
 
