@@ -24,7 +24,7 @@ support Node.js release).
 
 ## Installation
 
-```sh
+```
 npm i bread-n-butter
 ```
 
