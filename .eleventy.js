@@ -36,6 +36,7 @@ module.exports = (config) => {
   config.addPassthroughCopy("docs/css");
   config.addPassthroughCopy("docs/img");
   config.addPassthroughCopy("docs/js");
+  config.addPassthroughCopy("docs/_redirects");
   return {
     dir: {
       input: "docs",
